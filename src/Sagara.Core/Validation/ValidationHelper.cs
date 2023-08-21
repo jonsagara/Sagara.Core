@@ -1,4 +1,5 @@
-﻿using VHR = Sagara.Core.Validation.ValidationHelperResources;
+﻿using System.Globalization;
+using VHR = Sagara.Core.Validation.ValidationHelperResources;
 
 namespace Sagara.Core.Validation;
 
@@ -17,7 +18,7 @@ public static class ValidationHelper
 
         if (string.IsNullOrWhiteSpace(property.Value))
         {
-            errors.Add(new RequestError(property.PropertyName, string.Format(VHR.RequiredField, property.GetDisplayName())));
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.RequiredField, property.GetDisplayName())));
         }
     }
 
@@ -32,7 +33,7 @@ public static class ValidationHelper
 
         if (property.Value is null)
         {
-            errors.Add(new RequestError(property.PropertyName, string.Format(VHR.RequiredField, property.GetDisplayName())));
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.RequiredField, property.GetDisplayName())));
         }
     }
 
@@ -47,7 +48,7 @@ public static class ValidationHelper
 
         if (property.Value is null)
         {
-            errors.Add(new RequestError(property.PropertyName, string.Format(VHR.RequiredField, property.GetDisplayName())));
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.RequiredField, property.GetDisplayName())));
         }
     }
 
@@ -60,7 +61,7 @@ public static class ValidationHelper
 
         if (property.Value?.Length > maxLength)
         {
-            errors.Add(new RequestError(property.PropertyName, string.Format(VHR.StringMaxLength, property.GetDisplayName(), maxLength)));
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.StringMaxLength, property.GetDisplayName(), maxLength)));
         }
     }
 
@@ -73,7 +74,7 @@ public static class ValidationHelper
 
         if (property.Value?.Length < minLength)
         {
-            errors.Add(new RequestError(property.PropertyName, string.Format(VHR.StringMinLength, property.GetDisplayName(), minLength)));
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.StringMinLength, property.GetDisplayName(), minLength)));
         }
     }
 
