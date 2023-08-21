@@ -9,13 +9,8 @@
 		<Version>1.0.0-alpha1</Version>
 		<AssemblyVersion>1.0.0</AssemblyVersion>
 		<FileVersion>1.0.0</FileVersion>
-		<Authors>Jon Sagara</Authors>
-		<Company />
 		<PackageId>Sagara.Core</PackageId>
 		<Description>Common classes that I reuse in my projects.</Description>
-		<Copyright>Copyright 2022-2023</Copyright>
-		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/jonsagara/Sagara.Core</PackageProjectUrl>
 		<!--<PackageLicenseFile>LICENSE.md</PackageLicenseFile>-->
 		<!--<PackageReadmeFile>README.md</PackageReadmeFile>-->
 		<!--<PackageIcon>NuGet Package Icon.png</PackageIcon>-->

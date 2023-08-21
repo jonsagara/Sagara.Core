@@ -1,5 +1,19 @@
 <Project>
 	<PropertyGroup>
+		
+		<!-- NuGet -->
+		<Authors>Jon Sagara</Authors>
+		<Copyright>Copyright 2022-2023</Copyright>
+		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageProjectUrl>https://github.com/jonsagara/Sagara.Core</PackageProjectUrl>
+		
+		<!-- 
+			This is really helpful for larger projects, but I leave it in anyway. Why build if you don't have to? 
+			
+			See: https://devblogs.microsoft.com/visualstudio/vs-toolbox-accelerate-your-builds-of-sdk-style-net-projects/
+		-->
 		<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+		
 	</PropertyGroup>
 </Project>
