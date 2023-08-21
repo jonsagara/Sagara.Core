@@ -10,9 +10,12 @@ namespace Sagara.Core.Caching;
 /// <para>We have to use an instance created via DI instead of a static class because we need to be able 
 /// inject Configuration to have access to the connection string.</para>
 /// </summary>
+/// <remarks>
+/// NOTE: Be sure to set abortConnect=false in the connection string so that we gracefully handle connection failures.
+/// </remarks>
 public class RedisCache
 {
-    private readonly ILogger<RedisCache> _logger;
+    protected readonly ILogger<RedisCache> _logger;
 
     /// <summary>
     /// The multiplexer used to communicate with redis.
@@ -24,14 +27,16 @@ public class RedisCache
     /// </summary>
     /// <param name="logger">A logger from the DI container.</param>
     /// <param name="connectionString">The StackExchange.Redis connection string.</param>
-    internal RedisCache(ILogger<RedisCache> logger, string connectionString)
+    internal RedisCache(ILogger<RedisCache> logger, string connectionString, bool allowAdmin)
     {
         Check.NotEmpty(connectionString);
 
         _logger = logger;
 
-        // Be sure to set abortConnect=false in the connection string so that we gracefully handle connection failures.
-        Multiplexer = InitializeConnectionMultiplexer(ConfigurationOptions.Parse(connectionString));
+        var configOptions = ConfigurationOptions.Parse(connectionString);
+        configOptions.AllowAdmin = allowAdmin;
+
+        Multiplexer = InitializeConnectionMultiplexer(configOptions);
     }
 
     /// <summary>
