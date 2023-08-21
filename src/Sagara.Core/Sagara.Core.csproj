@@ -6,9 +6,6 @@
 		<Nullable>enable</Nullable>
 
 		<!-- NuGet -->
-		<Version>1.0.0-alpha1</Version>
-		<AssemblyVersion>1.0.0</AssemblyVersion>
-		<FileVersion>1.0.0</FileVersion>
 		<PackageId>Sagara.Core</PackageId>
 		<Description>Common classes that I reuse in my projects.</Description>
 		<!--<PackageLicenseFile>LICENSE.md</PackageLicenseFile>-->
@@ -22,13 +19,6 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-
-		<!-- Code Analysis -->
-		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
-		<WarningsAsErrors>$(WarningsAsErrors);CA1307;CA1309;CA1310</WarningsAsErrors>
-
-		<!-- Don't warn about public members with missing XML comments. -->
-		<NoWarn>1591;1701;1702</NoWarn>
 	</PropertyGroup>
 
 	<!--<ItemGroup>

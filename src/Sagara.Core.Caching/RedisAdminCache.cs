@@ -2,8 +2,19 @@
 
 namespace Sagara.Core.Caching;
 
+/// <summary>
+/// <para>!!! IMPORTANT !!! This class is only intended to be used as a singleton because we construct the
+/// multiplexer in our constructor, and constructing multiplexers is expensive.</para>
+/// <para>We have to use an instance created via DI instead of a static class because we need to be able 
+/// inject Configuration to have access to the connection string.</para>
+/// </summary>
+/// <remarks>
+/// NOTE: Be sure to set abortConnect=false in the connection string so that we gracefully handle connection failures.
+/// </remarks>
 public class RedisAdminCache : RedisCache
 {
+    private readonly ILogger<RedisAdminCache> _logger;
+
     /// <summary>
     /// <para>!!! IMPORTANT !!! This class is only intended to be used as a singleton because we construct the
     /// multiplexer in our constructor, and constructing multiplexers is expensive.</para>
@@ -17,9 +28,16 @@ public class RedisAdminCache : RedisCache
     public RedisAdminCache(ILogger<RedisAdminCache> logger, string connectionString)
         : base(logger, connectionString, allowAdmin: true)
     {
+        _logger = logger;
     }
 
 
+#pragma warning disable CA1031 // Do not catch general exception types
+
+    /// <summary>
+    /// Delete all the keys of all databases on the server.
+    /// </summary>
+    /// <returns></returns>
     public async Task FlushAllAsync()
     {
         try
@@ -38,4 +56,6 @@ public class RedisAdminCache : RedisCache
             _logger.LogError(ex, "Unhandled exception while trying to delete all the keys of all databases on the server.");
         }
     }
+
+#pragma warning restore CA1031 // Do not catch general exception types
 }

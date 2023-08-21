@@ -15,7 +15,7 @@ namespace Sagara.Core.Caching;
 /// </remarks>
 public class RedisCache
 {
-    protected readonly ILogger<RedisCache> _logger;
+    private readonly ILogger<RedisCache> _logger;
 
     /// <summary>
     /// The multiplexer used to communicate with redis.
@@ -27,6 +27,7 @@ public class RedisCache
     /// </summary>
     /// <param name="logger">A logger from the DI container.</param>
     /// <param name="connectionString">The StackExchange.Redis connection string.</param>
+    /// <param name="allowAdmin">True to allow redis admin operations; false otherwise.</param>
     internal RedisCache(ILogger<RedisCache> logger, string connectionString, bool allowAdmin)
     {
         Check.NotEmpty(connectionString);
@@ -44,6 +45,8 @@ public class RedisCache
     /// </summary>
     protected ConnectionMultiplexer InitializeConnectionMultiplexer(ConfigurationOptions options)
     {
+        Check.NotNull(options);
+
         // Be sure to set abortConnect=false in the connection string so that we gracefully handle connection failures.
         var multiplexer = ConnectionMultiplexer.Connect(options);
 
@@ -53,27 +56,30 @@ public class RedisCache
         // Log connection and error events.
         multiplexer.ConnectionFailed += (sender, e) =>
         {
-            _logger.LogError(e.Exception, "{logPrefix}ConnectionFailed: Connection type '{connectionType}' on EndPoint '{endPoint}' reported ConnectionFailureType '{failureType}'", logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
+            _logger.LogError(e.Exception, "{LogPrefix}ConnectionFailed: Connection type '{ConnectionType}' on EndPoint '{EndPoint}' reported ConnectionFailureType '{FailureType}'", logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
         };
 
         multiplexer.ConnectionRestored += (sender, e) =>
         {
-            _logger.LogInformation(e.Exception, "{logPrefix}ConnectionRestored: Connection type '{connectionType}' on EndPoint '{endPoint}' reported ConnectionFailureType '{failureType}'", logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
+            _logger.LogInformation(e.Exception, "{LogPrefix}ConnectionRestored: Connection type '{ConnectionType}' on EndPoint '{EndPoint}' reported ConnectionFailureType '{FailureType}'", logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
         };
 
         multiplexer.ErrorMessage += (sender, e) =>
         {
-            _logger.LogError("{logPrefix}ErrorMessage: Server '{endPoint}' reported this error message: {message}", logPrefix, e.EndPoint, e.Message);
+            _logger.LogError("{LogPrefix}ErrorMessage: Server '{EndPoint}' reported this error message: {Message}", logPrefix, e.EndPoint, e.Message);
         };
 
         multiplexer.ServerMaintenanceEvent += (sender, e) =>
         {
-            _logger.LogWarning("{logPrefix}ServerMaintenanceEvent: Server maintenance event received at {receivedTimeUtc}. Expected start time is {startTimeUtc}. Raw message: {rawMessage}", logPrefix, e.ReceivedTimeUtc, e.StartTimeUtc, e.RawMessage);
+            _logger.LogWarning("{LogPrefix}ServerMaintenanceEvent: Server maintenance event received at {ReceivedTimeUtc}. Expected start time is {StartTimeUtc}. Raw message: {RawMessage}", logPrefix, e.ReceivedTimeUtc, e.StartTimeUtc, e.RawMessage);
         };
 
         return multiplexer;
     }
 
+
+    // Justification: Anything can happen on the network. Catch them all.
+#pragma warning disable CA1031 // Do not catch general exception types
 
     /// <summary>
     /// Get the value of key. If the key does not exist the special value nil is returned.
@@ -101,7 +107,7 @@ public class RedisCache
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.LogError(ex, "Unhandled exception trying to async GET {key}", key);
+            _logger.LogError(ex, "Unhandled exception trying to async GET {Key}", key);
         }
 
         return default;
@@ -149,7 +155,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.LogError(ex, "Unhandled exception trying to async GET/EXPIRE {key}", key);
+            _logger.LogError(ex, "Unhandled exception trying to async GET/EXPIRE {Key}", key);
         }
 
         return default;
@@ -183,7 +189,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.LogError(ex, "Unhandled exception trying to GET/EXPIRE {key}", key);
+            _logger.LogError(ex, "Unhandled exception trying to GET/EXPIRE {Key}", key);
         }
 
         return default;
@@ -213,7 +219,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.LogError(ex, "Unhandled exception trying to async SET {key}", key);
+            _logger.LogError(ex, "Unhandled exception trying to async SET {Key}", key);
         }
 
         return false;
@@ -241,7 +247,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.LogError(ex, "Unhandled exception trying to SET {key}", key);
+            _logger.LogError(ex, "Unhandled exception trying to SET {Key}", key);
         }
 
         return false;
@@ -268,7 +274,7 @@ return val
     //    catch (Exception ex)
     //    {
     //        // Don't let cache server unavailability bring down the application.
-    //        _logger.LogError(ex, "Unhandled exception trying to INCR {key}", key);
+    //        _logger.LogError(ex, "Unhandled exception trying to INCR {Key}", key);
     //    }
 
     //    return 0L;
@@ -294,7 +300,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.LogError(ex, "Unhandled exception trying to async DEL {key}", key);
+            _logger.LogError(ex, "Unhandled exception trying to async DEL {Key}", key);
         }
 
         return false;
@@ -325,7 +331,7 @@ return val
             catch (Exception ex)
             {
                 // Don't let cache server unavailability bring down the application.
-                _logger.LogError(ex, "Unhandled exception trying to async DEL {keysJoined}", string.Join(" ", keys));
+                _logger.LogError(ex, "Unhandled exception trying to async DEL {KeysJoined}", string.Join(" ", keys));
             }
         }
 
@@ -374,7 +380,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.LogError(ex, "Unhandled exception trying to INCR and EXPIRE On Create of the key {key}", key);
+            _logger.LogError(ex, "Unhandled exception trying to INCR and EXPIRE On Create of the key {Key}", key);
         }
 
         return 0L;
@@ -408,7 +414,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.LogError(ex, "Unhandled exception trying to SUBSCRIBE {channel}", channel);
+            _logger.LogError(ex, "Unhandled exception trying to SUBSCRIBE {Channel}", channel);
         }
     }
 
@@ -426,12 +432,18 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.LogError(ex, "Unhandled exception trying to async PUBLISH {channel} {message}", channel, message);
+            _logger.LogError(ex, "Unhandled exception trying to async PUBLISH {Channel} {Message}", channel, message);
         }
 
         return 0L;
     }
 
+#pragma warning restore CA1031 // Do not catch general exception types
+
+
+    //
+    // Private methods
+    //
 
     private IDatabase GetDatabase()
     {

@@ -2,12 +2,22 @@
 	<PropertyGroup>
 		
 		<!-- NuGet -->
+		<Version>1.0.0-alpha1</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
 		<Authors>Jon Sagara</Authors>
 		<Copyright>Copyright 2022-2023</Copyright>
 		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://github.com/jonsagara/Sagara.Core</PackageProjectUrl>
-		
+
+		<!-- Code Analysis -->
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<WarningsAsErrors>$(WarningsAsErrors);CA1307;CA1309;CA1310</WarningsAsErrors>
+
+		<!-- Don't warn about public members with missing XML comments. -->
+		<NoWarn>1591;1701;1702</NoWarn>
+
 		<!-- 
 			This is really helpful for larger projects, but I leave it in anyway. Why build if you don't have to? 
 			
