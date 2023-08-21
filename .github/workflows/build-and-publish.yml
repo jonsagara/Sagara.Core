@@ -44,6 +44,9 @@ jobs:
     - name: dotnet pack Sagara.Core.Caching
       run: dotnet pack ./src/Sagara.Core.Caching/Sagara.Core.Caching.csproj --configuration Release --output ${{ env.NuGetDirectory }}
 
+    - name: dotnet pack Sagara.Core.Logging.Serilog
+      run: dotnet pack ./src/Sagara.Core.Logging.Serilog/Sagara.Core.Logging.Serilog.csproj --configuration Release --output ${{ env.NuGetDirectory }}
+
     # Upload .nupkg files as an artifact, so they can be used in the following jobs
     - name: Upload NuGet packages as artifacts
       uses: actions/upload-artifact@v3

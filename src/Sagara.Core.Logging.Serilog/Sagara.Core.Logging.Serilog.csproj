@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- NuGet -->
+		<PackageId>Sagara.Core.Logging.Serilog</PackageId>
+		<Description>Common Serilog functionality.</Description>
+		<!--<PackageLicenseFile>LICENSE.md</PackageLicenseFile>-->
+		<!--<PackageReadmeFile>README.md</PackageReadmeFile>-->
+		<!--<PackageIcon>NuGet Package Icon.png</PackageIcon>-->
+		<PackageTags>serilog logging</PackageTags>
+		<PackageReleaseNotes></PackageReleaseNotes>
+
+		<!-- SourceLink -->
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+
+		<!-- Don't warn about the LoggerMessage pattern. -->
+		<!--<NoWarn>$(NoWarn);CA1848</NoWarn>-->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Serilog" Version="3.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Sagara.Core\Sagara.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<!-- When running in GitHub Actions, enable deterministic builds for the NuGet package. -->
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
+
+</Project>
