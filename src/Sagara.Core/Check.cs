@@ -4,11 +4,14 @@ using System.Runtime.CompilerServices;
 namespace Sagara.Core;
 
 /// <summary>
-/// Argument checker so that we don't have to keep writing the same guard clauses all over the place.
+/// <para>Argument checker so that we don't have to keep writing the same guard clauses all over the place.</para>
+/// <para>This updated version uses the new <see cref="CallerArgumentExpressionAttribute"/> to get the 
+/// argument expression from the call site so that we don't have to manually pass that in.</para>
 /// </summary>
 /// <remarks>
-/// This updated version uses the new <see cref="CallerArgumentExpressionAttribute"/> to get the 
-/// argument expression from the call site so that we don't have to manually pass that in.
+/// <para>NOTE: F# does not yet support <see cref="CallerArgumentExpressionAttribute"/>, so F# callers will need to pass in
+/// the second valArgExpression argument. C# callers can omit this second argument.</para>
+/// <para>NOTE: Based on an older version of this utility class from EF Core: https://github.com/dotnet/efcore/blob/release/8.0/src/Shared/Check.cs</para>
 /// </remarks>
 public static class Check
 {

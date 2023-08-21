@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -13,7 +13,7 @@
 		<Company />
 		<PackageId>Sagara.Core</PackageId>
 		<Description>Common classes that I reuse in my projects.</Description>
-		<Copyright>Copyright 2023</Copyright>
+		<Copyright>Copyright 2022-2023</Copyright>
 		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/jonsagara/Sagara.Core</PackageProjectUrl>
 		<!--<PackageLicenseFile>LICENSE.md</PackageLicenseFile>-->
