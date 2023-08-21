@@ -4,7 +4,7 @@ using System.Reflection;
 namespace Sagara.Core.Enums;
 
 /// <summary>
-/// <para>Conslidated wrapper for enum values, valid values, and display names.</para>
+/// <para>Consolidated wrapper for enum values, valid values, and display names.</para>
 /// <para>Inspired by: https://devblogs.microsoft.com/premier-developer/dissecting-new-generics-constraints-in-c-7-3/ </para>
 /// </summary>
 /// <typeparam name="TEnum">The type of enum.</typeparam>
