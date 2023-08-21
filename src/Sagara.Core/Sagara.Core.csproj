@@ -1,9 +1,54 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- NuGet -->
+		<Version>1.0.0-alpha1</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
+		<Authors>Jon Sagara</Authors>
+		<Company />
+		<PackageId>Sagara.Core</PackageId>
+		<Description>Common classes that I reuse in my projects.</Description>
+		<Copyright>Copyright 2023</Copyright>
+		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/jonsagara/Sagara.Core</PackageProjectUrl>
+		<!--<PackageLicenseFile>LICENSE.md</PackageLicenseFile>-->
+		<!--<PackageReadmeFile>README.md</PackageReadmeFile>-->
+		<!--<PackageIcon>NuGet Package Icon.png</PackageIcon>-->
+		<PackageTags>Validation SequentialGuid Caching Enums</PackageTags>
+		<PackageReleaseNotes></PackageReleaseNotes>
+
+		<!-- SourceLink -->
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+
+		<!-- Code Analysis -->
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<WarningsAsErrors>$(WarningsAsErrors);CA1307;CA1309;CA1310</WarningsAsErrors>
+	</PropertyGroup>
+
+	<!--<ItemGroup>
+		<None Include="..\..\NuGet Package Icon.png" Pack="true" PackagePath="\" />
+		<None Include="..\..\LICENSE.md" Pack="true" PackagePath="" />
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>-->
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<!-- When running in GitHub Actions, enable deterministic builds for the NuGet package. -->
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
 
 </Project>
