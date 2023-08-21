@@ -141,8 +141,8 @@ public static class EnumTraits<TEnum>
 
                 // Use the enum value name to get its MemberInfo.
                 var enumValueMemberInfo = enumType
-                .GetMember(enumValueName)
-                .SingleOrDefault();
+                    .GetMember(enumValueName)
+                    .SingleOrDefault();
 
                 // We're getting the enum values straight from the enum itself, and not from outside code, so there
                 //   should be exactly one matching enum value. This will give a better, more descriptive error 
