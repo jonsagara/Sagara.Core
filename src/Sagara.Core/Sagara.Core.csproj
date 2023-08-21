@@ -34,6 +34,21 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+		<Compile Update="Validation\ValidationHelperResources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ValidationHelperResources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Validation\ValidationHelperResources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>ValidationHelperResources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
 	<!-- When running in GitHub Actions, enable deterministic builds for the NuGet package. -->
 	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
