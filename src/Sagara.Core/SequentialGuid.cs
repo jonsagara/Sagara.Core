@@ -88,7 +88,18 @@ public class SequentialGuid
     /// <param name="sequentialGuid">The current sequential Guid.</param>
     /// <returns>The incremented sequential Guid.</returns>
     public static SequentialGuid operator ++(SequentialGuid sequentialGuid)
+        => Increment(sequentialGuid);
+
+    /// <summary>
+    /// Increment one or more bytes of <see cref="CurrentGuid"/> to get the next sequential Guid,
+    /// and then copy this new value back to <see cref="CurrentGuid"/>.
+    /// </summary>
+    /// <param name="sequentialGuid">The current sequential Guid.</param>
+    /// <returns>The incremented sequential Guid.</returns>
+    public static SequentialGuid Increment(SequentialGuid sequentialGuid)
     {
+        Check.NotNull(sequentialGuid);
+
         // Copy the current Guid's value into a byte array.
         Span<byte> currentGuidBytes = stackalloc byte[16];
         sequentialGuid.CurrentGuid.TryWriteBytes(currentGuidBytes);

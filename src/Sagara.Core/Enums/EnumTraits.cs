@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Reflection;
 
 namespace Sagara.Core.Enums;
@@ -13,8 +14,13 @@ public static class EnumTraits<TEnum>
 {
     private static readonly Type _enumType;
     private static readonly TEnum[] _allValues;
+    private static readonly long[] _duplicateNumericValues;
     private static readonly HashSet<TEnum> _validValues;
     private static readonly Dictionary<TEnum, string> _validValueDisplayNames;
+
+
+    // Justification: I can't think of a way to implement this without switching to an instance based class.
+#pragma warning disable CA1000 // Do not declare static members on generic types
 
     /// <summary>
     /// Returns true if the enum declaration is empty; false otherwise.
@@ -40,7 +46,10 @@ public static class EnumTraits<TEnum>
         => _validValues;
 
 
+    // Justification: The static fields must be initialized in a specific order.
+#pragma warning disable CA1810 // Initialize reference type static fields inline
     static EnumTraits()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
     {
         _enumType = typeof(TEnum);
 
@@ -59,12 +68,7 @@ public static class EnumTraits<TEnum>
         // Ensure there are no duplicate underlying numeric values.
         //
 
-        var duplicateNumericValues = GetDuplicateNumericValues(_enumType, _allValues);
-
-        if (duplicateNumericValues.Length > 0)
-        {
-            throw new InvalidOperationException($"{_enumType.FullName} has one or more duplicate numeric values: {string.Join(", ", duplicateNumericValues.Select(dnv => dnv.ToString()))}");
-        }
+        _duplicateNumericValues = GetDuplicateNumericValues(_enumType, _allValues);
 
         //
         // Construct a HashSet of valid values by filtering out any values decorated with an InvalidEnumValueAttribute.
@@ -85,6 +89,18 @@ public static class EnumTraits<TEnum>
     /// </summary>
     public static bool IsValid(TEnum value)
         => _validValues.Contains(value);
+
+    /// <summary>
+    /// Throws an <see cref="InvalidOperationException"/> if the enum has one or more duplicate underlying values defined.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Throws if the enum has one or more duplicate underlying values defined.</exception>
+    public static void EnsureNoDuplicateValues()
+    {
+        if (_duplicateNumericValues.Length > 0)
+        {
+            throw new InvalidOperationException($"{_enumType.FullName} has one or more duplicate numeric values: {string.Join(", ", _duplicateNumericValues.Select(dnv => dnv.ToString(CultureInfo.InvariantCulture)))}");
+        }
+    }
 
     /// <summary>
     /// Return the display name for the enum value, which is either from the [Display] attribute 
@@ -149,8 +165,8 @@ public static class EnumTraits<TEnum>
         var underlyingType = Enum.GetUnderlyingType(enumType);
 
         var longValues = allValues
-            .Select(v => Convert.ChangeType(v, underlyingType))
-            .Select(v => Convert.ToInt64(v))
+            .Select(v => Convert.ChangeType(v, underlyingType, CultureInfo.InvariantCulture))
+            .Select(v => Convert.ToInt64(v, CultureInfo.InvariantCulture))
             .ToArray();
 
         // Find any values that occur more than once, and return them as a distinct array.
@@ -187,4 +203,6 @@ public static class EnumTraits<TEnum>
         //   name as a string.
         return displayAttribute?.GetName() ?? enumValueName;
     }
+
+#pragma warning restore CA1000 // Do not declare static members on generic types
 }
