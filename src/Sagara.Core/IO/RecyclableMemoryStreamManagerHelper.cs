@@ -2,13 +2,19 @@
 
 namespace Sagara.Core.IO;
 
+/// <summary>
+/// Creates a <see cref="RecyclableMemoryStreamManager"/> that the caller can register as a singleton in 
+/// a DI framework.
+/// </summary>
 public static class RecyclableMemoryStreamManagerHelper
 {
     /// <summary>
-    /// Create a new <see cref="RecyclableMemoryStreamManager"/> instance that can be used by the DI framework.
+    /// <para>Create a new <see cref="RecyclableMemoryStreamManager"/> instance that can be used by the DI framework.</para>
+    /// <para>Uses the same defaults (as of Microsoft.IO.RecyclableMemoryStream v2.3.2) as the <see cref="RecyclableMemoryStreamManager"/> default ctor,
+    /// except we cap the max small and large pool free bytes at 12.5 MB and 512 MB, respectively. RMSM leaves them unbounded.</para>
     /// </summary>
     /// <remarks>
-    /// See: https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream
+    /// <para>See: https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream</para>
     /// </remarks>
     public static RecyclableMemoryStreamManager Create()
     {
