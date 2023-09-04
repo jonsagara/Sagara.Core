@@ -8,8 +8,8 @@
 		<!-- NuGet -->
 		<PackageId>Sagara.Core</PackageId>
 		<Description>Common classes that I reuse in my projects.</Description>
-		<!--<PackageLicenseFile>LICENSE.md</PackageLicenseFile>-->
-		<!--<PackageReadmeFile>README.md</PackageReadmeFile>-->
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<!--<PackageIcon>NuGet Package Icon.png</PackageIcon>-->
 		<PackageTags>Validation SequentialGuid Caching Enums</PackageTags>
 		<PackageReleaseNotes></PackageReleaseNotes>
@@ -21,11 +21,11 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
-	<!--<ItemGroup>
-		<None Include="..\..\NuGet Package Icon.png" Pack="true" PackagePath="\" />
+	<ItemGroup>
+		<!--<None Include="..\..\NuGet Package Icon.png" Pack="true" PackagePath="\" />-->
 		<None Include="..\..\LICENSE.md" Pack="true" PackagePath="" />
 		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
-	</ItemGroup>-->
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
