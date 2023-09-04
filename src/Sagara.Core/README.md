@@ -1,0 +1,3 @@
+# Sagara.Core
+
+TODO: elaborate
