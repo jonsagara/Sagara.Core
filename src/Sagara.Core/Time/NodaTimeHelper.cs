@@ -2,15 +2,18 @@
 
 namespace Sagara.Core.Time;
 
+/// <summary>
+/// Wrappers around NodaTime helpers to convert between time zones.
+/// </summary>
 public static class NodaTimeHelper
 {
     /// <summary>
-    /// Replace the &quot;if null&quot; version above with this version once we're sure that all accounts
-    /// and users have TimeZoneIds set.
+    /// Convert the UTC date/time into the equivalent date/time of the given time zone specified by the 
+    /// IANA time zone Id.
     /// </summary>
-    public static DateTimeOffset ToLocal(this DateTime utc, string timeZoneId)
+    public static DateTimeOffset ToLocal(this DateTime utc, string ianaTimeZoneId)
     {
-        Check.NotEmpty(timeZoneId);
+        Check.NotEmpty(ianaTimeZoneId);
 
         // Ensure the UTC date/time is marked as UTC.
         utc = DateTime.SpecifyKind(utc, DateTimeKind.Utc);
@@ -19,7 +22,7 @@ public static class NodaTimeHelper
         var instant = Instant.FromDateTimeUtc(utc);
 
         // Get the target time zone information from Tzdb.
-        var targetZoneInfo = DateTimeZoneProviders.Tzdb[timeZoneId];
+        var targetZoneInfo = DateTimeZoneProviders.Tzdb[ianaTimeZoneId];
 
         // Convert the instant to the zone's local time.
         var zonedDateTime = instant.InZone(targetZoneInfo);
@@ -29,18 +32,18 @@ public static class NodaTimeHelper
     }
 
     /// <summary>
-    /// Replace the &quot;if null&quot; version above with this version once we're sure that all accounts
-    /// and users have TimeZoneIds set.
+    /// Convert the local date/time (local to the time zone specified by the IANA time zone Id) into the
+    /// equivalent UTC date/time.
     /// </summary>
-    public static DateTime ToUtc(this DateTime local, string timeZoneId)
+    public static DateTime ToUtc(this DateTime local, string ianaTimeZoneId)
     {
-        Check.NotEmpty(timeZoneId);
+        Check.NotEmpty(ianaTimeZoneId);
 
         // Convert BCL date/time to a NodaTime local date/time.
         var localDateTime = LocalDateTime.FromDateTime(local);
 
         // Get the source time zone information from Tzdb.
-        var sourceZoneInfo = DateTimeZoneProviders.Tzdb[timeZoneId];
+        var sourceZoneInfo = DateTimeZoneProviders.Tzdb[ianaTimeZoneId];
 
         // Make a zoned date/time out of the local date/time and the source time zone info.
         var zonedDateTime = sourceZoneInfo.AtLeniently(localDateTime);

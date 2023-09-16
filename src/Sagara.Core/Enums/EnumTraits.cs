@@ -28,6 +28,11 @@ public static class EnumTraits<TEnum>
     public static bool IsEmpty { get; }
 
     /// <summary>
+    /// Returns true if the enum is decorated with a <see cref="FlagsAttribute"/>; false otherwise.
+    /// </summary>
+    public static bool HasFlagsAttribute { get; }
+
+    /// <summary>
     /// Returns the enum's Type information.
     /// </summary>
     public static Type EnumType
@@ -53,14 +58,14 @@ public static class EnumTraits<TEnum>
     {
         _enumType = typeof(TEnum);
 
+        HasFlagsAttribute = _enumType.GetCustomAttributes<FlagsAttribute>().Any();
+
+
         //
         // Construct a list of all defined values.
         //
 
-        _allValues = Enum.GetValues(_enumType)
-            .Cast<TEnum>()
-            .ToArray();
-
+        _allValues = Enum.GetValues<TEnum>();
         IsEmpty = _allValues.Length == 0;
 
 
