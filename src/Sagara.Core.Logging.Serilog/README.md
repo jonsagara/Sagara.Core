@@ -1,3 +1,5 @@
 # Sagara.Core.Logging.Serilog
 
-TODO: elaborate
+Common Serilog logging code that I use across many projects.
+
+See the [GitHub repo](https://github.com/jonsagara/Sagara.Core) for documentation.
