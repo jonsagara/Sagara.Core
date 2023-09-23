@@ -10,6 +10,8 @@ proof-of-concept or bug demonstration applications. It reduces the amount of boi
 [![NuGet](https://img.shields.io/nuget/dt/Sagara.Core.svg?label=Sagara.Core)](https://www.nuget.org/packages/Sagara.Core/)
 [![NuGet Sagara.Core](https://buildstats.info/nuget/Sagara.Core)](https://www.nuget.org/packages/Sagara.Core)
 
+[Sagara.Core docs](src/Sagara.Core/docs)
+
 ## Sagara.Core.Caching
 
 [![NuGet](https://img.shields.io/nuget/dt/Sagara.Core.Caching.svg?label=Sagara.Core.Caching)](https://www.nuget.org/packages/Sagara.Core.Caching/)
