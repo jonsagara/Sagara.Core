@@ -6,12 +6,12 @@
 		<Nullable>enable</Nullable>
 
 		<!-- NuGet -->
-		<PackageId>Sagara.Core</PackageId>
-		<Description>Common code that I reuse in my projects.</Description>
+		<PackageId>Sagara.Core.AspNetCore</PackageId>
+		<Description>Common ASP.NET Core code that I reuse in my projects.</Description>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<!--<PackageIcon>NuGet Package Icon.png</PackageIcon>-->
-		<PackageTags>Validation SequentialGuid Caching Enums</PackageTags>
+		<PackageTags>Validation ModelState UnhandledException</PackageTags>
 		<PackageReleaseNotes></PackageReleaseNotes>
 
 		<!-- SourceLink -->
@@ -29,27 +29,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="NodaTime" Version="3.1.9" />
+		
+		<!-- Use the ASP.NET Core shared framework -->
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Validation\ValidationHelperResources.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>ValidationHelperResources.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Validation\ValidationHelperResources.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
-			<LastGenOutput>ValidationHelperResources.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
+		<ProjectReference Include="..\Sagara.Core\Sagara.Core.csproj" />
 	</ItemGroup>
 
 	<!-- When running in GitHub Actions, enable deterministic builds for the NuGet package. -->

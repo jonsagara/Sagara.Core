@@ -20,6 +20,13 @@ proof-of-concept or bug demonstration applications. It reduces the amount of boi
 [Sagara.Core docs](src/Sagara.Core/docs/index.md)
 
 
+## Sagara.Core.AspNetCore
+
+[![NuGet Sagara.Core.AspNetCore](https://buildstats.info/nuget/Sagara.Core.AspNetCore)](https://www.nuget.org/packages/Sagara.Core.AspNetCore)
+
+[Sagara.Core.AspNetCore docs](src/Sagara.Core.AspNetCore/docs/index.md)
+
+
 ## Sagara.Core.Caching
 
 [![NuGet Sagara.Core.Caching](https://buildstats.info/nuget/Sagara.Core.Caching)](https://www.nuget.org/packages/Sagara.Core.Caching)
