@@ -34,6 +34,13 @@ proof-of-concept or bug demonstration applications. It reduces the amount of boi
 [Sagara.Core.Caching docs](src/Sagara.Core.Caching/docs/index.md)
 
 
+## Sagara.Core.Data
+
+[![NuGet Sagara.Core.Data](https://buildstats.info/nuget/Sagara.Core.Data)](https://www.nuget.org/packages/Sagara.Core.Data)
+
+[Sagara.Core.Data docs](src/Sagara.Core.Data/docs/index.md)
+
+
 ## Sagara.Core.Logging.Serilog
 
 [![NuGet Sagara.Core.Logging.Serilog](https://buildstats.info/nuget/Sagara.Core.Logging.Serilog)](https://www.nuget.org/packages/Sagara.Core.Logging.Serilog)
