@@ -53,7 +53,7 @@ public class RedisAdminCache : RedisCache
         catch (Exception ex)
         {
             // Don't let the cache server bring down the application.
-            _logger.LogError(ex, "Unhandled exception while trying to delete all the keys of all databases on the server.");
+            RedisCacheLogger.UnhandledException(_logger, ex, command: "FLUSHALL", key: "(all keys)");
         }
     }
 

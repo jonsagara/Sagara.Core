@@ -19,9 +19,6 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-
-		<!-- Don't warn about the LoggerMessage pattern. -->
-		<NoWarn>$(NoWarn);CA1848</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
