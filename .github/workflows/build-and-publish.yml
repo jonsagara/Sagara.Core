@@ -41,8 +41,14 @@ jobs:
     - name: dotnet pack Sagara.Core
       run: dotnet pack ./src/Sagara.Core/Sagara.Core.csproj --configuration Release --output ${{ env.NuGetDirectory }}
 
+    - name: dotnet pack Sagara.Core.AspNetCore
+      run: dotnet pack ./src/Sagara.Core.AspNetCore/Sagara.Core.AspNetCore.csproj --configuration Release --output ${{ env.NuGetDirectory }}
+
     - name: dotnet pack Sagara.Core.Caching
       run: dotnet pack ./src/Sagara.Core.Caching/Sagara.Core.Caching.csproj --configuration Release --output ${{ env.NuGetDirectory }}
+
+    - name: dotnet pack Sagara.Core.Data
+      run: dotnet pack ./src/Sagara.Core.Data/Sagara.Core.Data.csproj --configuration Release --output ${{ env.NuGetDirectory }}
 
     - name: dotnet pack Sagara.Core.Logging.Serilog
       run: dotnet pack ./src/Sagara.Core.Logging.Serilog/Sagara.Core.Logging.Serilog.csproj --configuration Release --output ${{ env.NuGetDirectory }}
