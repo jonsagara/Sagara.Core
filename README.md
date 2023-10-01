@@ -15,34 +15,34 @@ proof-of-concept or bug demonstration applications. It reduces the amount of boi
 
 ## Sagara.Core
 
-[![NuGet Sagara.Core](https://buildstats.info/nuget/Sagara.Core)](https://www.nuget.org/packages/Sagara.Core)
+[![NuGet](https://img.shields.io/nuget/v/Sagara.Core?label=NuGet)](https://www.nuget.org/packages/Sagara.Core/)
 
 [Sagara.Core docs](src/Sagara.Core/docs/index.md)
 
 
 ## Sagara.Core.AspNetCore
 
-[![NuGet Sagara.Core.AspNetCore](https://buildstats.info/nuget/Sagara.Core.AspNetCore)](https://www.nuget.org/packages/Sagara.Core.AspNetCore)
+[![NuGet](https://img.shields.io/nuget/v/Sagara.Core.AspNetCore?label=NuGet)](https://www.nuget.org/packages/Sagara.Core.AspNetCore/)
 
 [Sagara.Core.AspNetCore docs](src/Sagara.Core.AspNetCore/docs/index.md)
 
 
 ## Sagara.Core.Caching
 
-[![NuGet Sagara.Core.Caching](https://buildstats.info/nuget/Sagara.Core.Caching)](https://www.nuget.org/packages/Sagara.Core.Caching)
+[![NuGet](https://img.shields.io/nuget/v/Sagara.Core.Caching?label=NuGet)](https://www.nuget.org/packages/Sagara.Core.Caching/)
 
 [Sagara.Core.Caching docs](src/Sagara.Core.Caching/docs/index.md)
 
 
 ## Sagara.Core.Data
 
-[![NuGet Sagara.Core.Data](https://buildstats.info/nuget/Sagara.Core.Data)](https://www.nuget.org/packages/Sagara.Core.Data)
+[![NuGet](https://img.shields.io/nuget/v/Sagara.Core.Data?label=NuGet)](https://www.nuget.org/packages/Sagara.Core.Data/)
 
 [Sagara.Core.Data docs](src/Sagara.Core.Data/docs/index.md)
 
 
 ## Sagara.Core.Logging.Serilog
 
-[![NuGet Sagara.Core.Logging.Serilog](https://buildstats.info/nuget/Sagara.Core.Logging.Serilog)](https://www.nuget.org/packages/Sagara.Core.Logging.Serilog)
+[![NuGet](https://img.shields.io/nuget/v/Sagara.Core.Logging.Serilog?label=NuGet)](https://www.nuget.org/packages/Sagara.Core.Logging.Serilog/)
 
 [Sagara.Core.Logging.Serilog docs](src/Sagara.Core.Logging.Serilog/docs/index.md)
