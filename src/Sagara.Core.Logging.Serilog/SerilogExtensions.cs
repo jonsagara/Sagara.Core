@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace Sagara.Core.Logging.Serilog;
@@ -23,13 +22,13 @@ public static class SerilogExtensions
     /// registered through the Microsoft.Extensions.Logging API. Normally, equivalent Serilog sinks are used in place of providers. 
     /// Specify true to write events to all providers.</param>
     /// <returns>The host application builder.</returns>
-    public static HostApplicationBuilder UseSerilog(this HostApplicationBuilder builder, Action<IConfiguration, IServiceProvider, LoggerConfiguration> configureLogger, bool preserveStaticLogger = false, bool writeToProviders = false)
+    public static IHostApplicationBuilder UseSerilog(this IHostApplicationBuilder builder, Action<IHostApplicationBuilder, IServiceProvider, LoggerConfiguration> configureLogger, bool preserveStaticLogger = false, bool writeToProviders = false)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(configureLogger);
 
         builder.Services.AddSerilog(
-            (serviceProvider, loggerConfiguration) => configureLogger(builder.Configuration, serviceProvider, loggerConfiguration),
+            (serviceProvider, loggerConfiguration) => configureLogger(builder, serviceProvider, loggerConfiguration),
             preserveStaticLogger: preserveStaticLogger,
             writeToProviders: writeToProviders
             );
