@@ -10,37 +10,37 @@ public static class SerilogExtensions
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; SerilogExtensions
 ### Methods
 
-<a name='Sagara.Core.Logging.Serilog.SerilogExtensions.UseSerilog(thisMicrosoft.Extensions.Hosting.HostApplicationBuilder,System.Action_Microsoft.Extensions.Configuration.IConfiguration,System.IServiceProvider,Serilog.LoggerConfiguration_,bool,bool)'></a>
+<a name='Sagara.Core.Logging.Serilog.SerilogExtensions.UseSerilog(thisMicrosoft.Extensions.Hosting.IHostApplicationBuilder,System.Action_Microsoft.Extensions.Hosting.IHostApplicationBuilder,System.IServiceProvider,Serilog.LoggerConfiguration_,bool,bool)'></a>
 
-## SerilogExtensions.UseSerilog(this HostApplicationBuilder, Action<IConfiguration,IServiceProvider,LoggerConfiguration>, bool, bool) Method
+## SerilogExtensions.UseSerilog(this IHostApplicationBuilder, Action<IHostApplicationBuilder,IServiceProvider,LoggerConfiguration>, bool, bool) Method
 
 Sets Serilog as the logging provider.
 
 ```csharp
-public static Microsoft.Extensions.Hosting.HostApplicationBuilder UseSerilog(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder, System.Action<Microsoft.Extensions.Configuration.IConfiguration,System.IServiceProvider,Serilog.LoggerConfiguration> configureLogger, bool preserveStaticLogger=false, bool writeToProviders=false);
+public static Microsoft.Extensions.Hosting.IHostApplicationBuilder UseSerilog(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, System.Action<Microsoft.Extensions.Hosting.IHostApplicationBuilder,System.IServiceProvider,Serilog.LoggerConfiguration> configureLogger, bool preserveStaticLogger=false, bool writeToProviders=false);
 ```
 #### Parameters
 
-<a name='Sagara.Core.Logging.Serilog.SerilogExtensions.UseSerilog(thisMicrosoft.Extensions.Hosting.HostApplicationBuilder,System.Action_Microsoft.Extensions.Configuration.IConfiguration,System.IServiceProvider,Serilog.LoggerConfiguration_,bool,bool).builder'></a>
+<a name='Sagara.Core.Logging.Serilog.SerilogExtensions.UseSerilog(thisMicrosoft.Extensions.Hosting.IHostApplicationBuilder,System.Action_Microsoft.Extensions.Hosting.IHostApplicationBuilder,System.IServiceProvider,Serilog.LoggerConfiguration_,bool,bool).builder'></a>
 
-`builder` [Microsoft.Extensions.Hosting.HostApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Hosting.HostApplicationBuilder 'Microsoft.Extensions.Hosting.HostApplicationBuilder')
+`builder` [Microsoft.Extensions.Hosting.IHostApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Hosting.IHostApplicationBuilder 'Microsoft.Extensions.Hosting.IHostApplicationBuilder')
 
 The [Microsoft.Extensions.Hosting.HostApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Hosting.HostApplicationBuilder 'Microsoft.Extensions.Hosting.HostApplicationBuilder') to configure.
 
-<a name='Sagara.Core.Logging.Serilog.SerilogExtensions.UseSerilog(thisMicrosoft.Extensions.Hosting.HostApplicationBuilder,System.Action_Microsoft.Extensions.Configuration.IConfiguration,System.IServiceProvider,Serilog.LoggerConfiguration_,bool,bool).configureLogger'></a>
+<a name='Sagara.Core.Logging.Serilog.SerilogExtensions.UseSerilog(thisMicrosoft.Extensions.Hosting.IHostApplicationBuilder,System.Action_Microsoft.Extensions.Hosting.IHostApplicationBuilder,System.IServiceProvider,Serilog.LoggerConfiguration_,bool,bool).configureLogger'></a>
 
-`configureLogger` [System.Action&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Action-3 'System.Action`3')[Microsoft.Extensions.Configuration.IConfiguration](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Configuration.IConfiguration 'Microsoft.Extensions.Configuration.IConfiguration')[,](https://docs.microsoft.com/en-us/dotnet/api/System.Action-3 'System.Action`3')[System.IServiceProvider](https://docs.microsoft.com/en-us/dotnet/api/System.IServiceProvider 'System.IServiceProvider')[,](https://docs.microsoft.com/en-us/dotnet/api/System.Action-3 'System.Action`3')[Serilog.LoggerConfiguration](https://docs.microsoft.com/en-us/dotnet/api/Serilog.LoggerConfiguration 'Serilog.LoggerConfiguration')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Action-3 'System.Action`3')
+`configureLogger` [System.Action&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Action-3 'System.Action`3')[Microsoft.Extensions.Hosting.IHostApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Hosting.IHostApplicationBuilder 'Microsoft.Extensions.Hosting.IHostApplicationBuilder')[,](https://docs.microsoft.com/en-us/dotnet/api/System.Action-3 'System.Action`3')[System.IServiceProvider](https://docs.microsoft.com/en-us/dotnet/api/System.IServiceProvider 'System.IServiceProvider')[,](https://docs.microsoft.com/en-us/dotnet/api/System.Action-3 'System.Action`3')[Serilog.LoggerConfiguration](https://docs.microsoft.com/en-us/dotnet/api/Serilog.LoggerConfiguration 'Serilog.LoggerConfiguration')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Action-3 'System.Action`3')
 
 The delegate for configuring the Serilog.LoggerConfiguration that will be used   
             to construct a Serilog.Core.Logger.
 
-<a name='Sagara.Core.Logging.Serilog.SerilogExtensions.UseSerilog(thisMicrosoft.Extensions.Hosting.HostApplicationBuilder,System.Action_Microsoft.Extensions.Configuration.IConfiguration,System.IServiceProvider,Serilog.LoggerConfiguration_,bool,bool).preserveStaticLogger'></a>
+<a name='Sagara.Core.Logging.Serilog.SerilogExtensions.UseSerilog(thisMicrosoft.Extensions.Hosting.IHostApplicationBuilder,System.Action_Microsoft.Extensions.Hosting.IHostApplicationBuilder,System.IServiceProvider,Serilog.LoggerConfiguration_,bool,bool).preserveStaticLogger'></a>
 
 `preserveStaticLogger` [System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')
 
 Indicates whether to preserve the value of Serilog.Log.Logger.
 
-<a name='Sagara.Core.Logging.Serilog.SerilogExtensions.UseSerilog(thisMicrosoft.Extensions.Hosting.HostApplicationBuilder,System.Action_Microsoft.Extensions.Configuration.IConfiguration,System.IServiceProvider,Serilog.LoggerConfiguration_,bool,bool).writeToProviders'></a>
+<a name='Sagara.Core.Logging.Serilog.SerilogExtensions.UseSerilog(thisMicrosoft.Extensions.Hosting.IHostApplicationBuilder,System.Action_Microsoft.Extensions.Hosting.IHostApplicationBuilder,System.IServiceProvider,Serilog.LoggerConfiguration_,bool,bool).writeToProviders'></a>
 
 `writeToProviders` [System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')
 
@@ -49,7 +49,7 @@ By default, Serilog does not write events to Microsoft.Extensions.Logging.ILogge
             Specify true to write events to all providers.
 
 #### Returns
-[Microsoft.Extensions.Hosting.HostApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Hosting.HostApplicationBuilder 'Microsoft.Extensions.Hosting.HostApplicationBuilder')  
+[Microsoft.Extensions.Hosting.IHostApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Hosting.IHostApplicationBuilder 'Microsoft.Extensions.Hosting.IHostApplicationBuilder')  
 The host application builder.
 
 ### Remarks
