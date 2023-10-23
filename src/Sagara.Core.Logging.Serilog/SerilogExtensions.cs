@@ -14,7 +14,7 @@ public static class SerilogExtensions
     /// does not currently support the <c>IHostBuilder</c> interface.</para>
     /// <para>See: https://github.com/dotnet/runtime/discussions/81090#discussioncomment-4784551</para>
     /// </remarks>
-    /// <param name="builder">The <see cref="HostApplicationBuilder"/> to configure.</param>
+    /// <param name="builder">The <see cref="IHostApplicationBuilder"/> to configure.</param>
     /// <param name="configureLogger">The delegate for configuring the Serilog.LoggerConfiguration that will be used 
     /// to construct a Serilog.Core.Logger.</param>
     /// <param name="preserveStaticLogger">Indicates whether to preserve the value of Serilog.Log.Logger.</param>
