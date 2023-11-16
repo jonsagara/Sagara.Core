@@ -6,7 +6,7 @@
 Methods to help with [Entity](Sagara.Core.Data.Models.Entity.md 'Sagara.Core.Data.Models.Entity') objects.
 
 ```csharp
-internal static class EntityHelper
+public static class EntityHelper
 ```
 
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; EntityHelper

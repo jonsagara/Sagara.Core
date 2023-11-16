@@ -3,7 +3,7 @@
 /// <summary>
 /// Methods to help with <see cref="Entity"/> objects.
 /// </summary>
-internal static class EntityHelper
+public static class EntityHelper
 {
     /// <summary>
     /// Common method to initialize the CreateUtc and UpdateUtc properties on classes that
@@ -12,6 +12,8 @@ internal static class EntityHelper
     /// <param name="entity">The instance to update.</param>
     public static void InitializeDates(IEntity entity)
     {
+        Check.NotNull(entity);
+
         var utcNow = DateTime.UtcNow;
 
         entity.CreateUtc = utcNow;
