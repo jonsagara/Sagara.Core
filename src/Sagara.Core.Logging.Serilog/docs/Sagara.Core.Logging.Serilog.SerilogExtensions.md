@@ -25,7 +25,7 @@ public static Microsoft.Extensions.Hosting.IHostApplicationBuilder UseSerilog(th
 
 `builder` [Microsoft.Extensions.Hosting.IHostApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Hosting.IHostApplicationBuilder 'Microsoft.Extensions.Hosting.IHostApplicationBuilder')
 
-The [Microsoft.Extensions.Hosting.HostApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Hosting.HostApplicationBuilder 'Microsoft.Extensions.Hosting.HostApplicationBuilder') to configure.
+The [Microsoft.Extensions.Hosting.IHostApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Hosting.IHostApplicationBuilder 'Microsoft.Extensions.Hosting.IHostApplicationBuilder') to configure.
 
 <a name='Sagara.Core.Logging.Serilog.SerilogExtensions.UseSerilog(thisMicrosoft.Extensions.Hosting.IHostApplicationBuilder,System.Action_Microsoft.Extensions.Hosting.IHostApplicationBuilder,System.IServiceProvider,Serilog.LoggerConfiguration_,bool,bool).configureLogger'></a>
 
