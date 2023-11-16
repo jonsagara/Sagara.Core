@@ -14,13 +14,12 @@
 		<PackageTags>Validation SequentialGuid Caching Enums</PackageTags>
 		<PackageReleaseNotes></PackageReleaseNotes>
 
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-
 		<!-- SourceLink -->
-		<!--<IncludeSymbols>true</IncludeSymbols>
+		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<NeutralLanguage>en-US</NeutralLanguage>-->
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<NeutralLanguage>en-US</NeutralLanguage>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -31,6 +30,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="NodaTime" Version="3.1.9" />
 	</ItemGroup>
 
