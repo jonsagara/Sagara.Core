@@ -35,6 +35,7 @@
     and then copy this new value back to [CurrentGuid](Sagara.Core.SequentialGuid.md#Sagara.Core.SequentialGuid.CurrentGuid 'Sagara.Core.SequentialGuid.CurrentGuid').
   - **[operator ++(SequentialGuid)](Sagara.Core.SequentialGuid.md#Sagara.Core.SequentialGuid.op_Increment(Sagara.Core.SequentialGuid) 'Sagara.Core.SequentialGuid.op_Increment(Sagara.Core.SequentialGuid)')** `Operator` Increment one or more bytes of [CurrentGuid](Sagara.Core.SequentialGuid.md#Sagara.Core.SequentialGuid.CurrentGuid 'Sagara.Core.SequentialGuid.CurrentGuid') to get the next sequential Guid,  
     and then copy this new value back to [CurrentGuid](Sagara.Core.SequentialGuid.md#Sagara.Core.SequentialGuid.CurrentGuid 'Sagara.Core.SequentialGuid.CurrentGuid').
+- **[StringSplits](Sagara.Core.StringSplits.md 'Sagara.Core.StringSplits')** `Class` Static array references to that we don't have to allocate an array every time we call string.Split.
 
 <a name='Sagara.Core.Enums'></a>
 
@@ -78,10 +79,10 @@
 <a name='Sagara.Core.Json.SystemTextJson'></a>
 
 ## Sagara.Core.Json.SystemTextJson Namespace
-- **[STJsonHelper](Sagara.Core.Json.SystemTextJson.STJsonHelper.md 'Sagara.Core.Json.SystemTextJson.STJsonHelper')** `Class` Helper methods for serializing JSON with System.Text.Json.
-  - **[Deserialize&lt;T&gt;(string, bool)](Sagara.Core.Json.SystemTextJson.STJsonHelper.md#Sagara.Core.Json.SystemTextJson.STJsonHelper.Deserialize_T_(string,bool) 'Sagara.Core.Json.SystemTextJson.STJsonHelper.Deserialize<T>(string, bool)')** `Method` Parse the JSON string into into an instance of the type specified by a generic type parameter. Default  
+- **[SystemTextJsonHelper](Sagara.Core.Json.SystemTextJson.SystemTextJsonHelper.md 'Sagara.Core.Json.SystemTextJson.SystemTextJsonHelper')** `Class` Helper methods for serializing JSON with System.Text.Json.
+  - **[Deserialize&lt;T&gt;(string, bool)](Sagara.Core.Json.SystemTextJson.SystemTextJsonHelper.md#Sagara.Core.Json.SystemTextJson.SystemTextJsonHelper.Deserialize_T_(string,bool) 'Sagara.Core.Json.SystemTextJson.SystemTextJsonHelper.Deserialize<T>(string, bool)')** `Method` Parse the JSON string into into an instance of the type specified by a generic type parameter. Default  
     is to use case-insensitive property names.
-  - **[Serialize&lt;TValue&gt;(TValue, bool, bool)](Sagara.Core.Json.SystemTextJson.STJsonHelper.md#Sagara.Core.Json.SystemTextJson.STJsonHelper.Serialize_TValue_(TValue,bool,bool) 'Sagara.Core.Json.SystemTextJson.STJsonHelper.Serialize<TValue>(TValue, bool, bool)')** `Method` Convert the value into a JSON string. Default is camelCase property names and minified output.
+  - **[Serialize&lt;TValue&gt;(TValue, bool, bool)](Sagara.Core.Json.SystemTextJson.SystemTextJsonHelper.md#Sagara.Core.Json.SystemTextJson.SystemTextJsonHelper.Serialize_TValue_(TValue,bool,bool) 'Sagara.Core.Json.SystemTextJson.SystemTextJsonHelper.Serialize<TValue>(TValue, bool, bool)')** `Method` Convert the value into a JSON string. Default is camelCase property names and minified output.
 
 <a name='Sagara.Core.Time'></a>
 
