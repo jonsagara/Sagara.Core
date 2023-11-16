@@ -5,7 +5,7 @@ namespace Sagara.Core.Json.SystemTextJson;
 /// <summary>
 /// Helper methods for serializing JSON with System.Text.Json.
 /// </summary>
-public static class STJsonHelper
+public static class SystemTextJsonHelper
 {
     private static JsonSerializerOptions _serializeCamelCasePrettyPrint = new()
     {

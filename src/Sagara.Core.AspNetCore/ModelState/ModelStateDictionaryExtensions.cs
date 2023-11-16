@@ -86,7 +86,7 @@ public static class ModelStateDictionaryExtensions
     {
         // Since the vast majority of forms on this site use Pascal casing to match variable names, serialize
         //   model state in Pascal case so that we can work with the client side variable names.
-        var content = STJsonHelper.Serialize(modelState.ToSlimModelStateDictionary(), camelCase: false);
+        var content = SystemTextJsonHelper.Serialize(modelState.ToSlimModelStateDictionary(), camelCase: false);
 
         return new ContentResult
         {

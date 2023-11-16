@@ -101,7 +101,7 @@ public class RedisCache
 
             if (!string.IsNullOrWhiteSpace(value))
             {
-                return STJsonHelper.Deserialize<T>(value!);
+                return SystemTextJsonHelper.Deserialize<T>(value!);
             }
         }
         catch (Exception ex)
@@ -149,7 +149,7 @@ return val
             var value = (string?)redisResult;
             if (!string.IsNullOrWhiteSpace(value))
             {
-                return STJsonHelper.Deserialize<T>(value);
+                return SystemTextJsonHelper.Deserialize<T>(value);
             }
         }
         catch (Exception ex)
@@ -183,7 +183,7 @@ return val
             var value = (string?)redisResult;
             if (!string.IsNullOrWhiteSpace(value))
             {
-                return STJsonHelper.Deserialize<T>(value);
+                return SystemTextJsonHelper.Deserialize<T>(value);
             }
         }
         catch (Exception ex)
@@ -213,7 +213,7 @@ return val
             var db = GetDatabase();
 
             return await db
-                .StringSetAsync(key, STJsonHelper.Serialize(value), expiry)
+                .StringSetAsync(key, SystemTextJsonHelper.Serialize(value), expiry)
                 .ConfigureAwait(false);
         }
         catch (Exception ex)
@@ -242,7 +242,7 @@ return val
         {
             var db = GetDatabase();
 
-            return db.StringSet(key, STJsonHelper.Serialize(value), expiry);
+            return db.StringSet(key, SystemTextJsonHelper.Serialize(value), expiry);
         }
         catch (Exception ex)
         {
