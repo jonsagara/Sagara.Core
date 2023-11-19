@@ -28,7 +28,7 @@ public abstract class Entity : IEntity
     [Timestamp]
     // Required by EF Core for SQL Server Timestamp functionality.
 #pragma warning disable CA1819 // Properties should not return arrays
-    public byte[] Timestamp { get; set; } = null!;
+    public byte[]? Timestamp { get; set; }
 #pragma warning restore CA1819 // Properties should not return arrays
 
     /// <summary>

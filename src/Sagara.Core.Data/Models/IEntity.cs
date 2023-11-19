@@ -34,7 +34,7 @@ public interface IEntity
     /// </summary>
     // Justification: Required by EF Core for the SQL Server timestamp to function.
 #pragma warning disable CA1819 // Properties should not return arrays
-    byte[] Timestamp { get; set; }
+    byte[]? Timestamp { get; set; }
 #pragma warning restore CA1819 // Properties should not return arrays
 }
 
