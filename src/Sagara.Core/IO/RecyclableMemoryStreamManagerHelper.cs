@@ -29,12 +29,15 @@ public static class RecyclableMemoryStreamManagerHelper
         // 512 MB
         const int maximumLargePoolFreeBytes = maximumBufferSizeBytes * 4;
 
-        return new RecyclableMemoryStreamManager(
-            blockSize: blockSizeBytes,
-            largeBufferMultiple: largeBufferMultipleBytes,
-            maximumBufferSize: maximumBufferSizeBytes,
-            maximumSmallPoolFreeBytes: maximumSmallPoolFreeBytes,
-            maximumLargePoolFreeBytes: maximumLargePoolFreeBytes
-            );
+        RecyclableMemoryStreamManager.Options options = new()
+        {
+            BlockSize = blockSizeBytes,
+            LargeBufferMultiple = largeBufferMultipleBytes,
+            MaximumBufferSize = maximumBufferSizeBytes,
+            MaximumSmallPoolFreeBytes = maximumSmallPoolFreeBytes,
+            MaximumLargePoolFreeBytes = maximumLargePoolFreeBytes,
+        };
+
+        return new RecyclableMemoryStreamManager(options);
     }
 }
