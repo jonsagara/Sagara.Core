@@ -37,13 +37,6 @@
 		<ProjectReference Include="..\Sagara.Core\Sagara.Core.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <None Update="README.md">
-	    <PackagePath>\</PackagePath>
-	    <Pack>true</Pack>
-	  </None>
-	</ItemGroup>
-
 	<!-- When running in GitHub Actions, enable deterministic builds for the NuGet package. -->
 	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
