@@ -56,22 +56,22 @@ public class RedisCache
         // Log connection and error events.
         multiplexer.ConnectionFailed += (sender, e) =>
         {
-            RedisCacheLogger.OnConnectionFailed(_logger, e.Exception, logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
+            _logger.OnConnectionFailed(e.Exception, logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
         };
 
         multiplexer.ConnectionRestored += (sender, e) =>
         {
-            RedisCacheLogger.OnConnectionRestored(_logger, e.Exception, logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
+            _logger.OnConnectionRestored(e.Exception, logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
         };
 
         multiplexer.ErrorMessage += (sender, e) =>
         {
-            RedisCacheLogger.OnErrorMessage(_logger, logPrefix, e.EndPoint, e.Message);
+            _logger.OnErrorMessage(logPrefix, e.EndPoint, e.Message);
         };
 
         multiplexer.ServerMaintenanceEvent += (sender, e) =>
         {
-            RedisCacheLogger.OnServerMaintenanceEvent(_logger, logPrefix, e.ReceivedTimeUtc, e.StartTimeUtc, e.RawMessage);
+            _logger.OnServerMaintenanceEvent(logPrefix, e.ReceivedTimeUtc, e.StartTimeUtc, e.RawMessage);
         };
 
         return multiplexer;
@@ -107,7 +107,7 @@ public class RedisCache
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            RedisCacheLogger.UnhandledException(_logger, ex, command: "GET", key: key);
+            _logger.UnhandledException(ex, command: "GET", key: key);
         }
 
         return default;
@@ -155,7 +155,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            RedisCacheLogger.UnhandledException(_logger, ex, command: "GET/EXPIRE", key: key);
+            _logger.UnhandledException(ex, command: "GET/EXPIRE", key: key);
         }
 
         return default;
@@ -189,7 +189,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            RedisCacheLogger.UnhandledException(_logger, ex, command: "GET/EXPIRE", key: key);
+            _logger.UnhandledException(ex, command: "GET/EXPIRE", key: key);
         }
 
         return default;
@@ -219,7 +219,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            RedisCacheLogger.UnhandledException(_logger, ex, command: "SET", key: key);
+            _logger.UnhandledException(ex, command: "SET", key: key);
         }
 
         return false;
@@ -247,7 +247,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            RedisCacheLogger.UnhandledException(_logger, ex, command: "SET", key: key);
+            _logger.UnhandledException(ex, command: "SET", key: key);
         }
 
         return false;
@@ -274,7 +274,7 @@ return val
     //    catch (Exception ex)
     //    {
     //        // Don't let cache server unavailability bring down the application.
-    //        RedisCacheLogger.UnhandledException(_logger, ex, command: "INCR", key: key);
+    //        _logger.UnhandledException(ex, command: "INCR", key: key);
     //    }
 
     //    return 0L;
@@ -300,7 +300,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            RedisCacheLogger.UnhandledException(_logger, ex, command: "DEL", key: key);
+            _logger.UnhandledException(ex, command: "DEL", key: key);
         }
 
         return false;
@@ -331,7 +331,7 @@ return val
             catch (Exception ex)
             {
                 // Don't let cache server unavailability bring down the application.
-                RedisCacheLogger.UnhandledException(_logger, ex, command: "DEL", key: string.Join(" ", keys));
+                _logger.UnhandledException(ex, command: "DEL", key: string.Join(" ", keys));
             }
         }
 
@@ -380,7 +380,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            RedisCacheLogger.UnhandledException(_logger, ex, command: "INCR and EXPIRE On Create", key: key);
+            _logger.UnhandledException(ex, command: "INCR and EXPIRE On Create", key: key);
         }
 
         return 0L;
@@ -414,7 +414,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            RedisCacheLogger.UnhandledSubscribeException(_logger, ex, channel);
+            _logger.UnhandledSubscribeException(ex, channel);
         }
     }
 
@@ -432,7 +432,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            RedisCacheLogger.UnhandledPublishException(_logger, ex, channel, message);
+            _logger.UnhandledPublishException(ex, channel, message);
         }
 
         return 0L;
