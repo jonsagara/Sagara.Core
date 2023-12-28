@@ -3,6 +3,13 @@
 ## Sagara.Core.AspNetCore Assembly
 ### Namespaces
 
+<a name='Sagara.Core.AspNetCore.Extensions'></a>
+
+## Sagara.Core.AspNetCore.Extensions Namespace
+- **[PageModelExtensions](Sagara.Core.AspNetCore.Extensions.PageModelExtensions.md 'Sagara.Core.AspNetCore.Extensions.PageModelExtensions')** `Class`
+  - **[RedirectToPageJson&lt;TPageModel&gt;(this TPageModel, string, string, object)](Sagara.Core.AspNetCore.Extensions.PageModelExtensions.md#Sagara.Core.AspNetCore.Extensions.PageModelExtensions.RedirectToPageJson_TPageModel_(thisTPageModel,string,string,object) 'Sagara.Core.AspNetCore.Extensions.PageModelExtensions.RedirectToPageJson<TPageModel>(this TPageModel, string, string, object)')** `Method` Send a JsonResult whose object has a redirect property containing the URL that the client JavaScript should  
+    redirect the browser to.
+
 <a name='Sagara.Core.AspNetCore.Filters'></a>
 
 ## Sagara.Core.AspNetCore.Filters Namespace
