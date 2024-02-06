@@ -12,5 +12,6 @@ public static class StringSplits
         ForwardSlash = { '/' },
         Newline = { '\n' },
         NewlineCarriageReturn = { '\n', '\r' },
-        Semicolon = { ';' };
+        Semicolon = { ';' },
+        Tab = { '\t' };
 }
