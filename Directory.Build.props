@@ -5,11 +5,11 @@
 		<LangVersion>12.0</LangVersion>
 		
 		<!-- NuGet -->
-		<Version>2.0.11</Version>
+		<Version>2.0.12</Version>
 		<AssemblyVersion>2.0.0</AssemblyVersion>
 		<FileVersion>2.0.0</FileVersion>
 		<Authors>Jon Sagara</Authors>
-		<Copyright>Copyright 2022-2023</Copyright>
+		<Copyright>Copyright 2022-2024</Copyright>
 		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://github.com/jonsagara/Sagara.Core</PackageProjectUrl>
