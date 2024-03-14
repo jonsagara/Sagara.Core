@@ -2,7 +2,7 @@
 
 public static class IEnumerableExtensions
 {
-#if NET6_0 || NET7_0 || NET8_0
+#if NET8_0
     /// <summary>
     /// Returns an enumerable that incorporates the element's index into a tuple.
     /// </summary>
@@ -15,7 +15,26 @@ public static class IEnumerableExtensions
     {
         ArgumentNullException.ThrowIfNull(source);
 
-        return source.Select((item, index) => (index, item));
+        if (source is TSource[] { Length: 0 })
+        {
+            return [];
+        }
+
+        return IndexIterator(source);
+    }
+
+    private static IEnumerable<(int Index, TSource Item)> IndexIterator<TSource>(IEnumerable<TSource> source)
+    {
+        int index = -1;
+        foreach (TSource element in source)
+        {
+            checked
+            {
+                index++;
+            }
+
+            yield return (index, element);
+        }
     }
 #endif
 }
