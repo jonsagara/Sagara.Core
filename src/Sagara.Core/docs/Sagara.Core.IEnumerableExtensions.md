@@ -38,4 +38,4 @@ The source enumerable providing the elements.
 [System.Collections.Generic.IEnumerable&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable-1 'System.Collections.Generic.IEnumerable`1')[&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.ValueTuple 'System.ValueTuple')[System.Int32](https://docs.microsoft.com/en-us/dotnet/api/System.Int32 'System.Int32')[,](https://docs.microsoft.com/en-us/dotnet/api/System.ValueTuple 'System.ValueTuple')[TSource](Sagara.Core.IEnumerableExtensions.md#Sagara.Core.IEnumerableExtensions.Index_TSource_(thisSystem.Collections.Generic.IEnumerable_TSource_).TSource 'Sagara.Core.IEnumerableExtensions.Index<TSource>(this System.Collections.Generic.IEnumerable<TSource>).TSource')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.ValueTuple 'System.ValueTuple')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable-1 'System.Collections.Generic.IEnumerable`1')
 
 ### Remarks
-NOTE: This will be built into .NET 9 and above, so this method is for .NET 8 and below.
+NOTE: This will be built into .NET 9 and above, so this method is for .NET 8.
