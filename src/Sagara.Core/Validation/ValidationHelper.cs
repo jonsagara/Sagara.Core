@@ -18,7 +18,10 @@ public static class ValidationHelper
 
         if (string.IsNullOrWhiteSpace(property.Value))
         {
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
             errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.RequiredField, property.GetDisplayName())));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
         }
     }
 
@@ -33,7 +36,10 @@ public static class ValidationHelper
 
         if (property.Value is null)
         {
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
             errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.RequiredField, property.GetDisplayName())));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
         }
     }
 
@@ -48,7 +54,10 @@ public static class ValidationHelper
 
         if (property.Value is null)
         {
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
             errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.RequiredField, property.GetDisplayName())));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
         }
     }
 
@@ -61,7 +70,10 @@ public static class ValidationHelper
 
         if (property.Value?.Length > maxLength)
         {
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
             errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.StringMaxLength, property.GetDisplayName(), maxLength)));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
         }
     }
 
@@ -74,7 +86,10 @@ public static class ValidationHelper
 
         if (property.Value?.Length < minLength)
         {
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
             errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.StringMinLength, property.GetDisplayName(), minLength)));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
         }
     }
 

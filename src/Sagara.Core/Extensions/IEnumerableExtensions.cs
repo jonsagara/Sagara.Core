@@ -7,7 +7,7 @@ public static class IEnumerableExtensions
     /// Returns an enumerable that incorporates the element's index into a tuple.
     /// </summary>
     /// <remarks>
-    /// NOTE: This will be built into .NET 9 and above, so this method is for .NET 8 and below.
+    /// NOTE: This will be built into .NET 9 and above, so this method is for .NET 8.
     /// </remarks>
     /// <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
     /// <param name="source">The source enumerable providing the elements.</param>
