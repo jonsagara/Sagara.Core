@@ -6,6 +6,7 @@ namespace Sagara.Core.Logging.Serilog;
 /// <summary>
 /// Serilog enricher that converts the log event's timestamp to UTC.
 /// </summary>
+[Obsolete("Serilog 4.0.0 and higher has a built-in UtcTimestamp token. Use it. This class will be removed in a future version.")]
 public class UtcTimestampEnricher : ILogEventEnricher
 {
     /// <summary>
