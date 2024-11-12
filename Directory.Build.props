@@ -7,7 +7,7 @@
 		<LangVersion>13.0</LangVersion>
 		
 		<!-- NuGet -->
-		<Version>3.1.0-alpha1</Version>
+		<Version>3.1.0-alpha2</Version>
 		<AssemblyVersion>3.1.0</AssemblyVersion>
 		<FileVersion>3.1.0</FileVersion>
 		<Authors>Jon Sagara</Authors>
