@@ -18,7 +18,7 @@ public static class Check
     /// <summary>
     /// Throws an <see cref="ArgumentNullException" /> if the value is null.
     /// </summary>
-    public static void NotNull<T>([NotNull] T value, [CallerArgumentExpression("value")] string? valueArgExpression = null,
+    public static void NotNull<T>([NotNull] T value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
         if (value is null)
@@ -33,7 +33,7 @@ public static class Check
     /// Throws an <see cref="ArgumentNullException"/> if the string is null, or an <see cref="ArgumentException"/> if the
     /// string is null or white space.
     /// </summary>
-    public static void NotEmpty([NotNull] string? value, [CallerArgumentExpression("value")] string? valueArgExpression = null,
+    public static void NotEmpty([NotNull] string? value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
         Exception? ex = null;
@@ -65,7 +65,7 @@ public static class Check
     /// <summary>
     /// Throws an <see cref="ArgumentException"/> if the Guid equals Guid.Empty.
     /// </summary>
-    public static void NotEmpty(Guid value, [CallerArgumentExpression("value")] string? valueArgExpression = null,
+    public static void NotEmpty(Guid value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
         if (value == Guid.Empty)
@@ -81,7 +81,7 @@ public static class Check
     /// Throws an <see cref="ArgumentNullException"/> if the collection is null, or an <see cref="ArgumentException"/> if
     /// the collection is empty.
     /// </summary>
-    public static void NotEmpty<T>([NotNull] IReadOnlyCollection<T> value, [CallerArgumentExpression("value")] string? valueArgExpression = null,
+    public static void NotEmpty<T>([NotNull] IReadOnlyCollection<T> value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
         NotNull(value, valueArgExpression, memberName, sourceLineNumber, sourceFilePath);
@@ -101,7 +101,7 @@ public static class Check
     /// Throws an <see cref="ArgumentNullException"/> if the collection is null, or an <see cref="ArgumentException"/> if
     /// the collection has one or more null values.
     /// </summary>
-    public static void HasNoNulls<T>([NotNull] IReadOnlyList<T> value, [CallerArgumentExpression("value")] string? valueArgExpression = null,
+    public static void HasNoNulls<T>([NotNull] IReadOnlyList<T> value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
         NotNull(value, valueArgExpression, memberName, sourceLineNumber, sourceFilePath);
@@ -121,7 +121,7 @@ public static class Check
     /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is outside the range of 
     /// [<paramref name="rangeLo"/>, <paramref name="rangeHi"/>].
     /// </summary>
-    public static void NotOutOfRange<T>(T value, T rangeLo, T rangeHi, [CallerArgumentExpression("value")] string? valueArgExpression = null,
+    public static void NotOutOfRange<T>(T value, T rangeLo, T rangeHi, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
         where T : IComparable, IComparable<T>
     {
@@ -140,7 +140,7 @@ public static class Check
     /// Throws an <see cref="ArgumentNullException"/> if the collection is null, or an <see cref="ArgumentException"/> if
     /// the collection has one or more null or white space strings.
     /// </summary>
-    public static void HasNoEmpties([NotNull] IReadOnlyCollection<string> value, [CallerArgumentExpression("value")] string? valueArgExpression = null,
+    public static void HasNoEmpties([NotNull] IReadOnlyCollection<string> value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
         NotNull(value, valueArgExpression, memberName, sourceLineNumber, sourceFilePath);
