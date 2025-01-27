@@ -39,6 +39,21 @@
     and then copy this new value back to [CurrentGuid](Sagara.Core.SequentialGuid.md#Sagara.Core.SequentialGuid.CurrentGuid 'Sagara.Core.SequentialGuid.CurrentGuid').
 - **[StringSplits](Sagara.Core.StringSplits.md 'Sagara.Core.StringSplits')** `Class` Static array references to that we don't have to allocate an array every time we call string.Split.
 
+<a name='Sagara.Core.Collections'></a>
+
+## Sagara.Core.Collections Namespace
+- **[EmptyDictionary&lt;TKey,TValue&gt;](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>')** `Class` Provides a cached, read-only instance for the specified key and value types.
+  - **[EmptyDictionary()](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md#Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.EmptyDictionary() 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>.EmptyDictionary()')** `Constructor` Don't let callers create their own instances.
+  - **[Instance](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md#Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.Instance 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>.Instance')** `Field` The one and only instance of [EmptyDictionary&lt;TKey,TValue&gt;](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>') for this key/value type pair.
+  - **[Count](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md#Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.Count 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>.Count')** `Property` Gets the number of elements in the collection.
+  - **[Keys](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md#Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.Keys 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>.Keys')** `Property` Gets an enumerable collection that contains the keys in the read-only dictionary.
+  - **[this[TKey]](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md#Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.this[TKey] 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>.this[TKey]')** `Property` Gets the element that has the specified key in the read-only dictionary.
+  - **[Values](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md#Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.Values 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>.Values')** `Property` Gets an enumerable collection that contains the values in the read-only dictionary.
+  - **[ContainsKey(TKey)](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md#Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.ContainsKey(TKey) 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>.ContainsKey(TKey)')** `Method` Determines whether the read-only dictionary contains an element that has the specified key.
+  - **[GetEnumerator()](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md#Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.GetEnumerator() 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>.GetEnumerator()')** `Method` Returns an enumerator that iterates through the collection.
+  - **[TryGetValue(TKey, TValue)](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md#Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.TryGetValue(TKey,TValue) 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>.TryGetValue(TKey, TValue)')** `Method` Gets the value that is associated with the specified key.
+  - **[System.Collections.IEnumerable.GetEnumerator()](Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.md#Sagara.Core.Collections.EmptyDictionary_TKey,TValue_.System.Collections.IEnumerable.GetEnumerator() 'Sagara.Core.Collections.EmptyDictionary<TKey,TValue>.System.Collections.IEnumerable.GetEnumerator()')** `Explicit Interface Implementation` Returns an enumerator that iterates through a collection.
+
 <a name='Sagara.Core.Enums'></a>
 
 ## Sagara.Core.Enums Namespace
