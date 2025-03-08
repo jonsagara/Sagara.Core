@@ -81,6 +81,13 @@
   explicitly by the presence of an [InvalidEnumValueAttribute](Sagara.Core.Enums.InvalidEnumValueAttribute.md 'Sagara.Core.Enums.InvalidEnumValueAttribute') on the enum value.
   - **[ThrowIfInvalid&lt;TEnum&gt;(TEnum)](Sagara.Core.Enums.InvalidEnumValueException.md#Sagara.Core.Enums.InvalidEnumValueException.ThrowIfInvalid_TEnum_(TEnum) 'Sagara.Core.Enums.InvalidEnumValueException.ThrowIfInvalid<TEnum>(TEnum)')** `Method` Throws an InvalidEnumValueException if the enum value is decorated with [InvalidEnumValueAttribute](Sagara.Core.Enums.InvalidEnumValueAttribute.md 'Sagara.Core.Enums.InvalidEnumValueAttribute').
 
+<a name='Sagara.Core.Extensions'></a>
+
+## Sagara.Core.Extensions Namespace
+- **[NumberExtensions](Sagara.Core.Extensions.NumberExtensions.md 'Sagara.Core.Extensions.NumberExtensions')** `Class`
+  - **[ToNullIfZero&lt;TNumber&gt;(this TNumber)](Sagara.Core.Extensions.NumberExtensions.md#Sagara.Core.Extensions.NumberExtensions.ToNullIfZero_TNumber_(thisTNumber) 'Sagara.Core.Extensions.NumberExtensions.ToNullIfZero<TNumber>(this TNumber)')** `Method` If value is `TNumber.Zero`, return `null`. Otherwise, return  
+    value unchanged.
+
 <a name='Sagara.Core.IO'></a>
 
 ## Sagara.Core.IO Namespace
