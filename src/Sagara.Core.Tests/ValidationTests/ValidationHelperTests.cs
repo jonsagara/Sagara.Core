@@ -71,7 +71,7 @@ public class ValidationHelperTests
 
         List<RequestError> errors = [];
 
-        ValidationHelper.CheckRequiredField(new ValidatableProperty<string?>(testClass.FirstName, nameof(testClass.FirstName), null), errors);
+        ValidationHelper.CheckRequiredField(valClass.FirstName, errors);
 
         Assert.Single(errors);
     }
