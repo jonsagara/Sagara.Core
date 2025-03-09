@@ -2,20 +2,11 @@
 using System.Reflection;
 using Sagara.Core.Enums;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Sagara.Core.Tests.EnumsTests;
 
 public class EnumTraitsTests
 {
-    private readonly ITestOutputHelper _output;
-
-    public EnumTraitsTests(ITestOutputHelper output)
-    {
-        _output = output;
-    }
-
-
     public enum EmptyEnum { }
 
     public enum NonEmptyEnum
