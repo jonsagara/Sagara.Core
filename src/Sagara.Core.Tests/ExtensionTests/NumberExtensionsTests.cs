@@ -72,11 +72,23 @@ public class NumberExtensionsTests
     [Fact]
     public void ToNullIfZero_Single_0ReturnsNull()
     {
+        Assert.Null(0f.ToNullIfZero());
+    }
+
+    [Fact]
+    public void ToNullIfZero_Single_0Point0ReturnsNull()
+    {
         Assert.Null(0.0f.ToNullIfZero());
     }
 
     [Fact]
     public void ToNullIfZero_Double_0ReturnsNull()
+    {
+        Assert.Null(0d.ToNullIfZero());
+    }
+
+    [Fact]
+    public void ToNullIfZero_Double_0Point0ReturnsNull()
     {
         Assert.Null(0.0.ToNullIfZero());
     }
@@ -85,6 +97,12 @@ public class NumberExtensionsTests
     public void ToNullIfZero_Decimal_0ReturnsNull()
     {
         Assert.Null(0m.ToNullIfZero());
+    }
+
+    [Fact]
+    public void ToNullIfZero_Decimal_0Poin0ReturnsNull()
+    {
+        Assert.Null(0.0m.ToNullIfZero());
     }
 
 
