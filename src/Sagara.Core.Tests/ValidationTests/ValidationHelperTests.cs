@@ -325,7 +325,7 @@ public class ValidationHelperTests
 
     [Theory]
     [InlineData((byte)0, (byte)1)]
-    [InlineData(1, 1)]
+    [InlineData((byte)1, (byte)1)]
     public void CheckGreaterThan_Byte_Failure(byte value, byte threshold)
     {
         var property = CreateValidatableProperty<byte>(value);
@@ -1160,7 +1160,7 @@ public class ValidationHelperTests
 
     [Theory]
     [InlineData((byte)1, (byte)0)]
-    [InlineData(1, 1)]
+    [InlineData((byte)1, (byte)1)]
     public void CheckLessThan_Byte_Failure(byte value, byte threshold)
     {
         var property = CreateValidatableProperty<byte>(value);
