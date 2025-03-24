@@ -61,6 +61,42 @@ namespace Sagara.Core.Validation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field {0} must be greater than {1}. Actual value was {2}..
+        /// </summary>
+        public static string GreaterThan {
+            get {
+                return ResourceManager.GetString("GreaterThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field {0} must be greater than or equal to {1}. Actual value was {2}..
+        /// </summary>
+        public static string GreaterThanOrEqual {
+            get {
+                return ResourceManager.GetString("GreaterThanOrEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field {0} must be less than {1}. Actual value was {2}..
+        /// </summary>
+        public static string LessThan {
+            get {
+                return ResourceManager.GetString("LessThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field {0} must be less than or equal to {1}. Actual value was {2}..
+        /// </summary>
+        public static string LessThanOrEqual {
+            get {
+                return ResourceManager.GetString("LessThanOrEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The {0} field is required..
         /// </summary>
         public static string RequiredField {

@@ -116,7 +116,10 @@ public static class ValidationHelper
 
         if (property.Value.Value <= threshold)
         {
-            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, "The field {0} must be greater than {1}. Actual value was {2}.", property.GetDisplayName(), threshold, property.Value)));
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.GreaterThan, property.GetDisplayName(), threshold, property.Value)));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
         }
     }
 
@@ -136,7 +139,10 @@ public static class ValidationHelper
 
         if (property.Value.Value < threshold)
         {
-            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, "The field {0} must be greater than or equal to {1}. Actual value was {2}.", property.GetDisplayName(), threshold, property.Value)));
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.GreaterThanOrEqual, property.GetDisplayName(), threshold, property.Value)));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
         }
     }
 
@@ -156,7 +162,10 @@ public static class ValidationHelper
 
         if (property.Value.Value >= threshold)
         {
-            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, "The field {0} must be less than {1}. Actual value was {2}.", property.GetDisplayName(), threshold, property.Value)));
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.LessThan, property.GetDisplayName(), threshold, property.Value)));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
         }
     }
 
@@ -176,7 +185,10 @@ public static class ValidationHelper
 
         if (property.Value.Value > threshold)
         {
-            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, "The field {0} must be less than or equal to {1}. Actual value was {2}.", property.GetDisplayName(), threshold, property.Value)));
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.LessThanOrEqual, property.GetDisplayName(), threshold, property.Value)));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
         }
     }
 }
