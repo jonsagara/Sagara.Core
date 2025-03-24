@@ -30,6 +30,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{AAA447A5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sagara.Core.Tests", "src\Sagara.Core.Tests\Sagara.Core.Tests.csproj", "{16EC1609-6C85-48DE-B11A-A851DE581516}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{3CBC84B8-AF38-4EF8-B2C7-D1C6ECD4739C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sagara.Core.Benchmarks", "src\Sagara.Core.Benchmarks\Sagara.Core.Benchmarks.csproj", "{89AD21A6-08BC-46D9-B7A0-123664E7A69E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +64,10 @@ Global
 		{16EC1609-6C85-48DE-B11A-A851DE581516}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16EC1609-6C85-48DE-B11A-A851DE581516}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16EC1609-6C85-48DE-B11A-A851DE581516}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89AD21A6-08BC-46D9-B7A0-123664E7A69E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89AD21A6-08BC-46D9-B7A0-123664E7A69E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89AD21A6-08BC-46D9-B7A0-123664E7A69E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89AD21A6-08BC-46D9-B7A0-123664E7A69E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +79,7 @@ Global
 		{B14FE614-00CE-497B-BD0E-5A20C3C68343} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{6CAA147B-A247-4491-99D7-742D4CF1BCBD} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{16EC1609-6C85-48DE-B11A-A851DE581516} = {AAA447A5-C463-49D4-BC7F-9426DCA385BB}
+		{89AD21A6-08BC-46D9-B7A0-123664E7A69E} = {3CBC84B8-AF38-4EF8-B2C7-D1C6ECD4739C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1C4BB929-6B9F-4B8D-95FA-F4D5058145DF}
