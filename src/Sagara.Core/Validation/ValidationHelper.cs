@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Numerics;
 using VHR = Sagara.Core.Validation.ValidationHelperResources;
 
 namespace Sagara.Core.Validation;
@@ -10,7 +11,7 @@ namespace Sagara.Core.Validation;
 public static class ValidationHelper
 {
     /// <summary>
-    /// Add an error message if value is null or white space.
+    /// Add an error message if property's value is null or white space.
     /// </summary>
     public static void CheckRequiredField(ValidatableProperty<string?> property, ICollection<RequestError> errors)
     {
@@ -26,7 +27,7 @@ public static class ValidationHelper
     }
 
     /// <summary>
-    /// <para>Add an error message if value is null.</para>
+    /// <para>Add an error message if property's value is null.</para>
     /// <para>Use this overload for reference types.</para>
     /// </summary>
     public static void CheckRequiredField<T>(ValidatableProperty<T> property, ICollection<RequestError> errors)
@@ -44,7 +45,7 @@ public static class ValidationHelper
     }
 
     /// <summary>
-    /// <para>Add an error message if value is null.</para>
+    /// <para>Add an error message if property's value is null.</para>
     /// <para>Use this overload for nullable value types.</para>
     /// </summary>
     public static void CheckRequiredField<T>(ValidatableProperty<T?> property, ICollection<RequestError> errors)
@@ -62,7 +63,7 @@ public static class ValidationHelper
     }
 
     /// <summary>
-    /// Add an error message if value's length exceeds maxLength.
+    /// Add an error message if property's value length exceeds maxLength.
     /// </summary>
     public static void CheckStringMaxLength(ValidatableProperty<string?> property, int maxLength, ICollection<RequestError> errors)
     {
@@ -78,7 +79,7 @@ public static class ValidationHelper
     }
 
     /// <summary>
-    /// Add an error message if value's length is less than minLength.
+    /// Add an error message if property's value length is less than minLength.
     /// </summary>
     public static void CheckStringMinLength(ValidatableProperty<string?> property, int minLength, ICollection<RequestError> errors)
     {
@@ -98,5 +99,97 @@ public static class ValidationHelper
     /// </summary>
     public static string GetDisplayName<T>(this ValidatableProperty<T> property)
         => property.DisplayName ?? property.PropertyName;
+
+    /// <summary>
+    /// Add an error message if property's value is less than or equal to <paramref name="threshold"/>.
+    /// </summary>
+    public static void CheckGreaterThan<TNumber>(ValidatableProperty<TNumber?> property, TNumber threshold, ICollection<RequestError> errors)
+        where TNumber : struct, INumber<TNumber>
+    {
+        Check.NotNull(errors);
+
+        if (property.Value is null)
+        {
+            // This is note a required field validator.
+            return;
+        }
+
+        if (property.Value.Value <= threshold)
+        {
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.GreaterThan, property.GetDisplayName(), threshold, property.Value)));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
+        }
+    }
+
+    /// <summary>
+    /// Add an error message if property's value is less than <paramref name="threshold"/>.
+    /// </summary>
+    public static void CheckGreaterThanOrEqual<TNumber>(ValidatableProperty<TNumber?> property, TNumber threshold, ICollection<RequestError> errors)
+        where TNumber : struct, INumber<TNumber>
+    {
+        Check.NotNull(errors);
+
+        if (property.Value is null)
+        {
+            // This is note a required field validator.
+            return;
+        }
+
+        if (property.Value.Value < threshold)
+        {
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.GreaterThanOrEqual, property.GetDisplayName(), threshold, property.Value)));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
+        }
+    }
+
+    /// <summary>
+    /// Add an error message if property's value is greater than or equal to <paramref name="threshold"/>.
+    /// </summary>
+    public static void CheckLessThan<TNumber>(ValidatableProperty<TNumber?> property, TNumber threshold, ICollection<RequestError> errors)
+        where TNumber : struct, INumber<TNumber>
+    {
+        Check.NotNull(errors);
+
+        if (property.Value is null)
+        {
+            // This is note a required field validator.
+            return;
+        }
+
+        if (property.Value.Value >= threshold)
+        {
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.LessThan, property.GetDisplayName(), threshold, property.Value)));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
+        }
+    }
+
+    /// <summary>
+    /// Add an error message if property's value is greater than <paramref name="threshold"/>.
+    /// </summary>
+    public static void CheckLessThanOrEqual<TNumber>(ValidatableProperty<TNumber?> property, TNumber threshold, ICollection<RequestError> errors)
+        where TNumber : struct, INumber<TNumber>
+    {
+        Check.NotNull(errors);
+
+        if (property.Value is null)
+        {
+            // This is note a required field validator.
+            return;
+        }
+
+        if (property.Value.Value > threshold)
+        {
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            errors.Add(new RequestError(property.PropertyName, string.Format(CultureInfo.CurrentCulture, VHR.LessThanOrEqual, property.GetDisplayName(), threshold, property.Value)));
+#pragma warning restore CA1863 // Use 'CompositeFormat'
+        }
+    }
 }
 
