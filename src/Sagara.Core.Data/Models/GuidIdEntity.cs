@@ -24,6 +24,10 @@ public abstract class GuidIdEntity : Entity
     public GuidIdEntity()
         : base()
     {
+#if NET9_0_OR_GREATER
+        Id = Guid.CreateVersion7();
+#else
         Id = SequentialGuid.GenerateComb();
+#endif
     }
 }
