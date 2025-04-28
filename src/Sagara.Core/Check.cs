@@ -346,7 +346,7 @@ public static class Check
     /// Throws an <see cref="ArgumentNullException"/> if the collection is null, or an <see cref="ArgumentException"/> if
     /// the collection has one or more null values.
     /// </summary>
-    [Obsolete($"Will be removed in v5.0.0. Use {nameof(ThrowIfContainsNullValues)}", true)]
+    [Obsolete($"Will be removed in v5.0.0. Use {nameof(ThrowIfContainsNullValues)}")]
     public static void HasNoNulls<T>([NotNull] IReadOnlyList<T> value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
