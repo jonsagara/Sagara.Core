@@ -24,7 +24,7 @@ public class ValidatorPageFilter : IPageFilter
     /// <param name="context"></param>
     public void OnPageHandlerExecuting(PageHandlerExecutingContext context)
     {
-        Check.NotNull(context);
+        Check.ThrowIfNull(context);
 
         if (context.ModelState.IsValid)
         {

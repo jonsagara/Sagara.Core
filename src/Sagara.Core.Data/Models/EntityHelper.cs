@@ -12,7 +12,7 @@ public static class EntityHelper
     /// <param name="entity">The instance to update.</param>
     public static void InitializeDates(IEntity entity)
     {
-        Check.NotNull(entity);
+        Check.ThrowIfNull(entity);
 
         var utcNow = DateTime.UtcNow;
 

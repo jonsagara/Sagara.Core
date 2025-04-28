@@ -72,7 +72,7 @@ public static class SystemTextJsonHelper
     /// <returns>The deserialized object of type T.</returns>
     public static T? Deserialize<T>(string json, bool caseInsensitivePropertyNames = true)
     {
-        Check.NotNull(json);
+        Check.ThrowIfNull(json);
 
         return caseInsensitivePropertyNames
             ? JsonSerializer.Deserialize<T>(json, _deserializeCaseInsensitive)

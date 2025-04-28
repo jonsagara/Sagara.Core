@@ -16,7 +16,7 @@ public static class PageModelExtensions
     public static JsonResult RedirectToPageJson<TPageModel>(this TPageModel pageModel, string pageName, string? pageHandler = null, object? values = null)
         where TPageModel : PageModel
     {
-        Check.NotNull(pageModel);
+        Check.ThrowIfNull(pageModel);
 
         return new JsonResult(new
         {

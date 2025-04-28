@@ -117,6 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArgumentNull_Generic" xml:space="preserve">
+    <value>Value cannot be null.</value>
+  </data>
+  <data name="Argument_CollectionNullOrWhiteSpaceValues" xml:space="preserve">
+    <value>The collection cannot contain string values that are null, empty, or composed entirely of whitespace.</value>
+  </data>
+  <data name="Argument_EmptyCollection" xml:space="preserve">
+    <value>The value cannot be an empty collection.</value>
+  </data>
+  <data name="Argument_EmptyGuid" xml:space="preserve">
+    <value>The value cannot be an empty Guid.</value>
+  </data>
+  <data name="Argument_EmptyOrWhiteSpaceString" xml:space="preserve">
+    <value>The value cannot be an empty string or composed entirely of whitespace.</value>
+  </data>
+  <data name="Argument_EmptyString" xml:space="preserve">
+    <value>The value cannot be an empty string.</value>
+  </data>
   <data name="GreaterThan" xml:space="preserve">
     <value>The field {0} must be greater than {1}. Actual value was {2}.</value>
   </data>

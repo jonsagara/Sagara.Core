@@ -15,8 +15,8 @@ public static class RedisCacheExtensions
     /// <param name="connectionString">The StackExchange.Redis connection string to use.</param>
     public static IServiceCollection AddRedisCacheSingleton(this IServiceCollection services, string connectionString)
     {
-        Check.NotNull(services);
-        Check.NotEmpty(connectionString);
+        Check.ThrowIfNull(services);
+        Check.ThrowIfNullOrWhiteSpace(connectionString);
 
         return services
             .AddSingleton(serviceProvider =>
@@ -38,8 +38,8 @@ public static class RedisCacheExtensions
     /// <param name="connectionString">The StackExchange.Redis connection string to use.</param>
     public static IServiceCollection AddRedisAdminCacheSingleton(this IServiceCollection services, string connectionString)
     {
-        Check.NotNull(services);
-        Check.NotEmpty(connectionString);
+        Check.ThrowIfNull(services);
+        Check.ThrowIfNullOrWhiteSpace(connectionString);
 
         return services
             .AddSingleton(serviceProvider =>
