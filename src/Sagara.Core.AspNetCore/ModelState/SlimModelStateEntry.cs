@@ -16,7 +16,7 @@ public record SlimModelStateEntry
     /// <param name="errors"></param>
     public SlimModelStateEntry(IReadOnlyCollection<SlimError> errors)
     {
-        Check.NotNull(errors);
+        Check.ThrowIfNull(errors);
 
         Errors = errors;
     }

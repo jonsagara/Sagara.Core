@@ -13,7 +13,7 @@ public static class StringExtensions
     /// </returns>
     public static string Left(this string value, int length)
     {
-        Check.NotNull(value);
+        Check.ThrowIfNull(value);
         ArgumentOutOfRangeException.ThrowIfLessThan(length, 0);
 
         return value.Length >= length
@@ -32,7 +32,7 @@ public static class StringExtensions
     /// </returns>
     public static string Right(this string value, int length)
     {
-        Check.NotNull(value);
+        Check.ThrowIfNull(value);
         ArgumentOutOfRangeException.ThrowIfLessThan(length, 0);
 
         return value.Length >= length

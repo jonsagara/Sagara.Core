@@ -35,7 +35,7 @@ public class UnhandledExceptionFilter : IExceptionFilter
     /// <param name="context"></param>
     public void OnException(ExceptionContext context)
     {
-        Check.NotNull(context);
+        Check.ThrowIfNull(context);
 
         StringBuilder log = new();
 

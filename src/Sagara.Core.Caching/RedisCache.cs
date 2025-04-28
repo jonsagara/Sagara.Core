@@ -30,7 +30,7 @@ public class RedisCache
     /// <param name="allowAdmin">True to allow redis admin operations; false otherwise.</param>
     internal RedisCache(ILogger<RedisCache> logger, string connectionString, bool allowAdmin)
     {
-        Check.NotEmpty(connectionString);
+        Check.ThrowIfNullOrWhiteSpace(connectionString);
 
         _logger = logger;
 
@@ -45,7 +45,7 @@ public class RedisCache
     /// </summary>
     protected ConnectionMultiplexer InitializeConnectionMultiplexer(ConfigurationOptions options)
     {
-        Check.NotNull(options);
+        Check.ThrowIfNull(options);
 
         // Be sure to set abortConnect=false in the connection string so that we gracefully handle connection failures.
         var multiplexer = ConnectionMultiplexer.Connect(options);
@@ -89,7 +89,7 @@ public class RedisCache
     /// <returns></returns>
     public async Task<T?> GetAsync<T>(string key)
     {
-        Check.NotEmpty(key);
+        Check.ThrowIfNullOrWhiteSpace(key);
 
         try
         {
@@ -136,7 +136,7 @@ return val
     /// </summary>
     public async Task<T?> GetWithSlidingExpirationAsync<T>(string key, TimeSpan expiry)
     {
-        Check.NotEmpty(key);
+        Check.ThrowIfNullOrWhiteSpace(key);
 
         try
         {
@@ -171,7 +171,7 @@ return val
     /// <returns></returns>
     public T? GetWithSlidingExpiration<T>(string key, TimeSpan expiry)
     {
-        Check.NotEmpty(key);
+        Check.ThrowIfNullOrWhiteSpace(key);
 
         try
         {
@@ -205,8 +205,8 @@ return val
     /// <returns></returns>
     public async Task<bool> SetAsync(string key, object value, TimeSpan? expiry = null)
     {
-        Check.NotEmpty(key);
-        Check.NotNull(value);
+        Check.ThrowIfNullOrWhiteSpace(key);
+        Check.ThrowIfNull(value);
 
         try
         {
@@ -235,8 +235,8 @@ return val
     /// <returns></returns>
     public bool Set(string key, object value, TimeSpan? expiry = null)
     {
-        Check.NotEmpty(key);
-        Check.NotNull(value);
+        Check.ThrowIfNullOrWhiteSpace(key);
+        Check.ThrowIfNull(value);
 
         try
         {
@@ -261,7 +261,7 @@ return val
     ///// <returns>the value of key after the increment</returns>
     //public async Task<long> IncrementAsync(string key, long increment = 1)
     //{
-    //    Check.NotEmpty(key);
+    //    Check.ThrowIfNullOrWhiteSpace(key);
 
     //    try
     //    {
@@ -287,7 +287,7 @@ return val
     /// <returns></returns>
     public async Task<bool> RemoveAsync(string key)
     {
-        Check.NotEmpty(key);
+        Check.ThrowIfNullOrWhiteSpace(key);
 
         try
         {
@@ -312,7 +312,7 @@ return val
     /// </summary>
     public async Task<long> RemoveAsync(IReadOnlyCollection<string> keys)
     {
-        Check.HasNoEmpties(keys, nameof(keys));
+        Check.ThrowIfContainsNullOrWhiteSpaceValues(keys, nameof(keys));
 
         if (keys.Count > 0)
         {
@@ -403,7 +403,7 @@ return val
     /// </summary>
     public async Task SubscribeAsync(RedisChannel channel, Action<RedisChannel, RedisValue> handler)
     {
-        Check.NotNull(handler);
+        Check.ThrowIfNull(handler);
 
         try
         {

@@ -14,7 +14,7 @@ public class ValidatorActionFilter : IActionFilter
     /// </summary>
     public void OnActionExecuting(ActionExecutingContext context)
     {
-        Check.NotNull(context);
+        Check.ThrowIfNull(context);
 
         //if (context.HttpContext.Request.IsApiRequest())
         //{

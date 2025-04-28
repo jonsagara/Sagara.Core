@@ -13,7 +13,7 @@ public static class NodaTimeHelper
     /// </summary>
     public static DateTimeOffset ToLocal(this DateTime utc, string ianaTimeZoneId)
     {
-        Check.NotEmpty(ianaTimeZoneId);
+        Check.ThrowIfNullOrWhiteSpace(ianaTimeZoneId);
 
         // Ensure the UTC date/time is marked as UTC.
         utc = DateTime.SpecifyKind(utc, DateTimeKind.Utc);
@@ -37,7 +37,7 @@ public static class NodaTimeHelper
     /// </summary>
     public static DateTime ToUtc(this DateTime local, string ianaTimeZoneId)
     {
-        Check.NotEmpty(ianaTimeZoneId);
+        Check.ThrowIfNullOrWhiteSpace(ianaTimeZoneId);
 
         // Convert BCL date/time to a NodaTime local date/time.
         var localDateTime = LocalDateTime.FromDateTime(local);

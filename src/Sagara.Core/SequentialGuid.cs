@@ -101,7 +101,7 @@ public class SequentialGuid
     /// <returns>The incremented sequential Guid.</returns>
     public static SequentialGuid Increment(SequentialGuid sequentialGuid)
     {
-        Check.NotNull(sequentialGuid);
+        Check.ThrowIfNull(sequentialGuid);
 
         // Copy the current Guid's value into a byte array.
         Span<byte> currentGuidBytes = stackalloc byte[16];

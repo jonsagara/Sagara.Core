@@ -18,7 +18,7 @@ public static class ModelStateDictionaryExtensions
     /// <param name="modelState">The ModelState dictionary.</param>
     public static ContentResult ToJsonErrorResult(this ModelStateDictionary modelState)
     {
-        Check.NotNull(modelState);
+        Check.ThrowIfNull(modelState);
 
         return CreateBadRequestJsonContentResult(modelState);
     }
@@ -30,8 +30,8 @@ public static class ModelStateDictionaryExtensions
     /// <param name="additionalErrors">A collection of property-specific error messages to add to model state.</param>
     public static ContentResult ToJsonErrorResult(this ModelStateDictionary modelState, IReadOnlyCollection<RequestError> additionalErrors)
     {
-        Check.NotNull(modelState);
-        Check.NotNull(additionalErrors);
+        Check.ThrowIfNull(modelState);
+        Check.ThrowIfNull(additionalErrors);
 
         foreach (var additionalError in additionalErrors)
         {
@@ -46,7 +46,7 @@ public static class ModelStateDictionaryExtensions
     /// </summary>
     public static Dictionary<string, SlimModelStateEntry> ToSlimModelStateDictionary(this ModelStateDictionary modelState)
     {
-        Check.NotNull(modelState);
+        Check.ThrowIfNull(modelState);
 
         return modelState
             .ToDictionary
@@ -68,8 +68,8 @@ public static class ModelStateDictionaryExtensions
     /// </summary>
     public static void AddModelErrors(this ModelStateDictionary modelState, IReadOnlyCollection<string> errors)
     {
-        Check.NotNull(modelState);
-        Check.NotNull(errors);
+        Check.ThrowIfNull(modelState);
+        Check.ThrowIfNull(errors);
 
         foreach (var error in errors)
         {

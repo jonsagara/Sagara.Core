@@ -5,6 +5,7 @@ using System.Text;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Sagara.Core.Validation;
+using SR = Sagara.Core.Resources.Strings;
 
 namespace Sagara.Core.Benchmarks.Harnesses.ResourceFormatStringCaching;
 
@@ -48,25 +49,25 @@ Job=.NET 9.0  Runtime=.NET 9.0
     [Benchmark(Baseline = true)]
     public string FormatRawResourceString()
     {
-        return string.Format(CultureInfo.CurrentCulture, ValidationHelperResources.GreaterThanOrEqual, _propertyName, _threshold, _value);
+        return string.Format(CultureInfo.CurrentCulture, SR.GreaterThanOrEqual, _propertyName, _threshold, _value);
     }
 
     [Benchmark]
     public string FormatCachedParsedResourceString()
     {
-        return ValidationHelperResources.ResourceManager.Format(resourceKey: nameof(ValidationHelperResources.GreaterThanOrEqual), _propertyName, _threshold, _value);
+        return SR.ResourceManager.Format(resourceKey: nameof(SR.GreaterThanOrEqual), _propertyName, _threshold, _value);
     }
 
     [Benchmark]
     public string FormatCachedParsedResourceStringStructKey()
     {
-        return ValidationHelperResources.ResourceManager.FormatStructKey(resourceKey: nameof(ValidationHelperResources.GreaterThanOrEqual), _propertyName, _threshold, _value);
+        return SR.ResourceManager.FormatStructKey(resourceKey: nameof(SR.GreaterThanOrEqual), _propertyName, _threshold, _value);
     }
 
     [Benchmark]
     public string FormatCachedParsedResourceStringStructKeyTryGetValue()
     {
-        return ValidationHelperResources.ResourceManager.FormatStructKeyTryGetValue(resourceKey: nameof(ValidationHelperResources.GreaterThanOrEqual), _propertyName, _threshold, _value);
+        return SR.ResourceManager.FormatStructKeyTryGetValue(resourceKey: nameof(SR.GreaterThanOrEqual), _propertyName, _threshold, _value);
     }
 }
 
