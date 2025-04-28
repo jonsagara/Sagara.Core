@@ -93,4 +93,102 @@ public class CheckTests
     {
         Check.ThrowIfNullOrWhiteSpace("ohai i'm jim from the office");
     }
+
+
+    //
+    // ThrowIfEmptyGuid
+    //
+
+    [Fact]
+    public void ThrowIfEmptyGuid_EmptyGuid_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => Check.ThrowIfEmptyGuid(Guid.Empty));
+    }
+
+    [Fact]
+    public void ThrowIfEmptyGuid_NonEmptyGuid_DoesNotThrow()
+    {
+        Check.ThrowIfEmptyGuid(Guid.Parse("c5c563a9-5f75-4518-947c-434d0fd5d89a"));
+    }
+
+
+    //
+    // ThrowIfEmptyCollection
+    //
+
+    [Fact]
+    public void ThrowIfEmptyCollection_EmptyCollection_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => Check.ThrowIfEmptyCollection(Array.Empty<string>()));
+        Assert.Throws<ArgumentException>(() => Check.ThrowIfEmptyCollection(new List<int>()));
+        Assert.Throws<ArgumentException>(() => Check.ThrowIfEmptyCollection(new List<object>()));
+    }
+
+    [Fact]
+    public void ThrowIfEmptyCollection_NonEmptyCollection_DoesNotThrow()
+    {
+        Check.ThrowIfEmptyCollection(["hi"]);
+        Check.ThrowIfEmptyCollection(new List<int> { 42 });
+        Check.ThrowIfEmptyCollection(new List<object> { new object() });
+    }
+
+
+    //
+    // ThrowIfContainsNullOrWhiteSpaceValues
+    //
+
+    [Fact]
+    public void ThrowIfContainsNullOrWhiteSpaceValues_ContainsNullOrWhiteSpaceValues_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => Check.ThrowIfContainsNullOrWhiteSpaceValues(new string?[] { "", null, " ", "\t\r\n\r\r\n" }));
+        Assert.Throws<ArgumentException>(() => Check.ThrowIfContainsNullOrWhiteSpaceValues(new List<string?>() { "", null, " ", "\t\r\n\r\r\n" }));
+    }
+
+    [Fact]
+    public void ThrowIfContainsNullOrWhiteSpaceValues_ContainsNoNullOrWhiteSpaceValues_DoesNotThrow()
+    {
+        Check.ThrowIfContainsNullOrWhiteSpaceValues(new string?[] { "apple", "pear", "banana" });
+        Check.ThrowIfContainsNullOrWhiteSpaceValues(new List<string?>() { "apple", "pear", "banana" });
+    }
+
+
+    //
+    // ThrowIfLessThan
+    //
+
+    [Fact]
+    public void ThrowIfLessThan_IntValueLessThan_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfLessThan(0, 5));
+    }
+
+    [Fact]
+    public void ThrowIfLessThan_DoubleValueLessThan_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfLessThan(0.0, 5.0));
+    }
+
+    [Fact]
+    public void ThrowIfLessThan_DecimalValueLessThan_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfLessThan(0.0m, 5.0m));
+    }
+
+    [Fact]
+    public void ThrowIfLessThan_IntValueGreaterThanOrEqual_DoesNotThrow()
+    {
+        Check.ThrowIfLessThan(500, 100);
+    }
+
+    [Fact]
+    public void ThrowIfLessThan_DoubleValueGreaterThanOrEqual_DoesNotThrow()
+    {
+        Check.ThrowIfLessThan(3.14, 1.57);
+    }
+
+    [Fact]
+    public void ThrowIfLessThan_DecimalValueGreaterThanOrEqual_DoesNotThrow()
+    {
+        Check.ThrowIfLessThan(900.12m, 900.11m);
+    }
 }

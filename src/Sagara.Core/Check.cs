@@ -99,7 +99,7 @@ public static class Check
     /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is null, or an <see cref="ArgumentException"/> 
     /// if <paramref name="value"/> contains one or more null or white space strings.
     /// </summary>
-    public static void ThrowIfContainsNullOrWhiteSpaceValues([NotNull] IReadOnlyCollection<string> value, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
+    public static void ThrowIfContainsNullOrWhiteSpaceValues([NotNull] IReadOnlyCollection<string?> value, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
         // Make sure the collection itself is not null.
