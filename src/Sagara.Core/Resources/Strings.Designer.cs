@@ -70,6 +70,15 @@ namespace Sagara.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The collection cannot contain values that are null..
+        /// </summary>
+        public static string Argument_CollectionNullValues {
+            get {
+                return ResourceManager.GetString("Argument_CollectionNullValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The value cannot be an empty collection..
         /// </summary>
         public static string Argument_EmptyCollection {

@@ -153,6 +153,25 @@ public class CheckTests
 
 
     //
+    // ThrowIfContainsNullValues
+    //
+
+    [Fact]
+    public void ThrowIfContainsNullValues_ContainsNullValues_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => Check.ThrowIfContainsNullValues(new string?[] { "", null, " ", "California" }));
+        Assert.Throws<ArgumentException>(() => Check.ThrowIfContainsNullValues(new List<Exception?>() { new Exception(), null, new ArgumentException() }));
+    }
+
+    [Fact]
+    public void ThrowIfContainsNullValues_ContainsNoNullValues_DoesNotThrow()
+    {
+        Check.ThrowIfContainsNullValues(new string?[] { "apple", "pear", "banana" });
+        Check.ThrowIfContainsNullValues(new List<Exception?>() { new Exception(), new NullReferenceException() });
+    }
+
+
+    //
     // ThrowIfLessThan
     //
 

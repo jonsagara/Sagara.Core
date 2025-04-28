@@ -113,6 +113,23 @@ public static class Check
     }
 
     /// <summary>
+    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is null, or an <see cref="ArgumentException"/> 
+    /// if <paramref name="value"/> contains one or more null values.
+    /// </summary>
+    public static void ThrowIfContainsNullValues<T>([NotNull] IReadOnlyCollection<T> value, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
+        [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
+    {
+        // Make sure the collection itself is not null.
+        ThrowIfNull(value: value, callerArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+
+        if (value.Any(v => v is null))
+        {
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+            throw new ArgumentException(message: $"{SR.Argument_CollectionNullValues}{Environment.NewLine}{callerInfo}", paramName: callerArgExpression);
+        }
+    }
+
+    /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than <paramref name="other"/>.
     /// </summary>
     public static void ThrowIfLessThan<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
@@ -241,7 +258,7 @@ public static class Check
     /// <summary>
     /// Throws an <see cref="ArgumentNullException" /> if the value is null.
     /// </summary>
-    [Obsolete($"Use {nameof(ThrowIfNull)}<T>")]
+    [Obsolete($"Will be removed in v5.0.0. Use {nameof(ThrowIfNull)}<T>")]
     public static void NotNull<T>([NotNull] T value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
@@ -257,7 +274,7 @@ public static class Check
     /// Throws an <see cref="ArgumentNullException"/> if the string is null, or an <see cref="ArgumentException"/> if the
     /// string is null or white space.
     /// </summary>
-    [Obsolete($"Use {nameof(ThrowIfNullOrWhiteSpace)}")]
+    [Obsolete($"Will be removed in v5.0.0. Use {nameof(ThrowIfNullOrWhiteSpace)}")]
     public static void NotEmpty([NotNull] string? value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
@@ -290,7 +307,7 @@ public static class Check
     /// <summary>
     /// Throws an <see cref="ArgumentException"/> if the Guid equals Guid.Empty.
     /// </summary>
-    [Obsolete($"Use {nameof(ThrowIfEmptyGuid)}")]
+    [Obsolete($"Will be removed in v5.0.0. Use {nameof(ThrowIfEmptyGuid)}")]
     public static void NotEmpty(Guid value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
@@ -307,7 +324,7 @@ public static class Check
     /// Throws an <see cref="ArgumentNullException"/> if the collection is null, or an <see cref="ArgumentException"/> if
     /// the collection is empty.
     /// </summary>
-    [Obsolete($"Use {nameof(ThrowIfEmptyCollection)}")]
+    [Obsolete($"Will be removed in v5.0.0. Use {nameof(ThrowIfEmptyCollection)}")]
     public static void NotEmpty<T>([NotNull] IReadOnlyCollection<T> value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
@@ -328,7 +345,7 @@ public static class Check
     /// Throws an <see cref="ArgumentNullException"/> if the collection is null, or an <see cref="ArgumentException"/> if
     /// the collection has one or more null values.
     /// </summary>
-    [Obsolete("Don't use. This should be caught in validation and returned as an error message.", true)]
+    [Obsolete($"Will be removed in v5.0.0. Use {nameof(ThrowIfContainsNullValues)}", true)]
     public static void HasNoNulls<T>([NotNull] IReadOnlyList<T> value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
@@ -349,7 +366,7 @@ public static class Check
     /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is outside the range of 
     /// [<paramref name="rangeLo"/>, <paramref name="rangeHi"/>].
     /// </summary>
-    [Obsolete("Use new ThrowIfLessThan/LessThanOrEqual/etc. overloads", true)]
+    [Obsolete("Will be removed in v5.0.0. Use new ThrowIfLessThan/LessThanOrEqual/etc. overloads", true)]
     public static void NotOutOfRange<T>(T value, T rangeLo, T rangeHi, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
         where T : IComparable, IComparable<T>
@@ -369,7 +386,7 @@ public static class Check
     /// Throws an <see cref="ArgumentNullException"/> if the collection is null, or an <see cref="ArgumentException"/> if
     /// the collection has one or more null or white space strings.
     /// </summary>
-    [Obsolete($"Use {nameof(ThrowIfContainsNullOrWhiteSpaceValues)}")]
+    [Obsolete($"Will be removed in v5.0.0. Use {nameof(ThrowIfContainsNullOrWhiteSpaceValues)}")]
     public static void HasNoEmpties([NotNull] IReadOnlyCollection<string> value, [CallerArgumentExpression(nameof(value))] string? valueArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
@@ -391,7 +408,7 @@ public static class Check
     // Private methods
     //
 
-    [Obsolete($"Use {nameof(FormatCallerInfo)}")]
+    [Obsolete($"Will be removed in v5.0.0. Use {nameof(FormatCallerInfo)}")]
     private static string FormatCallerInfoOld(string? valueArgExpression, string? memberName, int sourceLineNumber, string? sourceFilePath)
     {
         return $"Failing argument expression '{valueArgExpression}' called by {memberName} at Line {sourceLineNumber} in '{sourceFilePath}'.";
