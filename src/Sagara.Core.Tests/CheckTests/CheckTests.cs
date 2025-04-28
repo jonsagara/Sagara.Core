@@ -178,17 +178,194 @@ public class CheckTests
     public void ThrowIfLessThan_IntValueGreaterThanOrEqual_DoesNotThrow()
     {
         Check.ThrowIfLessThan(500, 100);
+        Check.ThrowIfLessThan(500, 500);
     }
 
     [Fact]
     public void ThrowIfLessThan_DoubleValueGreaterThanOrEqual_DoesNotThrow()
     {
         Check.ThrowIfLessThan(3.14, 1.57);
+        Check.ThrowIfLessThan(3.14, 3.14);
     }
 
     [Fact]
     public void ThrowIfLessThan_DecimalValueGreaterThanOrEqual_DoesNotThrow()
     {
         Check.ThrowIfLessThan(900.12m, 900.11m);
+        Check.ThrowIfLessThan(900.12m, 900.12m);
+    }
+
+
+    //
+    // ThrowIfLessThanOrEqual
+    //
+
+    [Fact]
+    public void ThrowIfLessThanOrEqual_IntValueLessThanOrEqual_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfLessThanOrEqual(0, 5));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfLessThanOrEqual(5, 5));
+    }
+
+    [Fact]
+    public void ThrowIfLessThanOrEqual_DoubleValueLessThanOrEqual_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfLessThanOrEqual(0.0, 5.0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfLessThanOrEqual(5.0, 5.0));
+    }
+
+    [Fact]
+    public void ThrowIfLessThanOrEqual_DecimalValueLessThanOrEqual_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfLessThanOrEqual(0.0m, 5.0m));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfLessThanOrEqual(5.0m, 5.0m));
+    }
+
+    [Fact]
+    public void ThrowIfLessThanOrEqual_IntValueGreaterThan_DoesNotThrow()
+    {
+        Check.ThrowIfLessThan(500, 100);
+    }
+
+    [Fact]
+    public void ThrowIfLessThanOrEqual_DoubleValueGreaterThan_DoesNotThrow()
+    {
+        Check.ThrowIfLessThan(3.14, 1.57);
+    }
+
+    [Fact]
+    public void ThrowIfLessThanOrEqual_DecimalValueGreaterThan_DoesNotThrow()
+    {
+        Check.ThrowIfLessThan(900.12m, 900.11m);
+    }
+
+
+    //
+    // ThrowIfGreaterThan
+    //
+
+    [Fact]
+    public void ThrowIfGreaterThan_IntValueGreaterThan_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfGreaterThan(5, 1));
+    }
+
+    [Fact]
+    public void ThrowIfGreaterThan_DoubleValueGreaterThan_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfGreaterThan(5.0, 1.0));
+    }
+
+    [Fact]
+    public void ThrowIfGreaterThan_DecimalValueGreaterThan_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfGreaterThan(5.0m, 1.0m));
+    }
+
+    [Fact]
+    public void ThrowIfGreaterThan_IntValueLessThanOrEqual_DoesNotThrow()
+    {
+        Check.ThrowIfGreaterThan(100, 500);
+        Check.ThrowIfGreaterThan(500, 500);
+    }
+
+    [Fact]
+    public void ThrowIfGreaterThan_DoubleValueLessThanOrEqual_DoesNotThrow()
+    {
+        Check.ThrowIfGreaterThan(1.57, 3.14);
+        Check.ThrowIfGreaterThan(3.14, 3.14);
+    }
+
+    [Fact]
+    public void ThrowIfGreaterThan_DecimalValueLessThanOrEqual_DoesNotThrow()
+    {
+        Check.ThrowIfGreaterThan(900.11m, 900.12m);
+        Check.ThrowIfGreaterThan(900.12m, 900.12m);
+    }
+
+
+    //
+    // ThrowIfGreaterThanOrEqual
+    //
+
+    [Fact]
+    public void ThrowIfGreaterThanOrEqual_IntValueGreaterThanOrEqual_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfGreaterThanOrEqual(5, 1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfGreaterThanOrEqual(5, 5));
+    }
+
+    [Fact]
+    public void ThrowIfGreaterThanOrEqual_DoubleValueGreaterThanOrEqual_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfGreaterThanOrEqual(5.0, 1.0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfGreaterThanOrEqual(5.0, 5.0));
+    }
+
+    [Fact]
+    public void ThrowIfGreaterThanOrEqual_DecimalValueGreaterThanOrEqual_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfGreaterThanOrEqual(5.0m, 1.0m));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfGreaterThanOrEqual(5.0m, 5.0m));
+    }
+
+    [Fact]
+    public void ThrowIfGreaterThanOrEqual_IntValueLessThan_DoesNotThrow()
+    {
+        Check.ThrowIfGreaterThanOrEqual(100, 500);
+    }
+
+    [Fact]
+    public void ThrowIfGreaterThanOrEqual_DoubleValueLessThan_DoesNotThrow()
+    {
+        Check.ThrowIfGreaterThanOrEqual(1.57, 3.14);
+    }
+
+    [Fact]
+    public void ThrowIfGreaterThanOrEqual_DecimalValueLessThan_DoesNotThrow()
+    {
+        Check.ThrowIfGreaterThanOrEqual(900.11m, 900.12m);
+    }
+
+
+    //
+    // ThrowIfEqual
+    //
+
+    [Fact]
+    public void ThrowIfEqual_ValuesEqual_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfEqual(5, 5));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfEqual(5.0, 5.0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfEqual(5.0m, 5.0m));
+    }
+
+    [Fact]
+    public void ThrowIfEqual_ValuesNotEqual_DoesNotThrow()
+    {
+        Check.ThrowIfEqual(5, -5);
+        Check.ThrowIfEqual(5.0, -5.0);
+        Check.ThrowIfEqual(5.0m, -5.0m);
+    }
+
+
+    //
+    // ThrowIfNotEqual
+    //
+
+    [Fact]
+    public void ThrowIfNotEqual_ValuesNotEqual_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfNotEqual(5, -5));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfNotEqual(5.0, -5.0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Check.ThrowIfNotEqual(5.0m, -5.0m));
+    }
+
+    [Fact]
+    public void ThrowIfNotEqual_ValuesEqual_DoesNotThrow()
+    {
+        Check.ThrowIfNotEqual(5, 5);
+        Check.ThrowIfNotEqual(5.0, 5.0);
+        Check.ThrowIfNotEqual(5.0m, 5.0m);
     }
 }
