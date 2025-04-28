@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using SR = Sagara.Core.Resources.Strings;
 
@@ -24,7 +25,7 @@ public static class Check
     {
         if (value is null)
         {
-            var callerInfo = FormatCallerInfoOld(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
             throw new ArgumentNullException(paramName: callerArgExpression, message: $"{SR.ArgumentNull_Generic}{Environment.NewLine}{callerInfo}");
         }
     }
@@ -42,7 +43,7 @@ public static class Check
             ThrowIfNull(value: value, callerArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
 
             // It's not null, so it's white space.
-            var callerInfo = FormatCallerInfoOld(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
             throw new ArgumentException(message: $"{SR.Argument_EmptyString}{Environment.NewLine}{callerInfo}", paramName: callerArgExpression);
         }
     }
@@ -60,7 +61,7 @@ public static class Check
             ThrowIfNull(value: value, callerArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
 
             // It's not null, so it's white space.
-            var callerInfo = FormatCallerInfoOld(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
             throw new ArgumentException(message: $"{SR.Argument_EmptyOrWhiteSpaceString}{Environment.NewLine}{callerInfo}", paramName: callerArgExpression);
         }
     }
@@ -73,14 +74,14 @@ public static class Check
     {
         if (value == Guid.Empty)
         {
-            var callerInfo = FormatCallerInfoOld(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
             throw new ArgumentException(message: $"{SR.Argument_EmptyGuid}{Environment.NewLine}{callerInfo}", paramName: callerArgExpression);
         }
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if the collection is null, or an <see cref="ArgumentException"/> if
-    /// the collection is empty.
+    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is null, or an <see cref="ArgumentException"/>
+    /// if <paramref name="value"/> is empty.
     /// </summary>
     public static void ThrowIfEmptyCollection<T>([NotNull] IReadOnlyCollection<T> value, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
@@ -89,14 +90,14 @@ public static class Check
 
         if (value.Count == 0)
         {
-            var callerInfo = FormatCallerInfoOld(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
             throw new ArgumentException(message: $"{SR.Argument_EmptyCollection}{Environment.NewLine}{callerInfo}", paramName: callerArgExpression);
         }
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if the collection is null, or an <see cref="ArgumentException"/> if
-    /// the collection has one or more null or white space strings.
+    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is null, or an <see cref="ArgumentException"/> 
+    /// if <paramref name="value"/> contains one or more null or white space strings.
     /// </summary>
     public static void ThrowIfContainsNullOrWhiteSpaceValues([NotNull] IReadOnlyCollection<string> value, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
@@ -106,8 +107,129 @@ public static class Check
 
         if (value.Any(v => string.IsNullOrWhiteSpace(v)))
         {
-            var callerInfo = FormatCallerInfoOld(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
             throw new ArgumentException(message: $"{SR.Argument_CollectionNullOrWhiteSpaceValues}{Environment.NewLine}{callerInfo}", paramName: callerArgExpression);
+        }
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than <paramref name="other"/>.
+    /// </summary>
+    public static void ThrowIfLessThan<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
+        [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
+        where T : IComparable<T>
+    {
+        if (value.CompareTo(other) < 0)
+        {
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            var formattedMessage = string.Format(CultureInfo.CurrentCulture, SR.ArgumentOutOfRange_Generic_MustBeGreaterOrEqual, callerArgExpression, value, other);
+#pragma warning restore CA1863 // Use 'CompositeFormat'
+
+            throw new ArgumentOutOfRangeException(paramName: callerArgExpression, actualValue: value, message: $"{formattedMessage}{Environment.NewLine}{callerInfo}");
+        }
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than or equal <paramref name="other"/>.
+    /// </summary>
+    public static void ThrowIfLessThanOrEqual<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
+        [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
+        where T : IComparable<T>
+    {
+        //ArgumentOutOfRangeException.ThrowIfGreaterThan(0, 1);
+        if (value.CompareTo(other) <= 0)
+        {
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            var formattedMessage = string.Format(CultureInfo.CurrentCulture, SR.ArgumentOutOfRange_Generic_MustBeGreater, callerArgExpression, value, other);
+#pragma warning restore CA1863 // Use 'CompositeFormat'
+
+            throw new ArgumentOutOfRangeException(paramName: callerArgExpression, actualValue: value, message: $"{formattedMessage}{Environment.NewLine}{callerInfo}");
+        }
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than <paramref name="other"/>.
+    /// </summary>
+    public static void ThrowIfGreaterThan<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
+        [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
+        where T : IComparable<T>
+    {
+        if (value.CompareTo(other) > 0)
+        {
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            var formattedMessage = string.Format(CultureInfo.CurrentCulture, SR.ArgumentOutOfRange_Generic_MustBeLessOrEqual, callerArgExpression, value, other);
+#pragma warning restore CA1863 // Use 'CompositeFormat'
+
+            throw new ArgumentOutOfRangeException(paramName: callerArgExpression, actualValue: value, message: $"{formattedMessage}{Environment.NewLine}{callerInfo}");
+        }
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than or equal <paramref name="other"/>.
+    /// </summary>
+    public static void ThrowIfGreaterThanOrEqual<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
+        [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
+        where T : IComparable<T>
+    {
+        if (value.CompareTo(other) >= 0)
+        {
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            var formattedMessage = string.Format(CultureInfo.CurrentCulture, SR.ArgumentOutOfRange_Generic_MustBeLess, callerArgExpression, value, other);
+#pragma warning restore CA1863 // Use 'CompositeFormat'
+
+            throw new ArgumentOutOfRangeException(paramName: callerArgExpression, actualValue: value, message: $"{formattedMessage}{Environment.NewLine}{callerInfo}");
+        }
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is equal to <paramref name="other"/>.
+    /// </summary>
+    public static void ThrowIfEqual<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
+        [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
+        where T : IEquatable<T>?
+    {
+        if (EqualityComparer<T>.Default.Equals(value, other))
+        {
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            var formattedMessage = string.Format(CultureInfo.CurrentCulture, SR.ArgumentOutOfRange_Generic_MustBeNotEqual, callerArgExpression, value, other);
+#pragma warning restore CA1863 // Use 'CompositeFormat'
+
+            throw new ArgumentOutOfRangeException(paramName: callerArgExpression, actualValue: value, message: $"{formattedMessage}{Environment.NewLine}{callerInfo}");
+        }
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is not equal to <paramref name="other"/>.
+    /// </summary>
+    public static void ThrowIfNotEqual<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
+        [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
+        where T : IEquatable<T>?
+    {
+        if (!EqualityComparer<T>.Default.Equals(value, other))
+        {
+            var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+
+            // Justification: can't use composite format; we're loading a localized string from a resource file.
+#pragma warning disable CA1863 // Use 'CompositeFormat'
+            var formattedMessage = string.Format(CultureInfo.CurrentCulture, SR.ArgumentOutOfRange_Generic_MustBeEqual, callerArgExpression, value, other);
+#pragma warning restore CA1863 // Use 'CompositeFormat'
+
+            throw new ArgumentOutOfRangeException(paramName: callerArgExpression, actualValue: value, message: $"{formattedMessage}{Environment.NewLine}{callerInfo}");
         }
     }
 
@@ -269,6 +391,7 @@ public static class Check
     // Private methods
     //
 
+    [Obsolete($"Use {nameof(FormatCallerInfo)}")]
     private static string FormatCallerInfoOld(string? valueArgExpression, string? memberName, int sourceLineNumber, string? sourceFilePath)
     {
         return $"Failing argument expression '{valueArgExpression}' called by {memberName} at Line {sourceLineNumber} in '{sourceFilePath}'.";

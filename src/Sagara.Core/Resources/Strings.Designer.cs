@@ -115,6 +115,60 @@ namespace Sagara.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} (&apos;{1}&apos;) must be equal to &apos;{2}&apos;..
+        /// </summary>
+        public static string ArgumentOutOfRange_Generic_MustBeEqual {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_Generic_MustBeEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (&apos;{1}&apos;) must be greater than &apos;{2}&apos;..
+        /// </summary>
+        public static string ArgumentOutOfRange_Generic_MustBeGreater {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_Generic_MustBeGreater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (&apos;{1}&apos;) must be greater than or equal to &apos;{2}&apos;..
+        /// </summary>
+        public static string ArgumentOutOfRange_Generic_MustBeGreaterOrEqual {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_Generic_MustBeGreaterOrEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (&apos;{1}&apos;) must be less than &apos;{2}&apos;..
+        /// </summary>
+        public static string ArgumentOutOfRange_Generic_MustBeLess {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_Generic_MustBeLess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (&apos;{1}&apos;) must be less than or equal to &apos;{2}&apos;..
+        /// </summary>
+        public static string ArgumentOutOfRange_Generic_MustBeLessOrEqual {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_Generic_MustBeLessOrEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (&apos;{1}&apos;) must not be equal to &apos;{2}&apos;..
+        /// </summary>
+        public static string ArgumentOutOfRange_Generic_MustBeNotEqual {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_Generic_MustBeNotEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field {0} must be greater than {1}. Actual value was {2}..
         /// </summary>
         public static string GreaterThan {
