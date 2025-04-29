@@ -157,7 +157,6 @@ public static class Check
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
         where T : IComparable<T>
     {
-        //ArgumentOutOfRangeException.ThrowIfGreaterThan(0, 1);
         if (value.CompareTo(other) <= 0)
         {
             var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
