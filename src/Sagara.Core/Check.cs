@@ -38,11 +38,11 @@ public static class Check
     public static void ThrowIfNullOrEmpty([NotNull] string? value, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            // Throw if it's null.
-            ThrowIfNull(value: value, callerArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+        // Throw if it's null.
+        ThrowIfNull(value: value, callerArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
 
+        if (value.Length == 0)
+        {
             // It's not null, so it's white space.
             var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
             throw new ArgumentException(message: $"{SR.Argument_EmptyString}{Environment.NewLine}{callerInfo}", paramName: callerArgExpression);
@@ -56,11 +56,11 @@ public static class Check
     public static void ThrowIfNullOrWhiteSpace([NotNull] string? value, [CallerArgumentExpression(nameof(value))] string? callerArgExpression = null,
         [CallerMemberName] string? memberName = null, [CallerLineNumber] int sourceLineNumber = 0, [CallerFilePath] string? sourceFilePath = null)
     {
+        // Throw if it's null.
+        ThrowIfNull(value: value, callerArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
+
         if (string.IsNullOrWhiteSpace(value))
         {
-            // Throw if it's null.
-            ThrowIfNull(value: value, callerArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
-
             // It's not null, so it's white space.
             var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
             throw new ArgumentException(message: $"{SR.Argument_EmptyOrWhiteSpaceString}{Environment.NewLine}{callerInfo}", paramName: callerArgExpression);

@@ -58,10 +58,14 @@ public class CheckTests
         Assert.Throws<ArgumentException>(() => Check.ThrowIfNullOrEmpty(""));
     }
 
-    [Fact]
-    public void ThrowIfNullOrEmpty_NonEmptyString_DoesNotThrow()
+    [Theory]
+    [InlineData(" ")]
+    [InlineData("\t")]
+    [InlineData("\t\r\n\n\n\r\n")]
+    [InlineData("ohai i'm jim from the office")]
+    public void ThrowIfNullOrEmpty_NonEmptyString_DoesNotThrow(string value)
     {
-        Check.ThrowIfNullOrEmpty("ohai i'm jim from the office");
+        Check.ThrowIfNullOrEmpty(value);
     }
 
 
