@@ -43,7 +43,6 @@ public static class Check
 
         if (value.Length == 0)
         {
-            // It's not null, so it's white space.
             var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
             throw new ArgumentException(message: $"{SR.Argument_EmptyString}{Environment.NewLine}{callerInfo}", paramName: callerArgExpression);
         }
@@ -61,7 +60,6 @@ public static class Check
 
         if (string.IsNullOrWhiteSpace(value))
         {
-            // It's not null, so it's white space.
             var callerInfo = FormatCallerInfo(valueArgExpression: callerArgExpression, memberName: memberName, sourceLineNumber: sourceLineNumber, sourceFilePath: sourceFilePath);
             throw new ArgumentException(message: $"{SR.Argument_EmptyOrWhiteSpaceString}{Environment.NewLine}{callerInfo}", paramName: callerArgExpression);
         }
