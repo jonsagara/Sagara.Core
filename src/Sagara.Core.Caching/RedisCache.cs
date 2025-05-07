@@ -101,7 +101,7 @@ public class RedisCache
 
             if (!string.IsNullOrWhiteSpace(value))
             {
-                return SystemTextJsonHelper.Deserialize<T>(value!);
+                return STJsonHelper.Deserialize<T>(value!);
             }
         }
         catch (Exception ex)
@@ -149,7 +149,7 @@ return val
             var value = (string?)redisResult;
             if (!string.IsNullOrWhiteSpace(value))
             {
-                return SystemTextJsonHelper.Deserialize<T>(value);
+                return STJsonHelper.Deserialize<T>(value);
             }
         }
         catch (Exception ex)
@@ -183,7 +183,7 @@ return val
             var value = (string?)redisResult;
             if (!string.IsNullOrWhiteSpace(value))
             {
-                return SystemTextJsonHelper.Deserialize<T>(value);
+                return STJsonHelper.Deserialize<T>(value);
             }
         }
         catch (Exception ex)
@@ -199,9 +199,9 @@ return val
     /// Set key to hold the string value. If key already holds a value, it is overwritten, regardless of its type. Any previous 
     /// time to live associated with the key is discarded on successful SET operation.
     /// </summary>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
-    /// <param name="expiry"></param>
+    /// <param name="key">The key of the string.</param>
+    /// <param name="value">The value to set.</param>
+    /// <param name="expiry">The expiry to set.</param>
     /// <returns></returns>
     public async Task<bool> SetAsync(string key, object value, TimeSpan? expiry = null)
     {
@@ -213,7 +213,7 @@ return val
             var db = GetDatabase();
 
             return await db
-                .StringSetAsync(key, SystemTextJsonHelper.Serialize(value), expiry)
+                .StringSetAsync(key, STJsonHelper.Serialize(value), expiry)
                 .ConfigureAwait(false);
         }
         catch (Exception ex)
@@ -229,9 +229,9 @@ return val
     /// Set key to hold the string value. If key already holds a value, it is overwritten, regardless of its type. Any previous 
     /// time to live associated with the key is discarded on successful SET operation.
     /// </summary>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
-    /// <param name="expiry"></param>
+    /// <param name="key">The key of the string.</param>
+    /// <param name="value">The value to set.</param>
+    /// <param name="expiry">The expiry to set.</param>
     /// <returns></returns>
     public bool Set(string key, object value, TimeSpan? expiry = null)
     {
@@ -242,7 +242,7 @@ return val
         {
             var db = GetDatabase();
 
-            return db.StringSet(key, SystemTextJsonHelper.Serialize(value), expiry);
+            return db.StringSet(key, STJsonHelper.Serialize(value), expiry);
         }
         catch (Exception ex)
         {
