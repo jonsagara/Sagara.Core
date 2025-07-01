@@ -18,7 +18,7 @@ public static class AppSettingsJsonExtensions
     /// <para>Web applications must copy the file to the web application project root so that the values are picked up during local
     /// execution and debugging. This requires a custom build target. If you're someone other than Jon, ask Jon for a sample.</para>
     /// </remarks>
-    public static IConfigurationBuilder AddJsonFileLoadDevOverrides(this IConfigurationBuilder builder, IHostEnvironment environment)
+    public static IConfigurationBuilder AddJsonFileLocalDevOverrides(this IConfigurationBuilder builder, IHostEnvironment environment)
     {
         Check.ThrowIfNull(builder);
         Check.ThrowIfNull(environment);
