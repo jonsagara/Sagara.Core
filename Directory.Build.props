@@ -7,9 +7,9 @@
 		<LangVersion>13.0</LangVersion>
 		
 		<!-- NuGet -->
-		<Version>4.5.9</Version>
-		<AssemblyVersion>4.5.0</AssemblyVersion>
-		<FileVersion>4.5.0</FileVersion>
+		<Version>4.6.0</Version>
+		<AssemblyVersion>4.6.0</AssemblyVersion>
+		<FileVersion>4.6.0</FileVersion>
 		<Authors>Jon Sagara</Authors>
 		<Copyright>Copyright 2022-2025</Copyright>
 		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
