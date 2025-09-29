@@ -37,7 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="StackExchange.Redis" Version="2.9.24" />
+		<PackageReference Include="StackExchange.Redis" Version="2.9.25" />
 	</ItemGroup>
 
 	<ItemGroup>
