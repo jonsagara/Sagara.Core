@@ -7,7 +7,7 @@
 		<LangVersion>14.0</LangVersion>
 		
 		<!-- NuGet -->
-		<Version>4.6.1</Version>
+		<Version>4.6.2</Version>
 		<AssemblyVersion>4.6.0</AssemblyVersion>
 		<FileVersion>4.6.0</FileVersion>
 		<Authors>Jon Sagara</Authors>
