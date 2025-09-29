@@ -7,7 +7,6 @@ public static class StringComparerExtensions
 #if NET10_0_OR_GREATER
     extension(StringComparer)
     {
-
         public static StringComparer Numeric
             => StringComparer.Create(CultureInfo.CurrentCulture, CompareOptions.NumericOrdering);
 
