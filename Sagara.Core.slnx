@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="src/Sagara.Core.Benchmarks/Sagara.Core.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="DefaultDocumentation.json" />
+    <File Path="Directory.Build.props" />
+    <File Path="global.json" />
+    <File Path="make_docs.bat" />
+    <File Path="nuget.config" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Sagara.Core.AspNetCore/Sagara.Core.AspNetCore.csproj" />
+    <Project Path="src/Sagara.Core.Caching/Sagara.Core.Caching.csproj" />
+    <Project Path="src/Sagara.Core.Data/Sagara.Core.Data.csproj" />
+    <Project Path="src/Sagara.Core.Logging.Serilog/Sagara.Core.Logging.Serilog.csproj" />
+    <Project Path="src/Sagara.Core/Sagara.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="src/Sagara.Core.Tests/Sagara.Core.Tests.csproj" />
+  </Folder>
+</Solution>
