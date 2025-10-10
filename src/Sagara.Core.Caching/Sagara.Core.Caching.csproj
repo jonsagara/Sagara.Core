@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-
 		<!-- NuGet -->
 		<PackageId>Sagara.Core.Caching</PackageId>
 		<Description>Common caching functionality for redis.</Description>

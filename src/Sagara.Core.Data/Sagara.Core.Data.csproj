@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-
 		<!-- NuGet -->
 		<PackageId>Sagara.Core.Data</PackageId>
 		<Description>Common data access functionality using Entity Framework Core.</Description>

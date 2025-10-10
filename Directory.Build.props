@@ -2,9 +2,6 @@
 	<PropertyGroup>
 
 		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
-
-		<!-- For .NET 10 -->
-		<LangVersion>14.0</LangVersion>
 		
 		<!-- NuGet -->
 		<Version>4.6.2</Version>
@@ -15,6 +12,12 @@
 		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://github.com/jonsagara/Sagara.Core</PackageProjectUrl>
+		
+		<!-- C# stuff -->
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<!-- For .NET 10 -->
+		<LangVersion>14.0</LangVersion>
 
 		<!-- Code Analysis -->
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>

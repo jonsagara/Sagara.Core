@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-
 		<!-- NuGet -->
 		<PackageId>Sagara.Core</PackageId>
 		<Description>Common code that I reuse in my projects.</Description>
