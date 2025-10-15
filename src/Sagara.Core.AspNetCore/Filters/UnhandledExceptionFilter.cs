@@ -70,7 +70,10 @@ public class UnhandledExceptionFilter : IExceptionFilter
             log.AppendLine(CultureInfo.InvariantCulture, $"    Raw URL: {context.HttpContext.Request.GetEncodedUrl()}");
         }
 
-        _logger.UnhandledException(context.Exception, log.ToString());
+        if (_logger.IsEnabled(LogLevel.Error))
+        {
+            _logger.Error_UnhandledException(context.Exception, log.ToString());
+        }
 
         // Don't set it to handled. Let it continue through the pipeline.
     }
@@ -82,5 +85,5 @@ public class UnhandledExceptionFilter : IExceptionFilter
 internal static partial class UnhandledExceptionFilterLogger
 {
     [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "{message}")]
-    public static partial void UnhandledException(this ILogger logger, Exception ex, string message);
+    public static partial void Error_UnhandledException(this ILogger logger, Exception ex, string message);
 }
