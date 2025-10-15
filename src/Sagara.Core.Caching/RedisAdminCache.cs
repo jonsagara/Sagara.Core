@@ -53,7 +53,7 @@ public class RedisAdminCache : RedisCache
         catch (Exception ex)
         {
             // Don't let the cache server bring down the application.
-            _logger.UnhandledException(ex, command: "FLUSHALL", key: "(all keys)");
+            _logger.Error_UnhandledException(ex, command: "FLUSHALL", key: "(all keys)");
         }
     }
 

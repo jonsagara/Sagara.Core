@@ -56,22 +56,22 @@ public class RedisCache
         // Log connection and error events.
         multiplexer.ConnectionFailed += (sender, e) =>
         {
-            _logger.OnConnectionFailed(e.Exception, logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
+            _logger.Error_OnConnectionFailed(e.Exception, logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
         };
 
         multiplexer.ConnectionRestored += (sender, e) =>
         {
-            _logger.OnConnectionRestored(e.Exception, logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
+            _logger.Information_OnConnectionRestored(e.Exception, logPrefix, e.ConnectionType, e.EndPoint, e.FailureType);
         };
 
         multiplexer.ErrorMessage += (sender, e) =>
         {
-            _logger.OnErrorMessage(logPrefix, e.EndPoint, e.Message);
+            _logger.Error_OnErrorMessage(logPrefix, e.EndPoint, e.Message);
         };
 
         multiplexer.ServerMaintenanceEvent += (sender, e) =>
         {
-            _logger.OnServerMaintenanceEvent(logPrefix, e.ReceivedTimeUtc, e.StartTimeUtc, e.RawMessage);
+            _logger.Warning_OnServerMaintenanceEvent(logPrefix, e.ReceivedTimeUtc, e.StartTimeUtc, e.RawMessage);
         };
 
         return multiplexer;
@@ -107,7 +107,7 @@ public class RedisCache
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.UnhandledException(ex, command: "GET", key: key);
+            _logger.Error_UnhandledException(ex, command: "GET", key: key);
         }
 
         return default;
@@ -143,7 +143,7 @@ return val
             var db = GetDatabase();
 
             var redisResult = await db
-                .ScriptEvaluateAsync(SLIDING_EXPIRATION_LUA_SCRIPT, new RedisKey[] { key }, new RedisValue[] { expiry.TotalSeconds })
+                .ScriptEvaluateAsync(script: SLIDING_EXPIRATION_LUA_SCRIPT, keys: [key], values: [expiry.TotalSeconds])
                 .ConfigureAwait(false);
 
             var value = (string?)redisResult;
@@ -155,7 +155,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.UnhandledException(ex, command: "GET/EXPIRE", key: key);
+            _logger.Error_UnhandledException(ex, command: "GET/EXPIRE", key: key);
         }
 
         return default;
@@ -178,7 +178,7 @@ return val
             var db = GetDatabase();
 
             var redisResult = db
-                .ScriptEvaluate(SLIDING_EXPIRATION_LUA_SCRIPT, new RedisKey[] { key }, new RedisValue[] { expiry.TotalSeconds });
+                .ScriptEvaluate(script: SLIDING_EXPIRATION_LUA_SCRIPT, keys: [key], values: [expiry.TotalSeconds]);
 
             var value = (string?)redisResult;
             if (!string.IsNullOrWhiteSpace(value))
@@ -189,7 +189,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.UnhandledException(ex, command: "GET/EXPIRE", key: key);
+            _logger.Error_UnhandledException(ex, command: "GET/EXPIRE", key: key);
         }
 
         return default;
@@ -219,7 +219,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.UnhandledException(ex, command: "SET", key: key);
+            _logger.Error_UnhandledException(ex, command: "SET", key: key);
         }
 
         return false;
@@ -247,7 +247,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.UnhandledException(ex, command: "SET", key: key);
+            _logger.Error_UnhandledException(ex, command: "SET", key: key);
         }
 
         return false;
@@ -300,7 +300,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.UnhandledException(ex, command: "DEL", key: key);
+            _logger.Error_UnhandledException(ex, command: "DEL", key: key);
         }
 
         return false;
@@ -331,7 +331,10 @@ return val
             catch (Exception ex)
             {
                 // Don't let cache server unavailability bring down the application.
-                _logger.UnhandledException(ex, command: "DEL", key: string.Join(" ", keys));
+                if (_logger.IsEnabled(LogLevel.Error))
+                {
+                    _logger.Error_UnhandledException(ex, command: "DEL", key: string.Join(" ", keys));
+                }
             }
         }
 
@@ -374,13 +377,13 @@ return val
             // INCR and return the counter value. Will return 1 if it didn't already exist. Expire is only
             //   called if the key didn't already exist.
             return (long)await db
-                .ScriptEvaluateAsync(INCREMENT_AND_EXPIRE_ON_CREATE_LUA_SCRIPT, new RedisKey[] { key }, new RedisValue[] { expiry.TotalSeconds })
+                .ScriptEvaluateAsync(script: INCREMENT_AND_EXPIRE_ON_CREATE_LUA_SCRIPT, keys: [key], values: [expiry.TotalSeconds])
                 .ConfigureAwait(false);
         }
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.UnhandledException(ex, command: "INCR and EXPIRE On Create", key: key);
+            _logger.Error_UnhandledException(ex, command: "INCR and EXPIRE On Create", key: key);
         }
 
         return 0L;
@@ -414,7 +417,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.UnhandledSubscribeException(ex, channel);
+            _logger.Error_UnhandledSubscribeException(ex, channel);
         }
     }
 
@@ -432,7 +435,7 @@ return val
         catch (Exception ex)
         {
             // Don't let cache server unavailability bring down the application.
-            _logger.UnhandledPublishException(ex, channel, message);
+            _logger.Error_UnhandledPublishException(ex, channel, message);
         }
 
         return 0L;
