@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Sagara.Core.Tests.ExtensionTests;
 
-public class StringExtensionTests
+public partial class StringExtensionTests
 {
     //
     // Left
