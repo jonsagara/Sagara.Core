@@ -213,7 +213,7 @@ return val
             var db = GetDatabase();
 
             return await db
-                .StringSetAsync(key, STJsonHelper.Serialize(value), expiry)
+                .StringSetAsync(key, STJsonHelper.Serialize(value), expiry, When.Always)
                 .ConfigureAwait(false);
         }
         catch (Exception ex)
@@ -242,7 +242,7 @@ return val
         {
             var db = GetDatabase();
 
-            return db.StringSet(key, STJsonHelper.Serialize(value), expiry);
+            return db.StringSet(key, STJsonHelper.Serialize(value), expiry, When.Always);
         }
         catch (Exception ex)
         {
