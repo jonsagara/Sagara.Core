@@ -44,7 +44,7 @@ public static class RandomString
     /// <returns>The random bytes as a base64 url-encoded string.</returns>
     // Justification: It's a base64 URL-encoded string, not a URI.
 #pragma warning disable CA1055 // URI-like return values should not be strings
-    public static string GenerateRandomBase64UrlEncodedString(int byteCount)
+    public static string GenerateBase64UrlEncoded(int byteCount)
 #pragma warning restore CA1055 // URI-like return values should not be strings
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(byteCount, 0);
@@ -69,7 +69,7 @@ public static class RandomString
     /// any padding intact.</remarks>
     /// <param name="byteCount">The number of random bytes to generate.</param>
     /// <returns>The random bytes as a base64-encoded string.</returns>
-    public static string GenerateRandomBase64EncodedString(int byteCount)
+    public static string GenerateBase64Encoded(int byteCount)
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(byteCount, 0);
 
@@ -92,7 +92,7 @@ public static class RandomString
     /// </summary>
     /// <param name="length">The length of the random string to generate.</param>
     /// <returns>The random bytes encoded as a string that can contain the characters in [A-Z0-9].</returns>
-    public static string GenerateUppercaseAlphanumericString(int length)
+    public static string GenerateUppercaseAlphanumeric(int length)
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(length, 0);
 
@@ -106,7 +106,7 @@ public static class RandomString
     /// <param name="length">The length of the random string to generate.</param>
     /// <param name="includeDashAndUnderscore">If true, include both dash ('-') and underscore ('_') as possible characters in the resulting string; otherwise, omit them.</param>
     /// <returns>The random bytes encoded as a string that can contain the characters in [a-zA-Z0-9-_].</returns>
-    public static string GenerateAlphanumericString(int length, bool includeDashAndUnderscore = true)
+    public static string GenerateAlphanumeric(int length, bool includeDashAndUnderscore = true)
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(length, 0);
 
@@ -122,7 +122,7 @@ public static class RandomString
     /// <param name="length">The length of the random string to generate.</param>
     /// <returns>The random bytes encoded as a string that can contain the characters in [a-zA-Z0-9-_], as 
     /// well as the various symbol characters.</returns>
-    public static string GenerateRandomString(int length)
+    public static string Generate(int length)
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(length, 0);
 
