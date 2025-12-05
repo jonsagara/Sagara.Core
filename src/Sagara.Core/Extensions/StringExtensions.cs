@@ -63,6 +63,7 @@ public static class StringExtensions
     /// <param name="value">The string to operate on.</param>
     /// <param name="oldValue">The string to be replaced.</param>
     /// <param name="newValue">The string to replace the last occurence of <paramref name="oldValue"/>.</param>
+    /// <param name="comparisonType">The type of <see cref="StringComparison"/> to use while performing the replacement.</param>
     /// <returns>A string that is equivalent to the current string except that the last instance
     /// of <paramref name="oldValue"/> is replaced with <paramref name="newValue"/>. If <paramref name="oldValue"/>
     /// is not found in the current instance, the method returns the current instance unchanged.</returns>
