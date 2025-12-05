@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace Sagara.Core;
 
-public static class RandomStringHelper
+public static class RandomString
 {
     // These are internal so that we can see them in unit tests.
     internal const string AlphabetLower = "abcdefghijklmnopqrstuvwxyz";
