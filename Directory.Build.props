@@ -4,9 +4,9 @@
 		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
 		
 		<!-- NuGet -->
-		<Version>4.9.1</Version>
-		<AssemblyVersion>4.9.0</AssemblyVersion>
-		<FileVersion>4.9.0</FileVersion>
+		<Version>5.0.0</Version>
+		<AssemblyVersion>5.0.0</AssemblyVersion>
+		<FileVersion>5.0.0</FileVersion>
 		<Authors>Jon Sagara</Authors>
 		<Copyright>Copyright 2022-2025</Copyright>
 		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
