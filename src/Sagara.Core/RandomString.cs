@@ -35,6 +35,13 @@ public static class RandomString
         .. Digits
         ];
 
+    private static readonly char[] _uppercaseAlphanumericPlusDashUnderscore = [
+        .. AlphabetLower.ToUpper(CultureInfo.InvariantCulture),
+        .. Digits,
+        '-',
+        '_',
+        ];
+
 
     /// <summary>
     /// Generates a cryptographically-strong array of random bytes and return them as a base64 url-encoded string. 
@@ -88,25 +95,28 @@ public static class RandomString
 
     /// <summary>
     /// Generates a cryptographically-strong array of random bytes and return them encoded as a string that
-    /// can contain the characters in [A-Z0-9].
+    /// can contain the characters in [A-Z0-9]. Optionally include dash ('-') and underscore ('_') as possible characters.
     /// </summary>
     /// <param name="length">The length of the random string to generate.</param>
+    /// <param name="includeDashAndUnderscore">If true, include both dash ('-') and underscore ('_') as possible characters in the resulting string; otherwise, omit them. Default is false.</param>
     /// <returns>The random bytes encoded as a string that can contain the characters in [A-Z0-9].</returns>
-    public static string GenerateUppercaseAlphanumeric(int length)
+    public static string GenerateUppercaseAlphanumeric(int length, bool includeDashAndUnderscore = false)
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(length, 0);
 
-        return RandomNumberGenerator.GetString(_uppercaseAlphanumeric, length);
+        return includeDashAndUnderscore
+            ? RandomNumberGenerator.GetString(_uppercaseAlphanumericPlusDashUnderscore, length)
+            : RandomNumberGenerator.GetString(_uppercaseAlphanumeric, length);
     }
 
     /// <summary>
     /// Generate a cryptographically-strong array of random bytes and return them encoded as a string that
-    /// can contain the characters in [a-zA-Z0-9-_].
+    /// can contain the characters in [a-zA-Z0-9]. Optionally include dash ('-') and underscore ('_') as possible characters.
     /// </summary>
     /// <param name="length">The length of the random string to generate.</param>
-    /// <param name="includeDashAndUnderscore">If true, include both dash ('-') and underscore ('_') as possible characters in the resulting string; otherwise, omit them.</param>
+    /// <param name="includeDashAndUnderscore">If true, include both dash ('-') and underscore ('_') as possible characters in the resulting string; otherwise, omit them. Default is false.</param>
     /// <returns>The random bytes encoded as a string that can contain the characters in [a-zA-Z0-9-_].</returns>
-    public static string GenerateAlphanumeric(int length, bool includeDashAndUnderscore = true)
+    public static string GenerateAlphanumeric(int length, bool includeDashAndUnderscore = false)
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(length, 0);
 
