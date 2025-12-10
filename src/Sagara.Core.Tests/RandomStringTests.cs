@@ -228,17 +228,82 @@ public class RandomStringTests
     [InlineData(32)]
     [InlineData(50)]
     [InlineData(100)]
-    public void GenerateUppercaseAlphanumeric_ProducesUppercaseLettersAndDigits(int length)
+    public void GenerateUppercaseAlphanumeric_WithoutDashAndUnderscore_ContainsOnlyUppercaseLettersAndDigits(int length)
     {
-        var result = RandomString.GenerateUppercaseAlphanumeric(length);
+        var result = RandomString.GenerateUppercaseAlphanumeric(length, includeDashAndUnderscore: false);
 
         Assert.NotNull(result);
         Assert.Equal(length, result.Length);
 
         foreach (var c in result)
         {
-            Assert.True(char.IsUpper(c) || char.IsDigit(c), $"Character '{c}' is not upper-case alphanumeric.");
+            Assert.True(char.IsUpper(c) || char.IsDigit(c), $"Character '{c}' is not uppercase alphanumeric.");
+            Assert.NotEqual('-', c);
+            Assert.NotEqual('_', c);
         }
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(16)]
+    [InlineData(64)]
+    public void GenerateUppercaseAlphanumeric_WithDashAndUnderscore_ContainsOnlyUppercaseLettersDigitsDashUnderscore(int length)
+    {
+        var result = RandomString.GenerateUppercaseAlphanumeric(length, includeDashAndUnderscore: true);
+
+        Assert.NotNull(result);
+        Assert.Equal(length, result.Length);
+
+        foreach (var c in result)
+        {
+            Assert.True(char.IsUpper(c) || char.IsDigit(c) || c == '-' || c == '_', $"Character '{c}' is not an uppercase letter, digit, '-', or '_'.");
+        }
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(10)]
+    [InlineData(50)]
+    [InlineData(100)]
+    public void GenerateUppercaseAlphanumeric_ReturnsCorrectLength(int length)
+    {
+        // Act
+        var result = RandomString.GenerateUppercaseAlphanumeric(length);
+
+        // Assert
+        Assert.Equal(length, result.Length);
+    }
+
+    [Fact]
+    public void GenerateUppercaseAlphanumeric_WithDashAndUnderscore_CanIncludeDashAndUnderscore()
+    {
+        // Arrange - Generate many strings to ensure we get at least one dash/underscore
+        const int length = 50;
+        var hasDash = false;
+        var hasUnderscore = false;
+
+        // Act - Try up to 100 times
+        for (int i = 0; i < 100; i++)
+        {
+            var result = RandomString.GenerateUppercaseAlphanumeric(length, includeDashAndUnderscore: true);
+            if (result.Contains('-', StringComparison.Ordinal))
+            {
+                hasDash = true;
+            }
+
+            if (result.Contains('_', StringComparison.Ordinal))
+            {
+                hasUnderscore = true;
+            }
+
+            if (hasDash && hasUnderscore)
+            {
+                break;
+            }
+        }
+
+        // Assert - With enough attempts, we should see both characters
+        Assert.True(hasDash || hasUnderscore, "Expected to see at least dash or underscore in generated strings");
     }
 
     [Fact]
@@ -267,7 +332,7 @@ public class RandomStringTests
         // Act
         var result = RandomString.GenerateUppercaseAlphanumeric(length);
 
-        // Assert - Check that both letters and digits appear
+        // Assert - Check that both uppercase letters and digits appear
         Assert.Matches("[A-Z]", result);
         Assert.Matches("[0-9]", result);
     }
