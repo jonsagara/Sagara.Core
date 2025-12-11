@@ -30,6 +30,18 @@ public static class RandomString
         .. Symbols,
         ];
 
+    private static readonly char[] _lowercaseAlphanumeric = [
+        .. AlphabetLower,
+        .. Digits
+        ];
+
+    private static readonly char[] _lowercaseAlphanumericPlusDashUnderscore = [
+        .. AlphabetLower,
+        .. Digits,
+        '-',
+        '_',
+        ];
+
     private static readonly char[] _uppercaseAlphanumeric = [
         .. AlphabetLower.ToUpper(CultureInfo.InvariantCulture),
         .. Digits
@@ -71,6 +83,22 @@ public static class RandomString
         return includeDashAndUnderscore
             ? RandomNumberGenerator.GetString(_alphanumericPlusDashUnderscore, length)
             : RandomNumberGenerator.GetString(_alphanumeric, length);
+    }
+
+    /// <summary>
+    /// Generates a cryptographically-strong array of random bytes and return them encoded as a string that
+    /// can contain the characters in [a-z0-9]. Optionally include dash ('-') and underscore ('_') as possible characters.
+    /// </summary>
+    /// <param name="length">The length of the random string to generate.</param>
+    /// <param name="includeDashAndUnderscore">If true, include both dash ('-') and underscore ('_') as possible characters in the resulting string; otherwise, omit them. Default is false.</param>
+    /// <returns>The random bytes encoded as a string that can contain the characters in [a-z0-9].</returns>
+    public static string GenerateLowercaseAlphanumeric(int length, bool includeDashAndUnderscore = false)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(length, 0);
+
+        return includeDashAndUnderscore
+            ? RandomNumberGenerator.GetString(_lowercaseAlphanumericPlusDashUnderscore, length)
+            : RandomNumberGenerator.GetString(_lowercaseAlphanumeric, length);
     }
 
     /// <summary>

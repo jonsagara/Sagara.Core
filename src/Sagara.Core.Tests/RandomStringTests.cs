@@ -232,6 +232,137 @@ public class RandomStringTests
 
 
     //
+    // GenerateLowercaseAlphanumeric
+    //
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(-10)]
+    public void GenerateLowercaseAlphanumeric_WithNonPositiveLength_Throws(int length)
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => RandomString.GenerateLowercaseAlphanumeric(length));
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(8)]
+    [InlineData(10)]
+    [InlineData(32)]
+    [InlineData(50)]
+    [InlineData(100)]
+    public void GenerateLowercaseAlphanumeric_WithoutDashAndUnderscore_ContainsOnlyLowercaseLettersAndDigits(int length)
+    {
+        var result = RandomString.GenerateLowercaseAlphanumeric(length, includeDashAndUnderscore: false);
+
+        Assert.NotNull(result);
+        Assert.Equal(length, result.Length);
+
+        foreach (var c in result)
+        {
+            Assert.True(char.IsLower(c) || char.IsDigit(c), $"Character '{c}' is not lowercase alphanumeric.");
+            Assert.NotEqual('-', c);
+            Assert.NotEqual('_', c);
+        }
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(16)]
+    [InlineData(64)]
+    public void GenerateLowercaseAlphanumeric_WithDashAndUnderscore_ContainsOnlyLowercaseLettersDigitsDashUnderscore(int length)
+    {
+        var result = RandomString.GenerateLowercaseAlphanumeric(length, includeDashAndUnderscore: true);
+
+        Assert.NotNull(result);
+        Assert.Equal(length, result.Length);
+
+        foreach (var c in result)
+        {
+            Assert.True(char.IsLower(c) || char.IsDigit(c) || c == '-' || c == '_', $"Character '{c}' is not a lowerercase letter, digit, '-', or '_'.");
+        }
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(10)]
+    [InlineData(50)]
+    [InlineData(100)]
+    public void GenerateLowercaseAlphanumeric_ReturnsCorrectLength(int length)
+    {
+        // Act
+        var result = RandomString.GenerateLowercaseAlphanumeric(length);
+
+        // Assert
+        Assert.Equal(length, result.Length);
+    }
+
+    [Fact]
+    public void GenerateLowercaseAlphanumeric_WithDashAndUnderscore_CanIncludeDashAndUnderscore()
+    {
+        // Arrange - Generate many strings to ensure we get at least one dash/underscore
+        const int length = 50;
+        var hasDash = false;
+        var hasUnderscore = false;
+
+        // Act - Try up to 100 times
+        for (int i = 0; i < 100; i++)
+        {
+            var result = RandomString.GenerateLowercaseAlphanumeric(length, includeDashAndUnderscore: true);
+            if (result.Contains('-', StringComparison.Ordinal))
+            {
+                hasDash = true;
+            }
+
+            if (result.Contains('_', StringComparison.Ordinal))
+            {
+                hasUnderscore = true;
+            }
+
+            if (hasDash && hasUnderscore)
+            {
+                break;
+            }
+        }
+
+        // Assert - With enough attempts, we should see both characters
+        Assert.True(hasDash || hasUnderscore, "Expected to see at least dash or underscore in generated strings");
+    }
+
+    [Fact]
+    public void GenerateLowercaseAlphanumeric_GeneratesDifferentStrings_OnMultipleCalls()
+    {
+        // Arrange
+        const int length = 50;
+
+        // Act
+        var result1 = RandomString.GenerateLowercaseAlphanumeric(length);
+        var result2 = RandomString.GenerateLowercaseAlphanumeric(length);
+        var result3 = RandomString.GenerateLowercaseAlphanumeric(length);
+
+        // Assert
+        Assert.NotEqual(result1, result2);
+        Assert.NotEqual(result2, result3);
+        Assert.NotEqual(result1, result3);
+    }
+
+    [Fact]
+    public void GenerateLowercaseAlphanumeric_HasGoodDistribution()
+    {
+        // Arrange
+        const int length = 1000;
+
+        // Act
+        var result = RandomString.GenerateLowercaseAlphanumeric(length);
+
+        // Assert - Check that both lowercase letters and digits appear
+        Assert.Matches("[a-z]", result);
+        Assert.Matches("[0-9]", result);
+    }
+
+
+    //
     // GenerateUppercaseAlphanumeric
     //
 
