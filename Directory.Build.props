@@ -4,7 +4,7 @@
 		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
 		
 		<!-- NuGet -->
-		<Version>5.3.4</Version>
+		<Version>5.3.5</Version>
 		<AssemblyVersion>5.3.0</AssemblyVersion>
 		<FileVersion>5.3.0</FileVersion>
 		<Authors>Jon Sagara</Authors>
