@@ -64,7 +64,7 @@ public class ApplicationMetadata
     /// <param name="applicationAssemblyType">Any type from the assembly to read the git hash from.</param>
     /// <param name="displayTimeZone">The IANA time zone identifier to use for the <see cref="BuiltLocal"/> property.
     /// If null, defaults to "America/Los_Angeles".</param>
-    public ApplicationMetadata(Type applicationAssemblyType, string? displayTimeZone)
+    internal ApplicationMetadata(Type applicationAssemblyType, string? displayTimeZone)
     {
         Check.ThrowIfNull(applicationAssemblyType);
 
