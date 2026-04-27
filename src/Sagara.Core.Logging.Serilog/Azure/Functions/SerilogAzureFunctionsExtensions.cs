@@ -28,7 +28,7 @@ public static class SerilogAzureFunctionsExtensions
         var nonSerilogMELProviders = new LoggerProviderCollection();
 #pragma warning restore CA2000 // Unnecessary assignment of a value
 
-        // Always write Serilog.ILogger log evnets to all other non-Serilog ILoggerProviders (most importantly, OTel).
+        // Always write Serilog.ILogger log events to all other non-Serilog ILoggerProviders (most importantly, OTel).
         //   For logs that originate from MEL (and thus don't have the "DirectSerilog" property), we assume they've
         //   already reached OTel, and we don't forward them again.
         var underlyingLogger = createSerilogLoggerConfiguration()
