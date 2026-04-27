@@ -67,7 +67,7 @@ public static class SerilogAzureFunctionsExtensions
     }
 
     /// <summary>
-    /// <para>After the host is build, retrieve all non-<see cref="SerilogLoggerProvider"/> <see cref="ILoggerProvider"/> instances
+    /// <para>After the host is built, retrieve all non-<see cref="SerilogLoggerProvider"/> <see cref="ILoggerProvider"/> instances
     /// and register them with Serilog. This enables Serilog to forward all Serilog.ILogger log entries to the registered
     /// MEL providers.</para>
     /// </summary>
