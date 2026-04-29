@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Sagara.Core.Logging.Serilog;
 using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;
@@ -36,7 +35,7 @@ public static class SerilogExtensions
     /// return value will be ANDed together with the check for existence of the "DirectSerilog" property.</param>
     /// <returns>A result containing the empty collection of other MEL providers. The caller must populate it after building the host.</returns>
 
-    public static AddSerilogToExistingILoggerFactoryResult AddSerilogToExistingILoggerFactory(this IHostApplicationBuilder builder, 
+    public static AddSerilogToExistingILoggerFactoryResult AddSerilogToExistingILoggerFactory(this IHostApplicationBuilder builder,
         Func<LoggerConfiguration> createSerilogLoggerConfiguration, Func<LogEvent, bool>? additionalWriteToProvidersInclusionPredicate = null)
     {
         Check.ThrowIfNull(builder);
