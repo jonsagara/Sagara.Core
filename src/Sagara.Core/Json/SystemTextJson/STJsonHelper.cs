@@ -52,6 +52,35 @@ public static class STJsonHelper
     }
 
     /// <summary>
+    /// Convert the provided value to UTF-8 encoded JSON text and write it to the <see cref="Stream"/>.
+    /// </summary>
+    /// <param name="utf8Json">The UTF-8 <see cref="Stream"/> to write to.</param>
+    /// <param name="value">The value to convert to JSON.</param>
+    /// <param name="camelCase">True to use camelCase property naming; false to use PascalCase. Default is true.</param>
+    /// <param name="prettyPrint">True to pretty print the JSON; false to minify it. Default is false.</param>
+    public static void Serialize<TValue>(Stream utf8Json, TValue value, bool camelCase = true, bool prettyPrint = false)
+    {
+        Check.ThrowIfNull(utf8Json);
+
+        if (camelCase)
+        {
+            var camelCaseOptions = prettyPrint
+                ? _serializeCamelCasePrettyPrint
+                : _serializeCamelCaseMinify;
+
+            JsonSerializer.Serialize(utf8Json, value, camelCaseOptions);
+        }
+        else
+        {
+            var pascalCaseOptions = prettyPrint
+                ? _serializePascalCasePrettyPrint
+                : _serializePascalCaseMinify;
+
+            JsonSerializer.Serialize(utf8Json, value, pascalCaseOptions);
+        }
+    }
+
+    /// <summary>
     /// Asynchronously convert the provided value to UTF-8 encoded JSON text and write it to the <see cref="Stream"/>.
     /// </summary>
     /// <param name="utf8Json">The UTF-8 <see cref="Stream"/> to write to.</param>
@@ -65,19 +94,19 @@ public static class STJsonHelper
 
         if (camelCase)
         {
-            var options = prettyPrint
+            var camelCaseOptions = prettyPrint
                 ? _serializeCamelCasePrettyPrint
                 : _serializeCamelCaseMinify;
 
-            await JsonSerializer.SerializeAsync(utf8Json, value, options, cancellationToken).ConfigureAwait(false);
+            await JsonSerializer.SerializeAsync(utf8Json, value, camelCaseOptions, cancellationToken).ConfigureAwait(false);
         }
         else
         {
-            var options = prettyPrint
+            var pascalCaseOptions = prettyPrint
                 ? _serializePascalCasePrettyPrint
                 : _serializePascalCaseMinify;
 
-            await JsonSerializer.SerializeAsync(utf8Json, value, options, cancellationToken).ConfigureAwait(false);
+            await JsonSerializer.SerializeAsync(utf8Json, value, pascalCaseOptions, cancellationToken).ConfigureAwait(false);
         }
     }
 
@@ -96,6 +125,24 @@ public static class STJsonHelper
         Check.ThrowIfNull(options);
 
         return JsonSerializer.Serialize(value, options);
+    }
+
+    /// <summary>
+    /// Convert the value into a JSON string using the settings passed in by the caller.
+    /// </summary>
+    /// <remarks>
+    /// This class's available configurations don't work for all cases. Allow the caller to completely customize
+    /// the serialization behavior.
+    /// </remarks>
+    /// <param name="utf8Json">The UTF-8 <see cref="Stream"/> to write to.</param>
+    /// <param name="value">The value to convert to JSON.</param>
+    /// <param name="options">The <see cref="JsonSerializerOptions"/> explicitly configured by the caller.</param>
+    public static void Serialize<TValue>(Stream utf8Json, TValue value, JsonSerializerOptions options)
+    {
+        Check.ThrowIfNull(utf8Json);
+        Check.ThrowIfNull(options);
+
+        JsonSerializer.Serialize(utf8Json, value, options);
     }
 
     /// <summary>
@@ -162,6 +209,40 @@ public static class STJsonHelper
         Check.ThrowIfNull(options);
 
         return JsonSerializer.Deserialize<T>(json, options);
+    }
+
+    /// <summary>
+    /// Reads the UTF-8 encoded text representing a single JSON value into a <typeparamref name="T"/>.
+    /// The Stream will be read to completion.
+    /// </summary>
+    /// <param name="utf8Json">JSON data to parse.</param>
+    /// <param name="caseInsensitivePropertyNames">True to use case-insensitive property names; false to use
+    /// case-sensitive property names. Default is true.</param>
+    /// <returns>The deserialized object of type T.</returns>
+    public static T? Deserialize<T>(Stream utf8Json, bool caseInsensitivePropertyNames = true)
+    {
+        Check.ThrowIfNull(utf8Json);
+
+        var options = caseInsensitivePropertyNames
+            ? _deserializeCaseInsensitive
+            : _deserializeCaseSensitive;
+
+        return JsonSerializer.Deserialize<T>(utf8Json, options);
+    }
+
+    /// <summary>
+    /// Reads the UTF-8 encoded text representing a single JSON value into a <typeparamref name="T"/>.
+    /// The Stream will be read to completion.
+    /// </summary>
+    /// <param name="utf8Json">JSON data to parse.</param>
+    /// <param name="options">The <see cref="JsonSerializerOptions"/> explicitly configured by the caller.</param>
+    /// <returns>The deserialized object of type T.</returns>
+    public static T? Deserialize<T>(Stream utf8Json, JsonSerializerOptions options)
+    {
+        Check.ThrowIfNull(utf8Json);
+        Check.ThrowIfNull(options);
+
+        return JsonSerializer.Deserialize<T>(utf8Json, options);
     }
 
     /// <summary>
