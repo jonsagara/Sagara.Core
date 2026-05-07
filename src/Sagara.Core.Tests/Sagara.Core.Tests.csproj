@@ -3,15 +3,10 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<AnalysisMode>None</AnalysisMode>
-		<!--
-		Enable support for Microsoft Testing Platform with 'dotnet test'.
-		https://xunit.net/docs/getting-started/v3/microsoft-testing-platform
-		-->
-		<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="xunit.v3" Version="3.2.2" />
+		<PackageReference Include="xunit.v3.mtp-v2" Version="3.2.2" />
 	</ItemGroup>
 
 	<ItemGroup>
