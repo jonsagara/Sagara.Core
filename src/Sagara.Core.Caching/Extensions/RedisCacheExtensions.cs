@@ -14,9 +14,9 @@ public static class RedisCacheExtensions
     /// </remarks>
     /// <param name="services">The DI services collection to add to.</param>
     /// <param name="connectionString">The StackExchange.Redis connection string to use.</param>
-    /// <param name="redisProtocol">The Redis protocol version to use when connecting to the Redis server. Default is <see cref="RedisProtocol.Resp3"/>.</param>
+    /// <param name="redisProtocol">The Redis protocol version to use when connecting to the Redis server.</param>
     public static IServiceCollection AddRedisCacheSingleton(this IServiceCollection services, string connectionString,
-        RedisProtocol redisProtocol = RedisProtocol.Resp3)
+        RedisProtocol redisProtocol)
     {
         Check.ThrowIfNull(services);
         Check.ThrowIfNullOrWhiteSpace(connectionString);
@@ -39,9 +39,9 @@ public static class RedisCacheExtensions
     /// </remarks>
     /// <param name="services">The DI services collection to add to.</param>
     /// <param name="connectionString">The StackExchange.Redis connection string to use.</param>
-    /// <param name="redisProtocol">The Redis protocol version to use when connecting to the Redis server. Default is <see cref="RedisProtocol.Resp3"/>.</param>
+    /// <param name="redisProtocol">The Redis protocol version to use when connecting to the Redis server.</param>
     public static IServiceCollection AddRedisAdminCacheSingleton(this IServiceCollection services, string connectionString,
-        RedisProtocol redisProtocol = RedisProtocol.Resp3)
+        RedisProtocol redisProtocol)
     {
         Check.ThrowIfNull(services);
         Check.ThrowIfNullOrWhiteSpace(connectionString);
