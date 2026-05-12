@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 
 namespace Sagara.Core.Caching;
 
@@ -25,8 +26,8 @@ public class RedisAdminCache : RedisCache
     /// <para>Same as <see cref="RedisCache"/>, but it supports protected operations, such as FLUSH.</para>
     /// <para>NOTE: Be sure to set abortConnect=false in the connection string so that we gracefully handle connection failures.</para>
     /// </remarks>
-    public RedisAdminCache(ILogger<RedisAdminCache> logger, string connectionString)
-        : base(logger, connectionString, allowAdmin: true)
+    public RedisAdminCache(ILogger<RedisAdminCache> logger, string connectionString, RedisProtocol redisProtocol)
+        : base(logger, connectionString, redisProtocol, allowAdmin: true)
     {
         _logger = logger;
     }
