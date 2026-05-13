@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sagara.Core.Enums;
 using Sagara.Core.Json.SystemTextJson;
 using StackExchange.Redis;
 
@@ -27,15 +28,18 @@ public class RedisCache
     /// </summary>
     /// <param name="logger">A logger from the DI container.</param>
     /// <param name="connectionString">The StackExchange.Redis connection string.</param>
+    /// <param name="redisProtocol">The Redis protocol to use for communication.</param>
     /// <param name="allowAdmin">True to allow redis admin operations; false otherwise.</param>
-    internal RedisCache(ILogger<RedisCache> logger, string connectionString, bool allowAdmin)
+    internal RedisCache(ILogger<RedisCache> logger, string connectionString, RedisProtocol redisProtocol, bool allowAdmin)
     {
         Check.ThrowIfNullOrWhiteSpace(connectionString);
+        EnumTraits<RedisProtocol>.IsValid(redisProtocol);
 
         _logger = logger;
 
         var configOptions = ConfigurationOptions.Parse(connectionString);
         configOptions.AllowAdmin = allowAdmin;
+        configOptions.Protocol = redisProtocol;
 
         Multiplexer = InitializeConnectionMultiplexer(configOptions);
     }

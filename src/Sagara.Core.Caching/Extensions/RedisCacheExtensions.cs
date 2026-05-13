@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 
 namespace Sagara.Core.Caching;
 
@@ -13,7 +14,9 @@ public static class RedisCacheExtensions
     /// </remarks>
     /// <param name="services">The DI services collection to add to.</param>
     /// <param name="connectionString">The StackExchange.Redis connection string to use.</param>
-    public static IServiceCollection AddRedisCacheSingleton(this IServiceCollection services, string connectionString)
+    /// <param name="redisProtocol">The Redis protocol version to use when connecting to the Redis server.</param>
+    public static IServiceCollection AddRedisCacheSingleton(this IServiceCollection services, string connectionString,
+        RedisProtocol redisProtocol)
     {
         Check.ThrowIfNull(services);
         Check.ThrowIfNullOrWhiteSpace(connectionString);
@@ -24,7 +27,7 @@ public static class RedisCacheExtensions
                 // We need to pass an ILogger<T> instance to RedisCache.
                 var logger = serviceProvider.GetRequiredService<ILogger<RedisCache>>();
 
-                return new RedisCache(logger, connectionString, allowAdmin: false);
+                return new RedisCache(logger, connectionString, redisProtocol, allowAdmin: false);
             });
     }
 
@@ -36,7 +39,9 @@ public static class RedisCacheExtensions
     /// </remarks>
     /// <param name="services">The DI services collection to add to.</param>
     /// <param name="connectionString">The StackExchange.Redis connection string to use.</param>
-    public static IServiceCollection AddRedisAdminCacheSingleton(this IServiceCollection services, string connectionString)
+    /// <param name="redisProtocol">The Redis protocol version to use when connecting to the Redis server.</param>
+    public static IServiceCollection AddRedisAdminCacheSingleton(this IServiceCollection services, string connectionString,
+        RedisProtocol redisProtocol)
     {
         Check.ThrowIfNull(services);
         Check.ThrowIfNullOrWhiteSpace(connectionString);
@@ -47,7 +52,7 @@ public static class RedisCacheExtensions
                 // We need to pass an ILogger<T> instance to RedisAdminCache.
                 var logger = serviceProvider.GetRequiredService<ILogger<RedisAdminCache>>();
 
-                return new RedisAdminCache(logger, connectionString);
+                return new RedisAdminCache(logger, connectionString, redisProtocol);
             });
     }
 }
