@@ -51,4 +51,8 @@
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="Sagara.Core.Caching.IntegrationTests" />
+	</ItemGroup>
+
 </Project>

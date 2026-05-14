@@ -445,6 +445,33 @@ return val
         return 0L;
     }
 
+    /// <summary>
+    /// Get the time to live for the specified key. Returns <see langword="null"/> if the key does not
+    /// exist or does not have an expiry set.
+    /// </summary>
+    /// <param name="key">The key to check.</param>
+    /// <returns>The remaining time to live, or <see langword="null"/> if the key does not exist or has no expiry.</returns>
+    internal async Task<TimeSpan?> GetTimeToLiveAsync(string key)
+    {
+        Check.ThrowIfNullOrWhiteSpace(key);
+
+        try
+        {
+            var db = GetDatabase();
+
+            return await db
+                .KeyTimeToLiveAsync(key)
+                .ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            // Don't let cache server unavailability bring down the application.
+            _logger.Error_UnhandledException(ex, command: "TTL", key: key);
+        }
+
+        return null;
+    }
+
 #pragma warning restore CA1031 // Do not catch general exception types
 
 
