@@ -42,10 +42,7 @@ internal sealed class RequiresRedisFlushFactAttribute : FactAttribute
         {
             Skip = "ConnectionStrings:Redis is not configured.";
         }
-        else if (!string.Equals(
-            Environment.GetEnvironmentVariable("REDIS_ALLOW_FLUSH"),
-            "true",
-            StringComparison.OrdinalIgnoreCase))
+        else if (!TestConfiguration.RedisAllowFlush)
         {
             Skip = "REDIS_ALLOW_FLUSH is not set to 'true'. Skipping destructive test.";
         }

@@ -20,6 +20,14 @@ internal static class TestConfiguration
     /// </summary>
     public static string? RedisConnectionString => _config.Value.GetConnectionString("Redis");
 
+    /// <summary>
+    /// <see langword="true"/> when <c>REDIS_ALLOW_FLUSH</c> is set to <c>true</c> in
+    /// <c>appsettings.json</c> (local dev) or the <c>REDIS_ALLOW_FLUSH</c> environment
+    /// variable (CI/CD); <see langword="false"/> otherwise.
+    /// </summary>
+    public static bool RedisAllowFlush =>
+        string.Equals(_config.Value["REDIS_ALLOW_FLUSH"], "true", StringComparison.OrdinalIgnoreCase);
+
     private static IConfiguration BuildConfiguration() =>
         new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
