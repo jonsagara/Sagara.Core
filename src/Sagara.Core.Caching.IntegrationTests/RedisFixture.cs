@@ -16,9 +16,9 @@ namespace Sagara.Core.Caching.IntegrationTests;
 /// </remarks>
 public sealed class RedisFixture : IAsyncLifetime
 {
-    private InspectableRedisCache? _resp2Cache;
-    private InspectableRedisCache? _resp3Cache;
-    private InspectableRedisAdminCache? _adminCache;
+    private RedisCache? _resp2Cache;
+    private RedisCache? _resp3Cache;
+    private RedisAdminCache? _adminCache;
 
     /// <summary>
     /// <see langword="true"/> when <c>ConnectionStrings:Redis</c> is configured and a PING to
@@ -61,15 +61,15 @@ public sealed class RedisFixture : IAsyncLifetime
 
         try
         {
-            _resp2Cache = new InspectableRedisCache(
+            _resp2Cache = new RedisCache(
                 NullLogger<RedisCache>.Instance, connStr, RedisProtocol.Resp2, allowAdmin: false);
-            _resp3Cache = new InspectableRedisCache(
+            _resp3Cache = new RedisCache(
                 NullLogger<RedisCache>.Instance, connStr, RedisProtocol.Resp3, allowAdmin: false);
-            _adminCache = new InspectableRedisAdminCache(
+            _adminCache = new RedisAdminCache(
                 NullLogger<RedisAdminCache>.Instance, connStr, RedisProtocol.Resp2);
 
             // Verify connectivity with a round-trip to the server.
-            await _resp2Cache.GetMultiplexer().GetDatabase().PingAsync();
+            await _resp2Cache.PingAsync();
 
             IsAvailable = true;
         }

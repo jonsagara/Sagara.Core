@@ -476,6 +476,32 @@ return val
 #pragma warning restore CA1031 // Do not catch general exception types
 
 
+    /// <summary>
+    /// <para>Send a ping message to the Redis server and return the round-trip latency.</para>
+    /// <para>Unlike all other public methods on this class, this method does NOT suppress exceptions.
+    /// Exceptions propagate to the caller so that health checks can inspect the raw failure.</para>
+    /// </summary>
+    /// <returns>The round-trip latency of the ping.</returns>
+    public async Task<TimeSpan> PingAsync()
+    {
+        try
+        {
+            return await GetDatabase()
+                .PingAsync()
+                .ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error_UnhandledException(ex, "PING", "");
+
+            // *** EXCEPTION TO ALL OTHER PUBLIC METHODS ***
+            // This is used in health checks. We want the callers to have full access to the raw
+            //   thrown exception.
+            throw;
+        }
+    }
+
+
     //
     // IDisposable / IAsyncDisposable
     //
