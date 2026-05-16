@@ -20,6 +20,7 @@
     <Project Path="src/Sagara.Core/Sagara.Core.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="src/Sagara.Core.Caching.IntegrationTests/Sagara.Core.Caching.IntegrationTests.csproj" />
     <Project Path="src/Sagara.Core.Tests/Sagara.Core.Tests.csproj" />
   </Folder>
 </Solution>

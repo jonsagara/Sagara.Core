@@ -10,6 +10,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Using Include="Xunit" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Sagara.Core\Sagara.Core.csproj" />
 	</ItemGroup>
 
