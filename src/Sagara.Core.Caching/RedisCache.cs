@@ -14,14 +14,15 @@ namespace Sagara.Core.Caching;
 /// <remarks>
 /// NOTE: Be sure to set abortConnect=false in the connection string so that we gracefully handle connection failures.
 /// </remarks>
-public class RedisCache
+public class RedisCache : IDisposable, IAsyncDisposable
 {
     private readonly ILogger<RedisCache> _logger;
+    private bool _disposed;
 
     /// <summary>
     /// The multiplexer used to communicate with redis.
     /// </summary>
-    protected ConnectionMultiplexer Multiplexer { get; set; }
+    protected ConnectionMultiplexer Multiplexer { get; }
 
     /// <summary>
     /// .ctor. Initializes the connection multiplexer.
@@ -473,6 +474,73 @@ return val
     }
 
 #pragma warning restore CA1031 // Do not catch general exception types
+
+
+    //
+    // IDisposable / IAsyncDisposable
+    //
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        // Call Multiplexer's sync Close and Dispose methods to close connections and clean up its resources.
+        // "disposing: true" means, yes, clean up managed resources via the sync Dispose pattern.
+        Dispose(disposing: true);
+
+        // Tell the runtime NOT to call the finalizer since we've already done all the cleanup.
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Closes the underlying connection multiplexer.
+    /// </summary>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            // Don't try to dispose again if we've already been disposed. This can happen if Dispose is called
+            //   multiple times, or if Dispose is called after the finalizer has run.
+            return;
+        }
+
+        if (disposing)
+        {
+            // The caller is the sync Dispose method, so clean up resources using the synchronous API.
+            Multiplexer.Dispose();
+        }
+
+        // Successfully disposed. Mark it as such so that we don't try to dispose again.
+        _disposed = true;
+    }
+
+    /// <inheritdoc/>
+    public async ValueTask DisposeAsync()
+    {
+        // Call Multiplexer's async Close and Dispose methods to close connections and clean up its resources.
+        // NOTE: does NOT mark the object as disposed.
+        await DisposeAsyncCore().ConfigureAwait(false);
+
+        // Mark as disposed, skipping the sync Dispose methods since it's already disposed.
+        Dispose(disposing: false);
+
+        // Tell the runtime NOT to call the finalizer since we've already done all the cleanup.
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Asynchronously closes the underlying connection multiplexer.
+    /// </summary>
+    protected virtual async ValueTask DisposeAsyncCore()
+    {
+        if (_disposed)
+        {
+            // Don't try to dispose again if we've already been disposed. This can happen if Dispose is called
+            //   multiple times, or if Dispose is called after the finalizer has run.
+            return;
+        }
+
+        await Multiplexer.DisposeAsync().ConfigureAwait(false);
+    }
 
 
     //

@@ -84,17 +84,17 @@ public sealed class RedisFixture : IAsyncLifetime
     {
         if (_resp2Cache is not null)
         {
-            await _resp2Cache.GetMultiplexer().CloseAsync();
+            await _resp2Cache.DisposeAsync();
         }
 
         if (_resp3Cache is not null)
         {
-            await _resp3Cache.GetMultiplexer().CloseAsync();
+            await _resp3Cache.DisposeAsync();
         }
 
         if (_adminCache is not null)
         {
-            await _adminCache.GetMultiplexer().CloseAsync();
+            await _adminCache.DisposeAsync();
         }
     }
 }
