@@ -9,9 +9,10 @@ namespace Sagara.Core.Caching.IntegrationTests;
 /// <see cref="RedisAdminCache"/> connections for the duration of the test run.
 /// </summary>
 /// <remarks>
-/// Set the <c>REDIS_CONNECTION_STRING</c> environment variable to a StackExchange.Redis
-/// connection string (e.g. <c>192.168.1.50:6379</c>) before running. If the variable is
-/// absent or the server is unreachable all tests skip gracefully.
+/// Configure the Redis connection string via <c>ConnectionStrings:Redis</c> in
+/// <c>appsettings.json</c> (local dev) or the <c>ConnectionStrings__Redis</c> environment
+/// variable (CI/CD). If the value is absent or the server is unreachable, all tests skip
+/// gracefully.
 /// </remarks>
 public sealed class RedisFixture : IAsyncLifetime
 {
@@ -20,8 +21,8 @@ public sealed class RedisFixture : IAsyncLifetime
     private InspectableRedisAdminCache? _adminCache;
 
     /// <summary>
-    /// <see langword="true"/> when <c>REDIS_CONNECTION_STRING</c> is set and a PING to the
-    /// server succeeded; <see langword="false"/> otherwise.
+    /// <see langword="true"/> when <c>ConnectionStrings:Redis</c> is configured and a PING to
+    /// the server succeeded; <see langword="false"/> otherwise.
     /// </summary>
     public bool IsAvailable { get; private set; }
 
@@ -46,7 +47,7 @@ public sealed class RedisFixture : IAsyncLifetime
     /// <inheritdoc/>
     public async ValueTask InitializeAsync()
     {
-        var rawConnStr = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING");
+        var rawConnStr = TestConfiguration.RedisConnectionString;
         if (string.IsNullOrWhiteSpace(rawConnStr))
         {
             IsAvailable = false;
