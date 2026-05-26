@@ -17,7 +17,7 @@ public static class EnumTraits<TEnum>
     private static readonly TEnum[] _allValues;
     private static readonly long[] _duplicateNumericValues;
     private static readonly FrozenSet<TEnum> _validValues;
-    private static readonly Dictionary<TEnum, string> _validValueDisplayNames;
+    private static readonly FrozenDictionary<TEnum, string> _validValueDisplayNames;
 
 
     // Justification: I can't think of a way to implement this without switching to an instance based class.
@@ -87,7 +87,7 @@ public static class EnumTraits<TEnum>
         //
 
         _validValueDisplayNames = _validValues
-            .ToDictionary(t => t, t => GetDisplayNameOrEnumValueName(t));
+            .ToFrozenDictionary(t => t, t => GetDisplayNameOrEnumValueName(t));
     }
 
     /// <summary>
