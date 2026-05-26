@@ -65,13 +65,13 @@ public static class EnumTraitsExtensions
         /// <summary>
         /// Returns true if the enum declaration is empty; false otherwise.
         /// </summary>
-        public static bool GetIsEmpty()
+        public static bool IsEmpty()
             => EnumTraits<TEnum>.IsEmpty;
 
         /// <summary>
         /// Returns true if the enum is decorated with a <see cref="FlagsAttribute"/>; false otherwise.
         /// </summary>
-        public static bool GetHasFlagsAttribute()
+        public static bool HasFlagsAttribute()
             => EnumTraits<TEnum>.HasFlagsAttribute;
 
         /// <summary>

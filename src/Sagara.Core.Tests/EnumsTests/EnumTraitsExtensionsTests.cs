@@ -8,7 +8,7 @@ namespace Sagara.Core.Tests.EnumsTests;
 public class EnumTraitsExtensionsTests
 {
     //
-    // GetIsEmpty
+    // IsEmpty
     //
 
     public enum EmptyEnum { }
@@ -19,20 +19,20 @@ public class EnumTraitsExtensionsTests
     }
 
     [Fact]
-    public void GetIsEmpty_ReturnsTrue()
+    public void IsEmpty_ReturnsTrue()
     {
-        Assert.True(EmptyEnum.GetIsEmpty());
+        Assert.True(EmptyEnum.IsEmpty());
     }
 
     [Fact]
-    public void GetIsEmpty_ReturnsFalse()
+    public void IsEmpty_ReturnsFalse()
     {
-        Assert.False(NonEmptyEnum.GetIsEmpty());
+        Assert.False(NonEmptyEnum.IsEmpty());
     }
 
 
     //
-    // GetHasFlagsAttribute
+    // HasFlagsAttribute
     //
 
     [Flags]
@@ -51,15 +51,15 @@ public class EnumTraitsExtensionsTests
     }
 
     [Fact]
-    public void GetHasFlagsAttribute_ReturnsTrue()
+    public void HasFlagsAttribute_ReturnsTrue()
     {
-        Assert.True(HasFlagsEnum.GetHasFlagsAttribute());
+        Assert.True(HasFlagsEnum.HasFlagsAttribute());
     }
 
     [Fact]
-    public void GetHasFlagsAttribute_ReturnsFalse()
+    public void HasFlagsAttribute_ReturnsFalse()
     {
-        Assert.False(NoFlagsEnum.GetHasFlagsAttribute());
+        Assert.False(NoFlagsEnum.HasFlagsAttribute());
     }
 
 
