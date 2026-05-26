@@ -181,4 +181,191 @@ public class EnumTraitsTests
     {
         Assert.Null(EnumTraits<ValuesWithDisplayNames>.GetDisplayNameOrDefault(ValuesWithDisplayNames.Unknown));
     }
+
+
+    //
+    // AllValues — additional edge cases
+    //
+
+    [Fact]
+    public void AllValues_EmptyEnum_ReturnsEmpty()
+    {
+        Assert.Empty(EnumTraits<EmptyEnum>.AllValues);
+    }
+
+    [Fact]
+    public void AllValues_IncludesValuesMarkedInvalid()
+    {
+        // AllValues must contain every defined member, including those marked [InvalidEnumValue].
+        Assert.Contains(ValuesEnum.Unknown, EnumTraits<ValuesEnum>.AllValues);
+    }
+
+
+    //
+    // ValidValues — additional edge cases
+    //
+
+    [Fact]
+    public void ValidValues_EmptyEnum_ReturnsEmpty()
+    {
+        Assert.Empty(EnumTraits<EmptyEnum>.ValidValues);
+    }
+
+    public enum EnumWithNoInvalidValues
+    {
+        Alpha = 1,
+        Beta = 2,
+        Gamma = 3,
+    }
+
+    [Fact]
+    public void ValidValues_NoInvalidValueAttributes_SameCountAsAllValues()
+    {
+        // When no [InvalidEnumValue] attributes are present, every value is valid.
+        var allValues = EnumTraits<EnumWithNoInvalidValues>.AllValues;
+        var validValues = EnumTraits<EnumWithNoInvalidValues>.ValidValues;
+
+        Assert.Equal(allValues.Count, validValues.Count);
+        Assert.All(allValues, v => Assert.True(EnumTraits<EnumWithNoInvalidValues>.IsValid(v)));
+    }
+
+    public enum AllInvalidEnum
+    {
+        [InvalidEnumValue]
+        Sentinel1 = 0,
+        [InvalidEnumValue]
+        Sentinel2 = 1,
+    }
+
+    [Fact]
+    public void ValidValues_AllMarkedInvalid_ReturnsEmpty()
+    {
+        Assert.Empty(EnumTraits<AllInvalidEnum>.ValidValues);
+    }
+
+    [Fact]
+    public void ValidValues_AllMarkedInvalid_AllValuesStillReturnsAll()
+    {
+        // AllValues is unaffected by [InvalidEnumValue]; it always reflects Enum.GetValues<T>().
+        Assert.Equal(2, EnumTraits<AllInvalidEnum>.AllValues.Count);
+    }
+
+    public enum MultipleInvalidSentinelsEnum
+    {
+        [InvalidEnumValue]
+        Unknown = 0,
+        [InvalidEnumValue]
+        Invalid = -1,
+        Valid1 = 1,
+        Valid2 = 2,
+    }
+
+    [Fact]
+    public void ValidValues_MultipleInvalidSentinels_ExcludesAll()
+    {
+        var validValues = EnumTraits<MultipleInvalidSentinelsEnum>.ValidValues;
+
+        Assert.DoesNotContain(MultipleInvalidSentinelsEnum.Unknown, validValues);
+        Assert.DoesNotContain(MultipleInvalidSentinelsEnum.Invalid, validValues);
+        Assert.Equal(2, validValues.Count);
+    }
+
+    [Fact]
+    public void ValidValues_IsSubsetOfAllValues()
+    {
+        var allValues = EnumTraits<ValuesEnum>.AllValues;
+        Assert.All(
+            EnumTraits<ValuesEnum>.ValidValues,
+            v => Assert.Contains(v, allValues)
+        );
+    }
+
+
+    //
+    // IsValid — cast-to-undefined value
+    //
+
+    [Fact]
+    public void IsValid_UndefinedCastValue_ReturnsFalse()
+    {
+        Assert.False(EnumTraits<ValuesEnum>.IsValid((ValuesEnum)99));
+    }
+
+
+    //
+    // EnsureNoDuplicateValues — additional cases
+    //
+
+    [Fact]
+    public void EnsureNoDuplicateValues_EmptyEnum_DoesNotThrow()
+    {
+        EnumTraits<EmptyEnum>.EnsureNoDuplicateValues();
+    }
+
+    [Fact]
+    public void EnsureNoDuplicateValues_FlagsEnum_DoesNotThrow()
+    {
+        EnumTraits<HasFlagsEnum>.EnsureNoDuplicateValues();
+    }
+
+    [Fact]
+    public void EnsureNoDuplicateValues_ExceptionMessage_ContainsDuplicateValue()
+    {
+        var ex = Assert.Throws<InvalidOperationException>(() =>
+            EnumTraits<EnumWithDuplicateValues>.EnsureNoDuplicateValues()
+        );
+        Assert.Contains("1", ex.Message, StringComparison.Ordinal);
+    }
+
+
+    //
+    // GetDisplayName — cast-to-undefined value and [Display] without Name
+    //
+
+    [Fact]
+    public void GetDisplayName_UndefinedCastValue_Throws()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            EnumTraits<ValuesWithDisplayNames>.GetDisplayName((ValuesWithDisplayNames)99)
+        );
+    }
+
+    public enum DisplayWithDescriptionOnlyEnum
+    {
+        [InvalidEnumValue]
+        Unknown = 0,
+
+        // [Display] with only Description (no Name) — GetName() returns null, must fall back to member name.
+        [Display(Description = "A value with only a description")]
+        NoNameValue = 1,
+    }
+
+    [Fact]
+    public void GetDisplayName_DisplayAttributeWithNoName_FallsBackToMemberName()
+    {
+        Assert.Equal(
+            nameof(DisplayWithDescriptionOnlyEnum.NoNameValue),
+            EnumTraits<DisplayWithDescriptionOnlyEnum>.GetDisplayName(DisplayWithDescriptionOnlyEnum.NoNameValue)
+        );
+    }
+
+
+    //
+    // GetDisplayNameOrDefault — cast-to-undefined value and [Display] without Name
+    //
+
+    [Fact]
+    public void GetDisplayNameOrDefault_UndefinedCastValue_ReturnsNull()
+    {
+        Assert.Null(EnumTraits<ValuesWithDisplayNames>.GetDisplayNameOrDefault((ValuesWithDisplayNames)99));
+    }
+
+    [Fact]
+    public void GetDisplayNameOrDefault_DisplayAttributeWithNoName_FallsBackToMemberName()
+    {
+        Assert.Equal(
+            nameof(DisplayWithDescriptionOnlyEnum.NoNameValue),
+            EnumTraits<DisplayWithDescriptionOnlyEnum>.GetDisplayNameOrDefault(DisplayWithDescriptionOnlyEnum.NoNameValue)
+        );
+    }
 }
