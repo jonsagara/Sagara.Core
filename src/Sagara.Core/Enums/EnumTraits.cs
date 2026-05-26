@@ -125,9 +125,14 @@ public static class EnumTraits<TEnum>
     /// Return the display name for the enum value, which is either from the [Display] attribute 
     /// or the property name. If not found, return null.
     /// </summary>
-    public static string? GetDisplayNameOrDefault(TEnum value)
+    public static string? GetDisplayNameOrDefault(TEnum? value)
     {
-        return _validValueDisplayNames.TryGetValue(value, out string? displayName)
+        if (value is null)
+        {
+            return null;
+        }
+
+        return _validValueDisplayNames.TryGetValue(value.Value, out string? displayName)
             ? displayName
             : null;
     }
