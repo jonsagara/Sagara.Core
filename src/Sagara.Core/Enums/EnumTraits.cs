@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Frozen;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Reflection;
 
@@ -15,8 +16,8 @@ public static class EnumTraits<TEnum>
     private static readonly Type _enumType;
     private static readonly TEnum[] _allValues;
     private static readonly long[] _duplicateNumericValues;
-    private static readonly HashSet<TEnum> _validValues;
-    private static readonly Dictionary<TEnum, string> _validValueDisplayNames;
+    private static readonly FrozenSet<TEnum> _validValues;
+    private static readonly FrozenDictionary<TEnum, string> _validValueDisplayNames;
 
 
     // Justification: I can't think of a way to implement this without switching to an instance based class.
@@ -86,13 +87,13 @@ public static class EnumTraits<TEnum>
         //
 
         _validValueDisplayNames = _validValues
-            .ToDictionary(t => t, t => GetDisplayNameOrEnumValueName(t));
+            .ToFrozenDictionary(t => t, t => GetDisplayNameOrEnumValueName(t));
     }
 
     /// <summary>
     /// Returns true if the enum value is in the list of valid values; false otherwise.
     /// </summary>
-    public static bool IsValid(TEnum value)
+    public static bool IsValidValue(TEnum value)
         => _validValues.Contains(value);
 
     /// <summary>
@@ -113,7 +114,7 @@ public static class EnumTraits<TEnum>
     /// </summary>
     public static string GetDisplayName(TEnum value)
     {
-        if (!IsValid(value))
+        if (!IsValidValue(value))
         {
             throw new ArgumentException($"Invalid {_enumType.FullName} enum value '{value}'.", nameof(value));
         }
@@ -125,9 +126,14 @@ public static class EnumTraits<TEnum>
     /// Return the display name for the enum value, which is either from the [Display] attribute 
     /// or the property name. If not found, return null.
     /// </summary>
-    public static string? GetDisplayNameOrDefault(TEnum value)
+    public static string? GetDisplayNameOrDefault(TEnum? value)
     {
-        return _validValueDisplayNames.TryGetValue(value, out string? displayName)
+        if (value is null)
+        {
+            return null;
+        }
+
+        return _validValueDisplayNames.TryGetValue(value.Value, out string? displayName)
             ? displayName
             : null;
     }
@@ -137,7 +143,7 @@ public static class EnumTraits<TEnum>
     // Private methods
     //
 
-    private static HashSet<TEnum> FilterOutInvalidValues(Type enumType, IReadOnlyCollection<TEnum> allValues)
+    private static FrozenSet<TEnum> FilterOutInvalidValues(Type enumType, IReadOnlyCollection<TEnum> allValues)
     {
         return allValues
             .Where(v =>
@@ -161,7 +167,7 @@ public static class EnumTraits<TEnum>
                 //   an invalid value, and we should exclude it.
                 return enumValueMemberInfo.GetCustomAttribute<InvalidEnumValueAttribute>() is null;
             })
-            .ToHashSet();
+            .ToFrozenSet();
     }
 
     private static long[] GetDuplicateNumericValues(Type enumType, IReadOnlyCollection<TEnum> allValues)
