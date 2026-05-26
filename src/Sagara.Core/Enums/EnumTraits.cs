@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Frozen;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Reflection;
 
@@ -15,7 +16,7 @@ public static class EnumTraits<TEnum>
     private static readonly Type _enumType;
     private static readonly TEnum[] _allValues;
     private static readonly long[] _duplicateNumericValues;
-    private static readonly HashSet<TEnum> _validValues;
+    private static readonly FrozenSet<TEnum> _validValues;
     private static readonly Dictionary<TEnum, string> _validValueDisplayNames;
 
 
@@ -142,7 +143,7 @@ public static class EnumTraits<TEnum>
     // Private methods
     //
 
-    private static HashSet<TEnum> FilterOutInvalidValues(Type enumType, IReadOnlyCollection<TEnum> allValues)
+    private static FrozenSet<TEnum> FilterOutInvalidValues(Type enumType, IReadOnlyCollection<TEnum> allValues)
     {
         return allValues
             .Where(v =>
@@ -166,7 +167,7 @@ public static class EnumTraits<TEnum>
                 //   an invalid value, and we should exclude it.
                 return enumValueMemberInfo.GetCustomAttribute<InvalidEnumValueAttribute>() is null;
             })
-            .ToHashSet();
+            .ToFrozenSet();
     }
 
     private static long[] GetDuplicateNumericValues(Type enumType, IReadOnlyCollection<TEnum> allValues)
