@@ -38,7 +38,7 @@ public sealed class InvalidEnumValueException : Exception
     public static void ThrowIfInvalid<TEnum>(TEnum value)
         where TEnum : struct, Enum
     {
-        if (!EnumTraits<TEnum>.IsValid(value))
+        if (!EnumTraits<TEnum>.IsValidValue(value))
         {
             throw new InvalidEnumValueException($"Invalid enum value '{value}' for enum type {typeof(TEnum).FullName}.");
         }

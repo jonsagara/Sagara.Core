@@ -106,22 +106,22 @@ public class EnumTraitsExtensionsTests
 
 
     //
-    // IsValid
+    // IsValidValue
     //
 
     [Theory]
     [InlineData(ValuesEnum.Value1)]
     [InlineData(ValuesEnum.Value2)]
     [InlineData(ValuesEnum.Value3)]
-    public void IsValid_ReturnsTrue(ValuesEnum value)
+    public void IsValidValue_ReturnsTrue(ValuesEnum value)
     {
-        Assert.True(value.IsValid());
+        Assert.True(value.IsValidValue());
     }
 
     [Fact]
-    public void IsValid_ReturnsFalse()
+    public void IsValidValue_ReturnsFalse()
     {
-        Assert.False(ValuesEnum.Unknown.IsValid());
+        Assert.False(ValuesEnum.Unknown.IsValidValue());
     }
 
 

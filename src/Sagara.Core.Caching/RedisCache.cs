@@ -34,7 +34,7 @@ public class RedisCache : IDisposable, IAsyncDisposable
     internal RedisCache(ILogger<RedisCache> logger, string connectionString, RedisProtocol redisProtocol, bool allowAdmin)
     {
         Check.ThrowIfNullOrWhiteSpace(connectionString);
-        EnumTraits<RedisProtocol>.IsValid(redisProtocol);
+        EnumTraits<RedisProtocol>.IsValidValue(redisProtocol);
 
         _logger = logger;
 

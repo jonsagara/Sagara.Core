@@ -93,7 +93,7 @@ public static class EnumTraits<TEnum>
     /// <summary>
     /// Returns true if the enum value is in the list of valid values; false otherwise.
     /// </summary>
-    public static bool IsValid(TEnum value)
+    public static bool IsValidValue(TEnum value)
         => _validValues.Contains(value);
 
     /// <summary>
@@ -114,7 +114,7 @@ public static class EnumTraits<TEnum>
     /// </summary>
     public static string GetDisplayName(TEnum value)
     {
-        if (!IsValid(value))
+        if (!IsValidValue(value))
         {
             throw new ArgumentException($"Invalid {_enumType.FullName} enum value '{value}'.", nameof(value));
         }

@@ -105,15 +105,15 @@ public class EnumTraitsTests
     [InlineData(ValuesEnum.Value1)]
     [InlineData(ValuesEnum.Value2)]
     [InlineData(ValuesEnum.Value3)]
-    public void IsValid_ReturnsTrue(ValuesEnum value)
+    public void IsValidValue_ReturnsTrue(ValuesEnum value)
     {
-        Assert.True(EnumTraits<ValuesEnum>.IsValid(value));
+        Assert.True(EnumTraits<ValuesEnum>.IsValidValue(value));
     }
 
     [Fact]
-    public void IsValid_ReturnsFalse()
+    public void IsValidValue_ReturnsFalse()
     {
-        Assert.False(EnumTraits<ValuesEnum>.IsValid(ValuesEnum.Unknown));
+        Assert.False(EnumTraits<ValuesEnum>.IsValidValue(ValuesEnum.Unknown));
     }
 
     [Fact]
@@ -226,7 +226,7 @@ public class EnumTraitsTests
         var validValues = EnumTraits<EnumWithNoInvalidValues>.ValidValues;
 
         Assert.Equal(allValues.Count, validValues.Count);
-        Assert.All(allValues, v => Assert.True(EnumTraits<EnumWithNoInvalidValues>.IsValid(v)));
+        Assert.All(allValues, v => Assert.True(EnumTraits<EnumWithNoInvalidValues>.IsValidValue(v)));
     }
 
     public enum AllInvalidEnum
@@ -282,13 +282,13 @@ public class EnumTraitsTests
 
 
     //
-    // IsValid — cast-to-undefined value
+    // IsValidValue — cast-to-undefined value
     //
 
     [Fact]
-    public void IsValid_UndefinedCastValue_ReturnsFalse()
+    public void IsValidValue_UndefinedCastValue_ReturnsFalse()
     {
-        Assert.False(EnumTraits<ValuesEnum>.IsValid((ValuesEnum)99));
+        Assert.False(EnumTraits<ValuesEnum>.IsValidValue((ValuesEnum)99));
     }
 
 

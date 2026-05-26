@@ -19,8 +19,8 @@ public static class EnumTraitsExtensions
         /// <summary>
         /// Returns true if the enum value is in the list of valid values; false otherwise.
         /// </summary>
-        public bool IsValid()
-            => EnumTraits<TEnum>.IsValid(value);
+        public bool IsValidValue()
+            => EnumTraits<TEnum>.IsValidValue(value);
 
         /// <summary>
         /// Return the display name for the enum value, which is either from the [Display] attribute
