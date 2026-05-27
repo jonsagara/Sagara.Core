@@ -66,7 +66,7 @@ jobs:
       with:
         name: nuget
         if-no-files-found: error
-        retention-days: 7
+        retention-days: 1
         path: ${{ env.NuGetDirectory }}/*
 
     # Upload global.json as an artifact so that we don't have to check out the whole repo to publish to nuget.
@@ -75,7 +75,7 @@ jobs:
       with:
         name: globaljson
         if-no-files-found: error
-        retention-days: 7
+        retention-days: 1
         path: ${{ github.workspace }}/global.json
 
   run_test:
