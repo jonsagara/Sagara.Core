@@ -87,10 +87,15 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       # Install the .NET SDK indicated in the global.json file
+      # Even though the prior STS and LTS versions are pre-installed on the runner, explicitly list
+      #   them here for clarity. We need their runtimes to execute their tests.
       - name: Setup .NET SDK with global.json
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
         with:
           global-json-file: global.json
+          dotnet-version: |
+            8.0.x
+            9.0.x
 
       - name: Run unit tests
         run: dotnet test src/Sagara.Core.Tests/Sagara.Core.Tests.csproj --configuration Release
@@ -115,6 +120,8 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       # Install the .NET SDK indicated in the global.json file
+      # The integration tests only target the latest version, so we don't need to install the prior
+      #   STS and LTS versions here.
       - name: Setup .NET SDK with global.json
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
         with:
