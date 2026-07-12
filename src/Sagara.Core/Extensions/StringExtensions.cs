@@ -138,6 +138,127 @@ public static class StringExtensions
         });
     }
 
+    /// <summary>
+    /// <para>If <paramref name="text" />.Length &gt; <paramref name="maxLengthInChars"/>, split the text into 
+    /// multiple chunks, each of which is &lt;= <paramref name="maxLengthInChars"/>.</para>
+    /// <para>There will always be at least one chunk returned.</para>
+    /// </summary>
+    /// <param name="text">The full text.</param>
+    /// <param name="maxLengthInChars">The maximum length of a chunk of text. If <paramref name="includeNumbersInChunks"/>
+    /// is true, then this must be &gt;= 11 to allow for the appended chunk numbers. Otherwise, it must be &gt;= 1.</param>
+    /// <param name="includeNumbersInChunks">If true, then include the number at the end of each chunk
+    /// of text (ex: (1/3)). Otherwise, do not include the numbers.</param>
+    public static string[] ChunkText(this string text, int maxLengthInChars, bool includeNumbersInChunks)
+    {
+        Check.ThrowIfNullOrWhiteSpace(text);
+
+        // #118: If we're including the chunk numbers, then we need to ensure that the maxLengthInChars is at
+        //   least 11 to allow for the appended chunk numbers. Otherwise, we can allow a minimum of 1 character
+        //   per chunk. Not sure why anyone would want to do that, but alas...
+        if (includeNumbersInChunks)
+        {
+            Check.ThrowIfLessThan(maxLengthInChars, 11);
+        }
+        else
+        {
+            Check.ThrowIfLessThan(maxLengthInChars, 1);
+        }
+
+        List<string> statusChunks = [];
+
+        var statusMaxLengthInChars = maxLengthInChars;
+
+        if (includeNumbersInChunks)
+        {
+            // #118: If we're including the chunk numbers, then we need to account for the "max" length of the
+            //   chunk numbers. The primary use case I can think of is breaking up long posts to create a thread
+            //   on social media.
+            // Mastodon rate limiting provides a theoretical maximum of 300 posts in 5 minutes. With a 500
+            //   character limit, that would amount to 300 posts * 500 characters/post == 150,000 characters
+            //   maximum that we could split up into separate chunks and submit.
+            // This means our status numbering, when including the leading space, would have a maximum length of 10
+            //   characters: " (300/300)"
+            // Allow for that extra 10 characters when computing each status chunk's actual size.
+            const int statusNumbersMaxLength = 10;
+            statusMaxLengthInChars = maxLengthInChars - statusNumbersMaxLength;
+        }
+
+        var ixCurrentChunkStart = 0;
+
+        while (ixCurrentChunkStart < text.Length)
+        {
+            // Find the next chunk's length, which is the minimum of the per-post character limit minus the
+            //   status numbering, -OR- the length of the remaining text.
+            var chunkLength = Math.Min(statusMaxLengthInChars, text.Length - ixCurrentChunkStart);
+
+            // Calculate the starting index of the NEXT chunk (i.e., one character past the end of the current chunk).
+            var ixNextChunkStart = ixCurrentChunkStart + chunkLength;
+
+            // Try to avoid splitting in the middle of a word, but if:
+            //
+            // * The CURRENT chunk end position and NEXT chunk start position both fall within the full text
+            // -AND-
+            // * The last character of the CURRENT chunk is NOT a space
+            // -AND-
+            // * The first character of the NEXT chunk is NOT a space
+            //
+            // ... then we're in the middle of a word, and we must search for the closest preceding space character
+            //   to split on.
+            if (ixNextChunkStart < text.Length && text[ixNextChunkStart - 1] != ' ' && text[ixNextChunkStart] != ' ')
+            {
+                // Starting at the end of the current chunk, search backward for the closest preceding space character.
+                var ixClosestPrecedingSpace = text.LastIndexOf(value: ' ', startIndex: ixNextChunkStart - 1);
+
+                if (ixClosestPrecedingSpace == -1 || ixClosestPrecedingSpace <= ixCurrentChunkStart)
+                {
+                    // * No space character found: this chunk is string of non-white space characters, and we
+                    //   have to break it up to adhere to the post size limit.
+                    // -OR-
+                    // * The chunk starts with a space character, and it doesn't make sense to split the
+                    //   string there because that would result in an empty status chunk.
+                    // -OR-
+                    // * The space we found is in a preceding chunk, and is of no use to us as a split point.
+                    //
+                    // Regardless, keep the original calculated chunk size for splitting the string.
+                }
+                else
+                {
+                    // We found the position of the space character closest to the end of the current chunk, and
+                    //   it is NOT the first character of the current chunk. Subtract the current position to
+                    //   get the new, shorter chunk length.
+                    chunkLength = ixClosestPrecedingSpace - ixCurrentChunkStart;
+                }
+            }
+
+            // This can be white space if maxLengthInChars is 11 (i.e., the status will only contain a single
+            //   character) and the first character of the chunk is a space.
+            var statusChunk = text.Substring(startIndex: ixCurrentChunkStart, length: chunkLength).Trim();
+
+            if (!string.IsNullOrWhiteSpace(statusChunk))
+            {
+                statusChunks.Add(statusChunk);
+            }
+
+            // Advance to the first character of the next chunk, if any.
+            ixCurrentChunkStart += chunkLength;
+        }
+
+        // #118: Conditionally append the chunk numbers to each chunk of text, if requested.
+        return includeNumbersInChunks
+            ? [.. statusChunks.Select((chunk, ixChunk) => $"{chunk}{GetChunkNumbers(chunkNumber: ixChunk + 1, totalChunksCount: statusChunks.Count)}")]
+            : [.. statusChunks];
+    }
+
+
+    //
+    // Private methods
+    //
+
+    private static string GetChunkNumbers(int chunkNumber, int totalChunksCount)
+        => totalChunksCount == 1
+        ? ""
+        : $" ({chunkNumber}/{totalChunksCount})";
+
 
     //
     // Types
