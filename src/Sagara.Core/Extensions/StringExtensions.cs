@@ -144,23 +144,44 @@ public static class StringExtensions
     /// <para>There will always be at least one chunk returned.</para>
     /// </summary>
     /// <param name="text">The full text.</param>
-    /// <param name="maxLengthInChars">The maximum length of a chunk of text. Must be &gt;= 11 to allow
-    /// for the appended chunk numbers.</param>
-    public static string[] ChunkText(this string text, int maxLengthInChars)
+    /// <param name="maxLengthInChars">The maximum length of a chunk of text. If <paramref name="includeNumbersInChunks"/>
+    /// is true, then this must be &gt;= 11 to allow for the appended chunk numbers. Otherwise, it must be &gt;= 1.</param>
+    /// <param name="includeNumbersInChunks">If true, then include the number at the end of each chunk
+    /// of text (ex: (1/3)). Otherwise, do not include the numbers.</param>
+    public static string[] ChunkText(this string text, int maxLengthInChars, bool includeNumbersInChunks)
     {
         Check.ThrowIfNullOrWhiteSpace(text);
-        Check.ThrowIfLessThan(maxLengthInChars, 11);
+
+        // #118: If we're including the chunk numbers, then we need to ensure that the maxLengthInChars is at
+        //   least 11 to allow for the appended chunk numbers. Otherwise, we can allow a minimum of 1 character
+        //   per chunk. Not sure why anyone would want to do that, but alas...
+        if (includeNumbersInChunks)
+        {
+            Check.ThrowIfLessThan(maxLengthInChars, 11);
+        }
+        else
+        {
+            Check.ThrowIfLessThan(maxLengthInChars, 1);
+        }
 
         List<string> statusChunks = [];
 
-        // Mastodon rate limiting provides a theoretical maximum of 300 posts in 5 minutes. With a 500 character
-        //   limit, that would amount to 300 posts * 500 characters/post == 150,000 characters maximum that we
-        //   could split up into separate chunks and submit.
-        // This means our status numbering, when including the leading space, would have a maximum length of 10
-        //   characters: " (300/300)"
-        // Allow for that extra 10 characters when computing each status chunk's actual size.
-        const int statusNumbersMaxLength = 10;
-        var statusMaxLengthInChars = maxLengthInChars - statusNumbersMaxLength;
+        var statusMaxLengthInChars = maxLengthInChars;
+
+        if (includeNumbersInChunks)
+        {
+            // #118: If we're including the chunk numbers, then we need to account for the "max" length of the
+            //   chunk numbers. The primary use case I can think of is breaking up long posts to create a thread
+            //   on social media.
+            // Mastodon rate limiting provides a theoretical maximum of 300 posts in 5 minutes. With a 500
+            //   character limit, that would amount to 300 posts * 500 characters/post == 150,000 characters
+            //   maximum that we could split up into separate chunks and submit.
+            // This means our status numbering, when including the leading space, would have a maximum length of 10
+            //   characters: " (300/300)"
+            // Allow for that extra 10 characters when computing each status chunk's actual size.
+            const int statusNumbersMaxLength = 10;
+            statusMaxLengthInChars = maxLengthInChars - statusNumbersMaxLength;
+        }
 
         var ixCurrentChunkStart = 0;
 
@@ -222,9 +243,10 @@ public static class StringExtensions
             ixCurrentChunkStart += chunkLength;
         }
 
-        return statusChunks
-            .Select((statusChunk, ixChunk) => $"{statusChunk}{GetChunkNumbers(chunkNumber: ixChunk + 1, totalChunksCount: statusChunks.Count)}")
-            .ToArray();
+        // #118: Conditionally append the chunk numbers to each chunk of text, if requested.
+        return includeNumbersInChunks
+            ? [.. statusChunks.Select((chunk, ixChunk) => $"{chunk}{GetChunkNumbers(chunkNumber: ixChunk + 1, totalChunksCount: statusChunks.Count)}")]
+            : [.. statusChunks];
     }
 
 
