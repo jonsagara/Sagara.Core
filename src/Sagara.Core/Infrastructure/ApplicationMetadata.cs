@@ -56,6 +56,11 @@ public class ApplicationMetadata
     /// </summary>
     public DateTime BuiltLocal { get; }
 
+    /// <summary>
+    /// The .NET SDK version used to build the consuming application, as read from .buildinfo.json.
+    /// </summary>
+    public string NETSDKVersion { get; set; }
+
 
     /// <summary>
     /// Create a new instance, using <paramref name="applicationAssemblyType"/> to find the assembly to read
@@ -79,6 +84,7 @@ public class ApplicationMetadata
         GitBranch = buildInfo.GitBranch;
         RunNumber = buildInfo.RunNumber;
         BuiltUtc = buildInfo.BuiltUtc;
+        NETSDKVersion = buildInfo.NETSDKVersion;
 
         displayTimeZone ??= DefaultDisplayTimeZone;
         BuiltLocal = buildInfo.BuiltUtc.ToLocal(displayTimeZone).DateTime;
@@ -135,6 +141,7 @@ public class ApplicationMetadata
         string? runNumber = null;
         string? gitBranchName = null;
         DateTime? builtUtc = null;
+        string? netSDKVersion = null;
 
         // Build number format should be yyyyMMdd.# (e.g. 20200308.1)
         if (File.Exists(BUILD_INFO_FILE_PATH))
@@ -163,6 +170,12 @@ public class ApplicationMetadata
                     builtUtc = parsedBuiltUtc;
                 }
             }
+
+            // Fourth line is the .NET SDK version.
+            if (fileContents.Length > 3)
+            {
+                netSDKVersion = fileContents[3]?.Trim();
+            }
         }
 
         // Defaults in case we're in a non-Azure DevOps environment, or the .buildinfo.json file is mangled.
@@ -181,7 +194,16 @@ public class ApplicationMetadata
             builtUtc = DateTime.UtcNow;
         }
 
-        return new BuildInfo(RunNumber: runNumber, GitBranch: gitBranchName, BuiltUtc: builtUtc.Value);
+        if (string.IsNullOrWhiteSpace(netSDKVersion))
+        {
+            netSDKVersion = "(none found)";
+        }
+
+        return new BuildInfo(
+            RunNumber: runNumber,
+            GitBranch: gitBranchName,
+            BuiltUtc: builtUtc.Value,
+            NETSDKVersion: netSDKVersion);
     }
 
 
@@ -191,5 +213,9 @@ public class ApplicationMetadata
 
     private readonly record struct GitHashes(string FullHash, string ShortHash);
 
-    private readonly record struct BuildInfo(string RunNumber, string GitBranch, DateTime BuiltUtc);
+    private readonly record struct BuildInfo(
+        string RunNumber,
+        string GitBranch,
+        DateTime BuiltUtc,
+        string NETSDKVersion);
 }
