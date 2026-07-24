@@ -16,9 +16,9 @@ public class ApplicationMetadata
     private const int ShortGitHashLength = 8;
 
     /// <summary>
-    /// Returns <see cref="RuntimeInformation.FrameworkDescription"/>.
+    /// Returns the .NET runtime version and architecture.
     /// </summary>
-    public string FrameworkDescription { get; }
+    public string RuntimeDescription { get; }
 
     /// <summary>
     /// <para>Returns <see cref="RuntimeInformation.OSDescription"/> and <see cref="RuntimeInformation.OSArchitecture"/>.</para>
@@ -59,7 +59,7 @@ public class ApplicationMetadata
     /// <summary>
     /// The .NET SDK version used to build the consuming application, as read from .buildinfo.json.
     /// </summary>
-    public string NETSDKVersion { get; set; }
+    public string SDKVersion { get; set; }
 
 
     /// <summary>
@@ -73,7 +73,7 @@ public class ApplicationMetadata
     {
         Check.ThrowIfNull(applicationAssemblyType);
 
-        FrameworkDescription = GetFrameworkDescription();
+        RuntimeDescription = GetFrameworkDescription();
         OSDescription = GetOSDescription();
 
         var gitHashes = GetFullAndShortGitHashes();
@@ -84,7 +84,7 @@ public class ApplicationMetadata
         GitBranch = buildInfo.GitBranch;
         RunNumber = buildInfo.RunNumber;
         BuiltUtc = buildInfo.BuiltUtc;
-        NETSDKVersion = buildInfo.NETSDKVersion;
+        SDKVersion = buildInfo.NETSDKVersion;
 
         displayTimeZone ??= DefaultDisplayTimeZone;
         BuiltLocal = buildInfo.BuiltUtc.ToLocal(displayTimeZone).DateTime;
