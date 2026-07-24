@@ -84,7 +84,7 @@ public class ApplicationMetadata
         GitBranch = buildInfo.GitBranch;
         RunNumber = buildInfo.RunNumber;
         BuiltUtc = buildInfo.BuiltUtc;
-        SDKVersion = buildInfo.SDKVersion;
+        SDKVersion = buildInfo.NETSDKVersion;
 
         displayTimeZone ??= DefaultDisplayTimeZone;
         BuiltLocal = buildInfo.BuiltUtc.ToLocal(displayTimeZone).DateTime;
@@ -203,7 +203,7 @@ public class ApplicationMetadata
             RunNumber: runNumber,
             GitBranch: gitBranchName,
             BuiltUtc: builtUtc.Value,
-            SDKVersion: netSDKVersion);
+            NETSDKVersion: netSDKVersion);
     }
 
 
@@ -217,5 +217,5 @@ public class ApplicationMetadata
         string RunNumber,
         string GitBranch,
         DateTime BuiltUtc,
-        string SDKVersion);
+        string NETSDKVersion);
 }
