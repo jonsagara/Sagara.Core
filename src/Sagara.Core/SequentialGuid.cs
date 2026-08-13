@@ -5,9 +5,7 @@ namespace Sagara.Core;
 /// <summary>
 /// Generates Guids sequentially.
 /// </summary>
-#if NET9_0_OR_GREATER
 [Obsolete("Use Guid.CreateVersion7()")]
-#endif
 public class SequentialGuid
 {
     /// <summary>

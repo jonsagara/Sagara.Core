@@ -1,4 +1,3 @@
-#if NET10_0_OR_GREATER
 namespace Sagara.Core.Enums;
 
 /// <summary>
@@ -106,5 +105,3 @@ public static class EnumTraitsExtensions
 
 #pragma warning restore CA1034
 }
-
-#endif
