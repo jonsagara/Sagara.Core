@@ -206,7 +206,7 @@ public sealed class GoogleChatService
 
         return new ChatCardWrapper
         {
-            CardId = "card",
+            CardId = Guid.NewGuid().ToString(),
             Card = new ChatCard
             {
                 Header = title is not null
