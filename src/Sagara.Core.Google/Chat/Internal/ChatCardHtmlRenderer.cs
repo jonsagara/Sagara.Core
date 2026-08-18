@@ -1,4 +1,3 @@
-using System.IO;
 using Markdig;
 using Markdig.Extensions.EmphasisExtras;
 using Markdig.Renderers;

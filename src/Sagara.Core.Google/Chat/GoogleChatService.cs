@@ -89,12 +89,21 @@ public sealed class GoogleChatService
     {
         // A card is only worth emitting when there's card-specific content to show. AlertLevel alone does not
         // trigger a card — see BuildText, which renders the alert accent inline when no card is emitted.
-        var hasCard = title is not null || additionalTextWidgetsMarkdown is { Count: > 0 } || buttons is { Count: > 0 };
+        var hasCard = title is not null
+            || additionalTextWidgetsMarkdown is { Count: > 0 }
+            || buttons is { Count: > 0 };
 
         return new ChatMessagePayload
         {
-            Text = BuildText(body, title, alertLevel, mentionUsers, hasCard),
-            CardsV2 = hasCard ? [BuildCard(title, alertLevel, additionalTextWidgetsMarkdown, buttons)] : null,
+            Text = BuildText(
+                body: body,
+                title: title,
+                alertLevel: alertLevel,
+                mentionUsers: mentionUsers,
+                hasCard: hasCard),
+            CardsV2 = hasCard
+                ? [BuildCard(title, alertLevel, additionalTextWidgetsMarkdown, buttons)]
+                : null,
         };
     }
 
@@ -111,13 +120,21 @@ public sealed class GoogleChatService
         // don't show it twice in the same message.
         if (!hasCard && alertLevel is { } level)
         {
-            var info = GoogleChatAlertLevelInfo.For(level);
-            text.Append(info.Emoji).Append(" **").Append(info.Label).Append("**\n\n");
+            var alertLevelInfo = GoogleChatAlertLevelInfo.For(level);
+
+            text
+                .Append(alertLevelInfo.Emoji)
+                .Append(" **")
+                .Append(alertLevelInfo.Label)
+                .Append("**\n\n");
         }
 
         if (title is not null)
         {
-            text.Append("**").Append(title).Append("**\n\n");
+            text
+                .Append("**")
+                .Append(title)
+                .Append("**\n\n");
         }
 
         text.Append(body);
@@ -137,17 +154,18 @@ public sealed class GoogleChatService
         IReadOnlyList<string>? additionalTextWidgetsMarkdown,
         IReadOnlyList<GoogleChatButton>? buttons)
     {
-        var widgets = new List<ChatCardWidget>();
+        List<ChatCardWidget> widgets = [];
 
         if (alertLevel is { } level)
         {
-            var info = GoogleChatAlertLevelInfo.For(level);
+            var alertLevelInfo = GoogleChatAlertLevelInfo.For(level);
+
             widgets.Add(new ChatCardWidget
             {
                 // Fixed system content, not user markdown, so it's built directly rather than run through Markdig.
                 TextParagraph = new ChatTextParagraph
                 {
-                    Text = $"<font color=\"{info.HexColor}\">{info.Emoji} {info.Label}</font>",
+                    Text = $"<font color=\"{alertLevelInfo.HexColor}\">{alertLevelInfo.Emoji} {alertLevelInfo.Label}</font>",
                 },
             });
         }
@@ -191,7 +209,9 @@ public sealed class GoogleChatService
             CardId = "card",
             Card = new ChatCard
             {
-                Header = title is not null ? new ChatCardHeader { Title = title } : null,
+                Header = title is not null
+                    ? new ChatCardHeader { Title = title }
+                    : null,
                 Sections = [new ChatCardSection { Widgets = widgets }],
             },
         };
