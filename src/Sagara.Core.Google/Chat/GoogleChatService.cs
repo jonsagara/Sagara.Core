@@ -12,9 +12,10 @@ namespace Sagara.Core.Google.Chat;
 /// </summary>
 public sealed class GoogleChatService
 {
-    private static readonly JsonSerializerOptions s_jsonOptions = new()
+    private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
     };
 
     private readonly HttpClient _httpClient;
@@ -45,7 +46,7 @@ public sealed class GoogleChatService
         var payload = BuildPayload(message);
 
         using var response = await _httpClient
-            .PostAsJsonAsync(webhookUrl, payload, s_jsonOptions, cancellationToken)
+            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
             .ConfigureAwait(false);
 
         response.EnsureSuccessStatusCode();
