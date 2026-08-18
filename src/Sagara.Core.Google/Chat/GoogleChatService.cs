@@ -59,7 +59,13 @@ public sealed class GoogleChatService
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
         Check.ThrowIfNullOrWhiteSpace(body);
 
-        var payload = BuildPayload(body, title, alertLevel, additionalTextWidgetsMarkdown, buttons, mentionUsers);
+        var payload = BuildPayload(
+            body: body,
+            title: title,
+            alertLevel: alertLevel,
+            additionalTextWidgetsMarkdown: additionalTextWidgetsMarkdown,
+            buttons: buttons,
+            mentionUsers: mentionUsers);
 
         using var response = await _httpClient
             .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
@@ -67,6 +73,11 @@ public sealed class GoogleChatService
 
         response.EnsureSuccessStatusCode();
     }
+
+
+    //
+    // Private methods
+    //
 
     private static ChatMessagePayload BuildPayload(
         string body,
