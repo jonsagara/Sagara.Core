@@ -41,6 +41,13 @@ proof-of-concept or bug demonstration applications. It reduces the amount of boi
 [Sagara.Core.Data docs](src/Sagara.Core.Data/docs/index.md)
 
 
+## Sagara.Core.Google
+
+[![NuGet](https://img.shields.io/nuget/v/Sagara.Core.Google?label=NuGet)](https://www.nuget.org/packages/Sagara.Core.Google/)
+
+[Sagara.Core.Google docs](src/Sagara.Core.Google/docs/index.md)
+
+
 ## Sagara.Core.Logging.Serilog
 
 [![NuGet](https://img.shields.io/nuget/v/Sagara.Core.Logging.Serilog?label=NuGet)](https://www.nuget.org/packages/Sagara.Core.Logging.Serilog/)

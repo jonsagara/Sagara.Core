@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<!-- NuGet -->
+		<PackageId>Sagara.Core.Google</PackageId>
+		<Description>Google API integrations, including Google Chat webhook messaging.</Description>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<!--<PackageIcon>NuGet Package Icon.png</PackageIcon>-->
+		<PackageTags>google chat</PackageTags>
+		<PackageReleaseNotes></PackageReleaseNotes>
+
+		<!-- SourceLink -->
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!--<None Include="..\..\NuGet Package Icon.png" Pack="true" PackagePath="\" />-->
+		<None Include="..\..\LICENSE.md" Pack="true" PackagePath="" />
+		<None Include=".\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.Extensions.Http" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="Microsoft.Extensions.Http" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="Microsoft.Extensions.Http" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Markdig" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Sagara.Core\Sagara.Core.csproj" />
+	</ItemGroup>
+
+	<!-- When running in GitHub Actions, enable deterministic builds for the NuGet package. -->
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Sagara.Core.Google.Tests" />
+	</ItemGroup>
+
+</Project>
