@@ -14,7 +14,7 @@ public class GoogleChatServiceTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
         var service = CreateService(handler);
 
-        await service.SendMessageAsync(WebhookUrl, new GoogleChatMessage { Body = "hello" });
+        await service.SendMessageAsync(WebhookUrl, new GoogleChatMessage { Body = "hello" }, TestContext.Current.CancellationToken);
 
         var json = await handler.GetRequestJsonAsync();
 
@@ -35,7 +35,7 @@ public class GoogleChatServiceTests
             AlertLevel = GoogleChatAlertLevel.Error,
             AdditionalTextWidgetsMarkdown = ["more **info**"],
             Buttons = [new GoogleChatButton("View logs", "https://example.com/logs")],
-        });
+        }, TestContext.Current.CancellationToken);
 
         var json = await handler.GetRequestJsonAsync();
         var text = json.GetProperty("text").GetString();
@@ -64,7 +64,7 @@ public class GoogleChatServiceTests
         {
             Body = "hello",
             MentionUserIds = ["12345", "67890"],
-        });
+        }, TestContext.Current.CancellationToken);
 
         var json = await handler.GetRequestJsonAsync();
         var text = json.GetProperty("text").GetString();
@@ -80,13 +80,13 @@ public class GoogleChatServiceTests
         var service = CreateService(handler);
 
         await Assert.ThrowsAsync<HttpRequestException>(
-            () => service.SendMessageAsync(WebhookUrl, new GoogleChatMessage { Body = "hello" }));
+            () => service.SendMessageAsync(WebhookUrl, new GoogleChatMessage { Body = "hello" }, TestContext.Current.CancellationToken));
     }
 
     [Fact]
     public async Task SendMessageAsync_NullMessage_ThrowsArgumentNullException()
         => await Assert.ThrowsAsync<ArgumentNullException>(
-            () => CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK)).SendMessageAsync(WebhookUrl, null!));
+            () => CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK)).SendMessageAsync(WebhookUrl, null!, TestContext.Current.CancellationToken));
 
     [Theory]
     [InlineData(null)]
@@ -97,7 +97,7 @@ public class GoogleChatServiceTests
         var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK));
 
         await Assert.ThrowsAnyAsync<ArgumentException>(
-            () => service.SendMessageAsync(webhookUrl!, new GoogleChatMessage { Body = "hello" }));
+            () => service.SendMessageAsync(webhookUrl!, new GoogleChatMessage { Body = "hello" }, TestContext.Current.CancellationToken));
     }
 
     private static GoogleChatService CreateService(HttpMessageHandler handler)
