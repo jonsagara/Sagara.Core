@@ -18,30 +18,34 @@ public sealed class GoogleChatService
     };
 
     private readonly HttpClient _httpClient;
-    private readonly string _webhookUrl;
 
-    public GoogleChatService(HttpClient httpClient, string webhookUrl)
+    public GoogleChatService(HttpClient httpClient)
     {
         Check.ThrowIfNull(httpClient);
-        Check.ThrowIfNullOrWhiteSpace(webhookUrl);
 
         _httpClient = httpClient;
-        _webhookUrl = webhookUrl;
     }
 
     /// <summary>
-    /// Sends <paramref name="message"/> to the configured Google Chat webhook.
+    /// Sends <paramref name="message"/> to the Google Chat space backed by <paramref name="webhookUrl"/>.
     /// </summary>
+    /// <param name="webhookUrl">The Google Chat incoming webhook URL to POST the message to.</param>
+    /// <param name="message">The message to send.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
     /// <exception cref="HttpRequestException">The webhook responded with a non-success status code.</exception>
-    public async Task SendMessageAsync(GoogleChatMessage message, CancellationToken cancellationToken = default)
+    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
+#pragma warning disable CA1054 // URI-like parameters should not be strings
+    public async Task SendMessageAsync(string webhookUrl, GoogleChatMessage message, CancellationToken cancellationToken = default)
+#pragma warning restore CA1054 // URI-like parameters should not be strings
     {
+        Check.ThrowIfNullOrWhiteSpace(webhookUrl);
         Check.ThrowIfNull(message);
         Check.ThrowIfNullOrWhiteSpace(message.Body);
 
         var payload = BuildPayload(message);
 
         using var response = await _httpClient
-            .PostAsJsonAsync(_webhookUrl, payload, s_jsonOptions, cancellationToken)
+            .PostAsJsonAsync(webhookUrl, payload, s_jsonOptions, cancellationToken)
             .ConfigureAwait(false);
 
         response.EnsureSuccessStatusCode();

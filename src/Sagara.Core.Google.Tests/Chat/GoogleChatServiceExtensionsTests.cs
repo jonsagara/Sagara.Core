@@ -6,28 +6,18 @@ namespace Sagara.Core.Google.Tests.Chat;
 public class GoogleChatServiceExtensionsTests
 {
     [Fact]
-    public void AddGoogleChatService_NullWebhookUrl_Throws()
+    public void AddGoogleChatService_NullServices_Throws()
     {
-        var services = new ServiceCollection();
+        IServiceCollection services = null!;
 
-        Assert.Throws<ArgumentNullException>(() => services.AddGoogleChatService(null!));
-    }
-
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void AddGoogleChatService_WhiteSpaceWebhookUrl_Throws(string webhookUrl)
-    {
-        var services = new ServiceCollection();
-
-        Assert.Throws<ArgumentException>(() => services.AddGoogleChatService(webhookUrl));
+        Assert.Throws<ArgumentNullException>(() => services.AddGoogleChatService());
     }
 
     [Fact]
-    public void AddGoogleChatService_ValidWebhookUrl_ResolvesGoogleChatService()
+    public void AddGoogleChatService_ResolvesGoogleChatService()
     {
         var services = new ServiceCollection();
-        services.AddGoogleChatService("https://chat.googleapis.com/v1/spaces/x/messages?key=y&token=z");
+        services.AddGoogleChatService();
 
         using var provider = services.BuildServiceProvider();
         var service = provider.GetRequiredService<GoogleChatService>();

@@ -6,13 +6,15 @@ namespace Sagara.Core.Google.Tests.Chat;
 
 public class GoogleChatServiceTests
 {
+    private const string WebhookUrl = "https://chat.googleapis.com/v1/spaces/x/messages?key=y&token=z";
+
     [Fact]
     public async Task SendMessageAsync_BodyOnly_SendsTextOnlyPayload()
     {
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
         var service = CreateService(handler);
 
-        await service.SendMessageAsync(new GoogleChatMessage { Body = "hello" });
+        await service.SendMessageAsync(WebhookUrl, new GoogleChatMessage { Body = "hello" });
 
         var json = await handler.GetRequestJsonAsync();
 
@@ -26,7 +28,7 @@ public class GoogleChatServiceTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
         var service = CreateService(handler);
 
-        await service.SendMessageAsync(new GoogleChatMessage
+        await service.SendMessageAsync(WebhookUrl, new GoogleChatMessage
         {
             Body = "hello",
             Title = "Deploy failed",
@@ -58,7 +60,7 @@ public class GoogleChatServiceTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
         var service = CreateService(handler);
 
-        await service.SendMessageAsync(new GoogleChatMessage
+        await service.SendMessageAsync(WebhookUrl, new GoogleChatMessage
         {
             Body = "hello",
             MentionUserIds = ["12345", "67890"],
@@ -78,16 +80,28 @@ public class GoogleChatServiceTests
         var service = CreateService(handler);
 
         await Assert.ThrowsAsync<HttpRequestException>(
-            () => service.SendMessageAsync(new GoogleChatMessage { Body = "hello" }));
+            () => service.SendMessageAsync(WebhookUrl, new GoogleChatMessage { Body = "hello" }));
     }
 
     [Fact]
     public async Task SendMessageAsync_NullMessage_ThrowsArgumentNullException()
         => await Assert.ThrowsAsync<ArgumentNullException>(
-            () => CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK)).SendMessageAsync(null!));
+            () => CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK)).SendMessageAsync(WebhookUrl, null!));
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task SendMessageAsync_NullOrWhiteSpaceWebhookUrl_Throws(string? webhookUrl)
+    {
+        var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK));
+
+        await Assert.ThrowsAnyAsync<ArgumentException>(
+            () => service.SendMessageAsync(webhookUrl!, new GoogleChatMessage { Body = "hello" }));
+    }
 
     private static GoogleChatService CreateService(HttpMessageHandler handler)
-        => new(new HttpClient(handler), "https://chat.googleapis.com/v1/spaces/x/messages?key=y&token=z");
+        => new(new HttpClient(handler));
 
     private sealed class CapturingHttpMessageHandler(HttpStatusCode statusCode) : HttpMessageHandler
     {
