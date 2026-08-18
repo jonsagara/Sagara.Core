@@ -57,6 +57,9 @@ jobs:
     - name: dotnet pack Sagara.Core.Data
       run: dotnet pack ./src/Sagara.Core.Data/Sagara.Core.Data.csproj --configuration Release --output ${{ env.NuGetDirectory }}
 
+    - name: dotnet pack Sagara.Core.Google
+      run: dotnet pack ./src/Sagara.Core.Google/Sagara.Core.Google.csproj --configuration Release --output ${{ env.NuGetDirectory }}
+
     - name: dotnet pack Sagara.Core.Logging.Serilog
       run: dotnet pack ./src/Sagara.Core.Logging.Serilog/Sagara.Core.Logging.Serilog.csproj --configuration Release --output ${{ env.NuGetDirectory }}
 
@@ -99,6 +102,9 @@ jobs:
 
       - name: Run unit tests
         run: dotnet test src/Sagara.Core.Tests/Sagara.Core.Tests.csproj --configuration Release
+
+      - name: Run unit tests (Sagara.Core.Google)
+        run: dotnet test src/Sagara.Core.Google.Tests/Sagara.Core.Google.Tests.csproj --configuration Release
 
   run_integration_tests:
     runs-on: ubuntu-latest
