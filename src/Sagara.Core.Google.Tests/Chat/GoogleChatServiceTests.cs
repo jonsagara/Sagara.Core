@@ -14,7 +14,7 @@ public class GoogleChatServiceTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
         var service = CreateService(handler);
 
-        await service.SendMessageAsync(WebhookUrl, new GoogleChatMessage { Body = "hello" }, TestContext.Current.CancellationToken);
+        await service.SendMessageAsync(WebhookUrl, "hello", cancellationToken: TestContext.Current.CancellationToken);
 
         var json = await handler.GetRequestJsonAsync();
 
@@ -28,14 +28,14 @@ public class GoogleChatServiceTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
         var service = CreateService(handler);
 
-        await service.SendMessageAsync(WebhookUrl, new GoogleChatMessage
-        {
-            Body = "hello",
-            Title = "Deploy failed",
-            AlertLevel = GoogleChatAlertLevel.Error,
-            AdditionalTextWidgetsMarkdown = ["more **info**"],
-            Buttons = [new GoogleChatButton("View logs", "https://example.com/logs")],
-        }, TestContext.Current.CancellationToken);
+        await service.SendMessageAsync(
+            WebhookUrl,
+            "hello",
+            title: "Deploy failed",
+            alertLevel: GoogleChatAlertLevel.Error,
+            additionalTextWidgetsMarkdown: ["more **info**"],
+            buttons: [new GoogleChatButton("View logs", "https://example.com/logs")],
+            cancellationToken: TestContext.Current.CancellationToken);
 
         var json = await handler.GetRequestJsonAsync();
         var text = json.GetProperty("text").GetString();
@@ -55,16 +55,16 @@ public class GoogleChatServiceTests
     }
 
     [Fact]
-    public async Task SendMessageAsync_MentionUserIds_AppendsMentionChipsToText()
+    public async Task SendMessageAsync_MentionUsers_AppendsMentionChipsToText()
     {
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
         var service = CreateService(handler);
 
-        await service.SendMessageAsync(WebhookUrl, new GoogleChatMessage
-        {
-            Body = "hello",
-            MentionUserIds = ["12345", "67890"],
-        }, TestContext.Current.CancellationToken);
+        await service.SendMessageAsync(
+            WebhookUrl,
+            "hello",
+            mentionUsers: [new GoogleWorkspaceUser("12345"), new GoogleWorkspaceUser("67890")],
+            cancellationToken: TestContext.Current.CancellationToken);
 
         var json = await handler.GetRequestJsonAsync();
         var text = json.GetProperty("text").GetString();
@@ -80,13 +80,20 @@ public class GoogleChatServiceTests
         var service = CreateService(handler);
 
         await Assert.ThrowsAsync<HttpRequestException>(
-            () => service.SendMessageAsync(WebhookUrl, new GoogleChatMessage { Body = "hello" }, TestContext.Current.CancellationToken));
+            () => service.SendMessageAsync(WebhookUrl, "hello", cancellationToken: TestContext.Current.CancellationToken));
     }
 
-    [Fact]
-    public async Task SendMessageAsync_NullMessage_ThrowsArgumentNullException()
-        => await Assert.ThrowsAsync<ArgumentNullException>(
-            () => CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK)).SendMessageAsync(WebhookUrl, null!, TestContext.Current.CancellationToken));
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task SendMessageAsync_NullOrWhiteSpaceBody_Throws(string? body)
+    {
+        var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK));
+
+        await Assert.ThrowsAnyAsync<ArgumentException>(
+            () => service.SendMessageAsync(WebhookUrl, body!, cancellationToken: TestContext.Current.CancellationToken));
+    }
 
     [Theory]
     [InlineData(null)]
@@ -97,7 +104,7 @@ public class GoogleChatServiceTests
         var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK));
 
         await Assert.ThrowsAnyAsync<ArgumentException>(
-            () => service.SendMessageAsync(webhookUrl!, new GoogleChatMessage { Body = "hello" }, TestContext.Current.CancellationToken));
+            () => service.SendMessageAsync(webhookUrl!, "hello", cancellationToken: TestContext.Current.CancellationToken));
     }
 
     private static GoogleChatService CreateService(HttpMessageHandler handler)
