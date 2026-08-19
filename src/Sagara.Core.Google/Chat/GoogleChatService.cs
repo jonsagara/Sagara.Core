@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Markdig;
 using Markdig.Syntax;
-using Sagara.Core.Google.Chat.Internal;
 using Sagara.Core.Google.Chat.Payloads;
 
 namespace Sagara.Core.Google.Chat;
