@@ -75,6 +75,7 @@ await googleChatSvc.SendMessageAsync(
     - Nested
       - List
         - Third item
+          With subtext
 
     1. Numbered
     1. List
@@ -99,6 +100,7 @@ await googleChatSvc.SendMessageAsync(
         - Nested
           - List
             - Third item
+              With subtext
         
         1. Numbered
         1. List
