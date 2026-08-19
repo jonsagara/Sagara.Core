@@ -61,6 +61,8 @@ internal sealed class ChatTextParagraph
 {
     [JsonPropertyName("text")]
     public required string Text { get; set; }
+    [JsonPropertyName("textSyntax")]
+    public required string TextSyntax { get; set; }
 }
 
 internal sealed class ChatButtonList

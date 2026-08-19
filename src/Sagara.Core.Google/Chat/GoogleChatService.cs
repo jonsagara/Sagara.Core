@@ -167,6 +167,7 @@ public sealed class GoogleChatService
                 TextParagraph = new ChatTextParagraph
                 {
                     Text = $"<font color=\"{alertLevelInfo.HexColor}\">{alertLevelInfo.Emoji} {alertLevelInfo.Label}</font>",
+                    TextSyntax = "HTML",
                 },
             });
         }
@@ -175,11 +176,19 @@ public sealed class GoogleChatService
         {
             foreach (var widgetMarkdown in additionalTextWidgetsMarkdown)
             {
+                // Google Chat collapses card widgets with Markdown treats newlines as space/whitespace separators
+                //   instead of HTML paragraph breaks, collapsing consecutive line breaks into a single line. To
+                //   preserve formatting, we have to replace newlines with <br> tags.
+                var widgetMarkdownWithBRs = widgetMarkdown
+                    .Replace("\r\n", "\n", StringComparison.Ordinal)
+                    .Replace("\n", "<br>", StringComparison.Ordinal);
+
                 widgets.Add(new ChatCardWidget
                 {
                     TextParagraph = new ChatTextParagraph
                     {
-                        Text = ChatCardHtmlRenderer.ToTextParagraphHtml(widgetMarkdown),
+                        Text = widgetMarkdownWithBRs,//ChatCardHtmlRenderer.ToTextParagraphHtml(widgetMarkdown),
+                        TextSyntax = "MARKDOWN",
                     },
                 });
             }

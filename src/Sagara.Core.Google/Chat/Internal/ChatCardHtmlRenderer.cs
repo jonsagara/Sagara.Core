@@ -1,3 +1,4 @@
+using System.Globalization;
 using Markdig;
 using Markdig.Extensions.EmphasisExtras;
 using Markdig.Renderers;
@@ -39,8 +40,8 @@ internal static class ChatCardHtmlRenderer
         public TextParagraphHtmlRenderer(TextWriter writer) : base(writer)
         {
             // Neutralizes the untouched default renderers that check these flags: ThematicBreakRenderer (dropped),
-            // CodeBlockRenderer (falls back to escaped plain text, no <pre>/<code>), AutolinkInlineRenderer (falls
-            // back to escaped plain text instead of <a>). The renderers replaced below don't consult these flags.
+            // AutolinkInlineRenderer (falls back to escaped plain text instead of <a>). The renderers replaced
+            // below don't consult these flags.
             EnableHtmlForBlock = false;
             EnableHtmlForInline = false;
 
@@ -49,6 +50,7 @@ internal static class ChatCardHtmlRenderer
             ObjectRenderers.Replace<ListRenderer>(new RestrictedListRenderer());
             ObjectRenderers.Replace<QuoteBlockRenderer>(new RestrictedQuoteBlockRenderer());
             ObjectRenderers.Replace<HtmlBlockRenderer>(new RestrictedHtmlBlockRenderer());
+            ObjectRenderers.Replace<CodeBlockRenderer>(new RestrictedCodeBlockRenderer());
 
             ObjectRenderers.Replace<EmphasisInlineRenderer>(new RestrictedEmphasisInlineRenderer());
             ObjectRenderers.Replace<LinkInlineRenderer>(new RestrictedLinkInlineRenderer());
@@ -92,6 +94,12 @@ internal static class ChatCardHtmlRenderer
         }
     }
 
+    /// <summary>
+    /// TextParagraph has no &lt;ul&gt;/&lt;ol&gt;/&lt;li&gt; support, so lists are flattened to bullet/number
+    /// prefixes plus &lt;br&gt;. A list nested inside a list item is rendered recursively at the call site
+    /// (indented, on its own line) instead of being dispatched back through <see cref="HtmlRenderer"/>'s normal
+    /// per-node-type dispatch, which would otherwise treat it as an unrelated sibling list.
+    /// </summary>
     private sealed class RestrictedListRenderer : HtmlObjectRenderer<ListBlock>
     {
         protected override void Write(HtmlRenderer renderer, ListBlock obj)
@@ -102,9 +110,19 @@ internal static class ChatCardHtmlRenderer
             }
 
             var savedImplicitParagraph = renderer.ImplicitParagraph;
+            WriteList(renderer, obj, depth: 0);
+            renderer.ImplicitParagraph = savedImplicitParagraph;
+        }
+
+        private static void WriteList(HtmlRenderer renderer, ListBlock list, int depth)
+        {
+            var isOrdered = list.IsOrdered;
+            var itemNumber = isOrdered && int.TryParse(list.OrderedStart, NumberStyles.Integer, CultureInfo.InvariantCulture, out var start)
+                ? start
+                : 1;
             var isFirstItem = true;
 
-            foreach (var item in obj)
+            foreach (var item in list)
             {
                 if (!isFirstItem)
                 {
@@ -112,13 +130,46 @@ internal static class ChatCardHtmlRenderer
                 }
                 isFirstItem = false;
 
-                renderer.Write("• ");
-                renderer.ImplicitParagraph = true;
-                renderer.WriteChildren((ListItemBlock)item);
-            }
+                for (var i = 0; i < depth; i++)
+                {
+                    renderer.Write("&nbsp;&nbsp;&nbsp;&nbsp;");
+                }
 
-            renderer.ImplicitParagraph = savedImplicitParagraph;
+                if (isOrdered)
+                {
+                    renderer.Write(itemNumber.ToString(CultureInfo.InvariantCulture));
+                    renderer.Write(". ");
+                    itemNumber++;
+                }
+                else
+                {
+                    renderer.Write(BulletFor(depth));
+                    renderer.Write(' ');
+                }
+
+                renderer.ImplicitParagraph = true;
+
+                foreach (var child in (ListItemBlock)item)
+                {
+                    if (child is ListBlock nestedList)
+                    {
+                        renderer.Write("<br>");
+                        WriteList(renderer, nestedList, depth + 1);
+                    }
+                    else
+                    {
+                        renderer.Write(child);
+                    }
+                }
+            }
         }
+
+        private static string BulletFor(int depth) => depth switch
+        {
+            0 => "•",
+            1 => "◦",
+            _ => "▪",
+        };
     }
 
     private sealed class RestrictedQuoteBlockRenderer : HtmlObjectRenderer<QuoteBlock>
@@ -146,6 +197,34 @@ internal static class ChatCardHtmlRenderer
     {
         protected override void Write(HtmlRenderer renderer, HtmlBlock obj)
             => renderer.WriteLeafRawLines(obj, writeEndOfLines: false, escape: true);
+    }
+
+    /// <summary>
+    /// TextParagraph has no &lt;pre&gt;/&lt;code&gt; support, so fenced/indented code blocks are flattened to
+    /// escaped plain text, one &lt;br&gt;-separated line per source line, with the same leading separator every
+    /// other block renderer here adds.
+    /// </summary>
+    private sealed class RestrictedCodeBlockRenderer : HtmlObjectRenderer<CodeBlock>
+    {
+        protected override void Write(HtmlRenderer renderer, CodeBlock obj)
+        {
+            if (!renderer.IsFirstInContainer)
+            {
+                renderer.Write("<br><br>");
+            }
+
+            var lines = obj.Lines.ToString().Split('\n');
+
+            for (var i = 0; i < lines.Length; i++)
+            {
+                if (i > 0)
+                {
+                    renderer.Write("<br>");
+                }
+
+                renderer.WriteEscape(lines[i]);
+            }
+        }
     }
 
     private sealed class RestrictedEmphasisInlineRenderer : HtmlObjectRenderer<EmphasisInline>
@@ -194,6 +273,10 @@ internal static class ChatCardHtmlRenderer
         }
     }
 
+    /// <summary>
+    /// Unlike prose HTML, TextParagraph has no reflow to lean on, so a single newline in the source (a "soft"
+    /// break in CommonMark terms) is rendered as a line break too, not collapsed to a space.
+    /// </summary>
     private sealed class RestrictedLineBreakInlineRenderer : HtmlObjectRenderer<LineBreakInline>
     {
         protected override void Write(HtmlRenderer renderer, LineBreakInline obj)
@@ -203,7 +286,7 @@ internal static class ChatCardHtmlRenderer
                 return;
             }
 
-            renderer.Write(obj.IsHard ? "<br>" : " ");
+            renderer.Write("<br>");
         }
     }
 
