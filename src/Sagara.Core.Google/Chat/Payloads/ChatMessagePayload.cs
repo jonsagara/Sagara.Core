@@ -7,6 +7,9 @@ internal sealed class ChatMessagePayload
     [JsonPropertyName("text")]
     public string? Text { get; set; }
 
+    [JsonPropertyName("markup_syntax")]
+    public string? MarkupSyntax { get; set; }
+
     [JsonPropertyName("cardsV2")]
     public IReadOnlyList<ChatCardWrapper>? CardsV2 { get; set; }
 }

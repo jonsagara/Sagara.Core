@@ -101,6 +101,7 @@ public sealed class GoogleChatService
                 alertLevel: alertLevel,
                 mentionUsers: mentionUsers,
                 hasCard: hasCard),
+            MarkupSyntax = "MARKUP_SYNTAX_MARKDOWN",
             CardsV2 = hasCard
                 ? [BuildCard(title, alertLevel, additionalTextWidgetsMarkdown, buttons)]
                 : null,
@@ -124,17 +125,17 @@ public sealed class GoogleChatService
 
             text
                 .Append(alertLevelInfo.Emoji)
-                .Append(" **")
+                .Append(" *")
                 .Append(alertLevelInfo.Label)
-                .Append("**\n\n");
+                .Append("*\n\n");
         }
 
         if (title is not null)
         {
             text
-                .Append("**")
+                .Append('*')
                 .Append(title)
-                .Append("**\n\n");
+                .Append("*\n\n");
         }
 
         text.Append(body);
