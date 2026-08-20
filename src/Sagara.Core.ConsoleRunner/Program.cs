@@ -54,6 +54,8 @@ const string jonWebhookUrl = "";
 
 // Send a message formatted with Markdown, and also a card with text formatted as markdown.
 //   Both demonstrate all supported formatting options.
+// NOTE: blockquotes are not supported in card text widgets.
+// NOTE: user mentions are not supported in card text widgets.
 await googleChatSvc.SendMessageAsync(
     webhookUrl: jonWebhookUrl,
     body: """
@@ -79,6 +81,11 @@ await googleChatSvc.SendMessageAsync(
 
     1. Numbered
     1. List
+
+    > This is a blockquote.
+      Also on multiple lines?
+
+    Mention a user: <chat-user data-user="users/all">
     """,
     additionalTextWidgetsMarkdown: [
         """
