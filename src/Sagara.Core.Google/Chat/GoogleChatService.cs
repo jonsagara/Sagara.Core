@@ -29,6 +29,7 @@ public sealed class GoogleChatService
         _httpClient = httpClient;
     }
 
+
     // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
 #pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
@@ -108,14 +109,14 @@ public sealed class GoogleChatService
 #pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
         string webhookUrl,
-        string bodyMarkdown,
+        string? bodyMarkdown,
         IReadOnlyCollection<GoogleChatCardV2> cards,
         CancellationToken cancellationToken = default)
 #pragma warning restore CA1054 // URI-like parameters should not be strings
     {
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
-        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
         Check.ThrowIfNull(cards);
+        ValidateContentToSend(bodyMarkdown, cards);
 
         var payload = BuildPayload(
             bodyMarkdown: bodyMarkdown,
@@ -132,15 +133,15 @@ public sealed class GoogleChatService
 #pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
         string webhookUrl,
-        string bodyMarkdown,
+        string? bodyMarkdown,
         bool mentionAllUsers,
         IReadOnlyCollection<GoogleChatCardV2> cards,
         CancellationToken cancellationToken = default)
 #pragma warning restore CA1054 // URI-like parameters should not be strings
     {
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
-        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
         Check.ThrowIfNull(cards);
+        ValidateContentToSend(bodyMarkdown, cards);
 
         var payload = BuildPayload(
             bodyMarkdown: bodyMarkdown,
@@ -157,16 +158,16 @@ public sealed class GoogleChatService
 #pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
         string webhookUrl,
-        string bodyMarkdown,
+        string? bodyMarkdown,
         IReadOnlyCollection<GoogleWorkspaceUser> mentionUsers,
         IReadOnlyCollection<GoogleChatCardV2> cards,
         CancellationToken cancellationToken = default)
 #pragma warning restore CA1054 // URI-like parameters should not be strings
     {
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
-        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
         Check.ThrowIfNull(mentionUsers);
         Check.ThrowIfNull(cards);
+        ValidateContentToSend(bodyMarkdown, cards);
 
         var payload = BuildPayload(
             bodyMarkdown: bodyMarkdown,
@@ -184,8 +185,16 @@ public sealed class GoogleChatService
     // Private methods
     //
 
+    private static void ValidateContentToSend(string? bodyMarkdown, IReadOnlyCollection<GoogleChatCardV2> cards)
+    {
+        if (string.IsNullOrWhiteSpace(bodyMarkdown) && cards.Count == 0)
+        {
+            throw new ArgumentException($"At least one of {nameof(bodyMarkdown)} or {nameof(cards)} must be provided.", nameof(bodyMarkdown));
+        }
+    }
+
     private static ChatMessagePayload BuildPayload(
-        string bodyMarkdown,
+        string? bodyMarkdown,
         bool mentionAllUsers,
         IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers,
         IReadOnlyCollection<GoogleChatCardV2>? cards = null)
@@ -207,7 +216,7 @@ public sealed class GoogleChatService
         };
     }
 
-    private static string BuildText(string bodyMarkdown, bool mentionAllUsers, IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers)
+    private static string BuildText(string? bodyMarkdown, bool mentionAllUsers, IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers)
     {
         var text = new StringBuilder(bodyMarkdown);
 

@@ -18,6 +18,11 @@ const string jonWebhookUrl = "";
 //    webhookUrl: jonWebhookUrl,
 //    bodyMarkdown: "Hello, Jon!");
 
+//// Send no body text. Results in error; guard catches it.
+//await googleChatSvc.SendMessageAsync(
+//    webhookUrl: jonWebhookUrl,
+//    bodyMarkdown: null);
+
 //// Send a simple message. Mention all users.
 //await googleChatSvc.SendMessageAsync(
 //    webhookUrl: jonWebhookUrl,
@@ -74,6 +79,12 @@ const string jonWebhookUrl = "";
 //            ],
 //            Buttons: null)
 //        ]);
+
+//// No body text and no cards. Results in Error.
+//await googleChatSvc.SendMessageAsync(
+//    webhookUrl: jonWebhookUrl,
+//    bodyMarkdown: null,
+//    cards: []);
 
 //// Send a message formatted with Markdown, and also a card with text formatted as markdown.
 ////   Both demonstrate all supported formatting options.
