@@ -222,10 +222,6 @@ public sealed class GoogleChatService
         IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers,
         IReadOnlyCollection<GoogleChatCardV2>? cards = null)
     {
-        // A card is only worth emitting when there's card-specific content to show. AlertLevel alone does not
-        // trigger a card — see BuildText, which renders the alert accent inline when no card is emitted.
-        var hasCard = cards is { Count: > 0 };
-
         return new ChatMessagePayload
         {
             Text = BuildText(
@@ -233,7 +229,8 @@ public sealed class GoogleChatService
                 mentionAllUsers: mentionAllUsers,
                 mentionUsers: mentionUsers),
             MarkupSyntax = "MARKUP_SYNTAX_MARKDOWN",
-            CardsV2 = hasCard
+            // A card is only worth emitting when there's card-specific content to show.
+            CardsV2 = cards is { Count: > 0 }
                 ? BuildCards(cards)
                 : null,
         };
@@ -365,13 +362,8 @@ public sealed class GoogleChatService
         }
     }
 
-    private static List<ChatCardWrapper> BuildCards(IReadOnlyCollection<GoogleChatCardV2>? cards)
+    private static List<ChatCardWrapper> BuildCards(IReadOnlyCollection<GoogleChatCardV2> cards)
     {
-        if (cards is null)
-        {
-            return [];
-        }
-
         List<ChatCardWrapper> cardWrappers = new(cards.Count);
 
         foreach (var card in cards)
