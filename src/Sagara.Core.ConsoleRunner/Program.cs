@@ -13,13 +13,28 @@ var googleChatSvc = host.Services.GetRequiredService<GoogleChatService>();
 
 const string jonWebhookUrl = "";
 
-//// Send a simple message, text body only.
-//await googleChatSvc.SendMessageAsync(jonWebhookUrl, "Hello, Jon!");
+//// Send a simple message.
+//await googleChatSvc.SendMessageAsync(
+//    webhookUrl: jonWebhookUrl,
+//    bodyMarkdown: "Hello, Jon!");
+
+//// Send a simple message. Mention all users.
+//await googleChatSvc.SendMessageAsync(
+//    webhookUrl: jonWebhookUrl,
+//    bodyMarkdown: "Hello, Jon!",
+//    mentionAllUsers: true);
+
+//// Send a simple message. Mention users by email.
+//// NOTE: a non-existent email address will not cause an error; the mention will render as <chat-user>.
+//await googleChatSvc.SendMessageAsync(
+//    webhookUrl: jonWebhookUrl,
+//    bodyMarkdown: "Hello, Jon!",
+//    mentionUsers: [new GoogleWorkspaceUser(Email: "jon@example.com")]);
 
 //// Send a multi-line text-only message.
 //await googleChatSvc.SendMessageAsync(
 //    webhookUrl: jonWebhookUrl,
-//    body: """
+//    bodyMarkdown: """
 //    Hello, Jon!
 //    This is a multi-line message.
 
@@ -30,16 +45,16 @@ const string jonWebhookUrl = "";
 //// Send a message formatted with Markdown.
 //await googleChatSvc.SendMessageAsync(
 //    webhookUrl: jonWebhookUrl,
-//    body: """
-//    Hello, Jon!
+//    bodyMarkdown: """
+//    Hello, Jon!  
 //    This is a message formatted with **Markdown**.
 
 //    - Item 1
 //    - Item 2
 //    - Item 3
 
-//    Best regards,
-//    Sagara.Core.ConsoleRunner
+//    Best regards,  
+//    Sagara.Core.ConsoleRunner  
 //    [Sagara.org](https://www.sagara.org)
 //    """);
 
@@ -47,9 +62,17 @@ const string jonWebhookUrl = "";
 //// Send a message formatted with Markdown, and also a card with text formatted as markdown.
 //await googleChatSvc.SendMessageAsync(
 //    webhookUrl: jonWebhookUrl,
-//    body: "This is my site: [Sagara.org](https://www.sagara.org)",
-//    additionalTextWidgetsMarkdown: [
-//        "This is a card text widget with **Markdown** formatting. My blog: [Sagara.dev](https://www.sagara.dev)",
+//    bodyMarkdown: "This is my site: [Sagara.org](https://www.sagara.org)",
+//    cards: [
+//        new GoogleChatCardV2(
+//            SectionHeader: null,//"This is a card header",
+//            Title: "Card Title",
+//            Subtitle: null,//"Card Subtitle",
+//            AlertLevel: null,//GoogleChatAlertLevel.Error,
+//            TextParagraphMarkdowns: [
+//                "This is a card text widget with **Markdown** formatting. My blog: [Sagara.dev](https://www.sagara.dev)",
+//            ],
+//            Buttons: null)
 //        ]);
 
 //// Send a message formatted with Markdown, and also a card with text formatted as markdown.
@@ -113,9 +136,3 @@ const string jonWebhookUrl = "";
 //        1. List
 //        """,
 //        ]);
-
-
-// Send a message with a title
-await googleChatSvc.SendMessageAsync(
-    webhookUrl: jonWebhookUrl,
-    bodyMarkdown: "Hello, Jon!");

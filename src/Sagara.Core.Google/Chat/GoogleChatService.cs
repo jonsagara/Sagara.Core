@@ -58,7 +58,7 @@ public sealed class GoogleChatService
     public async Task SendMessageAsync(
         string webhookUrl, 
         string bodyMarkdown, 
-        bool mentionaAllUsers, 
+        bool mentionAllUsers, 
         CancellationToken cancellationToken = default)
 #pragma warning restore CA1054 // URI-like parameters should not be strings
     {
@@ -67,7 +67,7 @@ public sealed class GoogleChatService
 
         var payload = BuildPayload(
             bodyMarkdown: bodyMarkdown,
-            mentionAllUsers: mentionaAllUsers,
+            mentionAllUsers: mentionAllUsers,
             mentionUsers: null,
             cards: null);
 
