@@ -1,13 +1,10 @@
 namespace Sagara.Core.Google.Chat;
 
-public sealed record GoogleChatCardV2(
-    string? SectionHeader,
-    string? Title,
-    string? Subtitle,
-    GoogleChatAlertLevel? AlertLevel,
-    IReadOnlyCollection<string>? TextParagraphMarkdowns,
-    IReadOnlyCollection<GoogleChatButton>? Buttons)
+public sealed record GoogleChatCardV2(string? Title)
 {
-    public IReadOnlyCollection<string> TextParagraphMarkdowns { get; } = TextParagraphMarkdowns ?? [];
-    public IReadOnlyCollection<GoogleChatButton> Buttons { get; } = Buttons ?? [];
+    public string? SectionHeader { get; init; }
+    public string? Subtitle { get; init; }
+    public GoogleChatAlertLevel? AlertLevel { get; init; }
+    public IReadOnlyCollection<string>? TextParagraphMarkdowns { get; init; }
+    public IReadOnlyCollection<GoogleChatButton>? Buttons { get; init; }
 }

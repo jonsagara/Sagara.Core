@@ -69,22 +69,35 @@ const string jonWebhookUrl = "";
 //    webhookUrl: jonWebhookUrl,
 //    bodyMarkdown: "This is my site: [Sagara.org](https://www.sagara.org)",
 //    cards: [
-//        new GoogleChatCardV2(
-//            SectionHeader: null,//"This is a card header",
-//            Title: "Card Title",
-//            Subtitle: null,//"Card Subtitle",
-//            AlertLevel: null,//GoogleChatAlertLevel.Error,
-//            TextParagraphMarkdowns: [
+//        new GoogleChatCardV2(Title: "Card Title")
+//        {
+//            //SectionHeader = null,//"This is a card header",
+//            //Subtitle = null,//"Card Subtitle",
+//            //AlertLevel = null,//GoogleChatAlertLevel.Error,
+//            TextParagraphMarkdowns = [
 //                "This is a card text widget with **Markdown** formatting. My blog: [Sagara.dev](https://www.sagara.dev)",
 //            ],
-//            Buttons: null)
-//        ]);
+//            //Buttons = null,
+//            //Buttons = [
+//            //    new GoogleChatButton(
+//            //        Text: "Click Me",
+//            //        Url: "https://www.sagara.org"),
+//            //],
+//        }]);
 
 //// No body text and no cards. Results in Error.
 //await googleChatSvc.SendMessageAsync(
 //    webhookUrl: jonWebhookUrl,
 //    bodyMarkdown: null,
 //    cards: []);
+
+//// No body text and empty card. Results in Error.
+//await googleChatSvc.SendMessageAsync(
+//    webhookUrl: jonWebhookUrl,
+//    bodyMarkdown: null,
+//    cards: [
+//        new GoogleChatCardV2(Title: null),
+//        ]);
 
 //// Send a message formatted with Markdown, and also a card with text formatted as markdown.
 ////   Both demonstrate all supported formatting options.

@@ -187,9 +187,26 @@ public sealed class GoogleChatService
 
     private static void ValidateContentToSend(string? bodyMarkdown, IReadOnlyCollection<GoogleChatCardV2> cards)
     {
+        // We must have at least one of bodyMarkdown or cards to send a message. Google Chat will
+        //   reject a message with neither.
         if (string.IsNullOrWhiteSpace(bodyMarkdown) && cards.Count == 0)
         {
             throw new ArgumentException($"At least one of {nameof(bodyMarkdown)} or {nameof(cards)} must be provided.", nameof(bodyMarkdown));
+        }
+
+        // Sending empty cards does not result in an error from Google Chat, but it does result in
+        //   a message with no content, which is not useful. Ensure each card has at least something to send.
+        foreach (var card in cards)
+        {
+            if (string.IsNullOrWhiteSpace(card.SectionHeader) &&
+                string.IsNullOrWhiteSpace(card.Title) &&
+                string.IsNullOrWhiteSpace(card.Subtitle) &&
+                card.AlertLevel is null &&
+                (card.TextParagraphMarkdowns is null || card.TextParagraphMarkdowns.Count == 0) &&
+                (card.Buttons is null || card.Buttons.Count == 0))
+            {
+                throw new ArgumentException($"Card must have at least one of {nameof(GoogleChatCardV2.SectionHeader)}, {nameof(GoogleChatCardV2.Title)}, {nameof(GoogleChatCardV2.Subtitle)}, {nameof(GoogleChatCardV2.AlertLevel)}, {nameof(GoogleChatCardV2.TextParagraphMarkdowns)}, or {nameof(GoogleChatCardV2.Buttons)} set.", nameof(cards));
+            }
         }
     }
 
