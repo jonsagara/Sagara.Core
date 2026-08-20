@@ -144,6 +144,7 @@ public sealed class GoogleChatService
         if (mentionUsers is { Count: > 0 })
         {
             text.Append("\n\n");
+#warning TODO: Use the chat-user mention syntax
             text.AppendJoin(' ', mentionUsers.Select(user => $"<users/{user.Id}>"));
         }
 

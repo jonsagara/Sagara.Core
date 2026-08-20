@@ -61,10 +61,10 @@ await googleChatSvc.SendMessageAsync(
     body: """
     This is my site: [Sagara.org](https://www.sagara.org)
 
-    **Bold**
-    *Italic*
-    ~~Strikethrough~~
-    `single line code`
+    **Bold**  
+    *Italic*  
+    ~~Strikethrough~~  
+    `single line code`  
     
     ```csharp
     var jon = "sagara";
@@ -82,8 +82,8 @@ await googleChatSvc.SendMessageAsync(
     1. Numbered
     1. List
 
-    > This is a blockquote.
-      Also on multiple lines?
+    > This is a blockquote.  
+    > Also on multiple lines?
 
     Mention a user: <chat-user data-user="users/all">
     """,
