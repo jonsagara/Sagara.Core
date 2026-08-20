@@ -105,7 +105,7 @@ const string jonWebhookUrl = "";
 //// NOTE: user mentions are not supported in card text widgets.
 //await googleChatSvc.SendMessageAsync(
 //    webhookUrl: jonWebhookUrl,
-//    body: """
+//    bodyMarkdown: """
 //    This is my site: [Sagara.org](https://www.sagara.org)
 
 //    **Bold**  
@@ -134,7 +134,10 @@ const string jonWebhookUrl = "";
 
 //    Mention a user: <chat-user data-user="users/all">
 //    """,
-//    additionalTextWidgetsMarkdown: [
+//    cards: [
+//        new GoogleChatCardV2(Title: null)
+//        {
+//            TextParagraphMarkdowns = [
 //        """
 //        This is my site: [Sagara.org](https://www.sagara.org)
 
@@ -158,5 +161,7 @@ const string jonWebhookUrl = "";
 
 //        1. Numbered
 //        1. List
-//        """,
+//        """
+//            ],
+//        }
 //        ]);
