@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -126,17 +127,17 @@ public sealed class GoogleChatService
 
             text
                 .Append(alertLevelInfo.Emoji)
-                .Append(" *")
+                .Append(" **")
                 .Append(alertLevelInfo.Label)
-                .Append("*\n\n");
+                .Append("**\n\n");
         }
 
         if (title is not null)
         {
             text
-                .Append('*')
+                .Append("**")
                 .Append(title)
-                .Append("*\n\n");
+                .Append("**\n\n");
         }
 
         text.Append(body);
@@ -144,8 +145,7 @@ public sealed class GoogleChatService
         if (mentionUsers is { Count: > 0 })
         {
             text.Append("\n\n");
-#warning TODO: Use the chat-user mention syntax
-            text.AppendJoin(' ', mentionUsers.Select(user => $"<users/{user.Id}>"));
+            text.AppendJoin(' ', mentionUsers.Select(user => $"<chat-user data-email=\"{WebUtility.HtmlEncode(user.Email)}\">"));
         }
 
         return text.ToString();

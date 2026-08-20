@@ -52,64 +52,71 @@ const string jonWebhookUrl = "";
 //        "This is a card text widget with **Markdown** formatting. My blog: [Sagara.dev](https://www.sagara.dev)",
 //        ]);
 
-// Send a message formatted with Markdown, and also a card with text formatted as markdown.
-//   Both demonstrate all supported formatting options.
-// NOTE: blockquotes are not supported in card text widgets.
-// NOTE: user mentions are not supported in card text widgets.
+//// Send a message formatted with Markdown, and also a card with text formatted as markdown.
+////   Both demonstrate all supported formatting options.
+//// NOTE: blockquotes are not supported in card text widgets.
+//// NOTE: user mentions are not supported in card text widgets.
+//await googleChatSvc.SendMessageAsync(
+//    webhookUrl: jonWebhookUrl,
+//    body: """
+//    This is my site: [Sagara.org](https://www.sagara.org)
+
+//    **Bold**  
+//    *Italic*  
+//    ~~Strikethrough~~  
+//    `single line code`  
+
+//    ```csharp
+//    var jon = "sagara";
+//    var name = jon.ToUpperInvariant();
+//    ```
+
+//    - Simple
+//    - List
+
+//    - Nested
+//      - List
+//        - Third item
+//          With subtext
+
+//    1. Numbered
+//    1. List
+
+//    > This is a blockquote.  
+//    > Also on multiple lines?
+
+//    Mention a user: <chat-user data-user="users/all">
+//    """,
+//    additionalTextWidgetsMarkdown: [
+//        """
+//        This is my site: [Sagara.org](https://www.sagara.org)
+
+//        **Bold**
+//        *Italic*
+//        ~~Strikethrough~~
+//        `single line code`
+
+//        ```csharp
+//        var jon = "sagara";
+//        var name = jon.ToUpperInvariant();
+//        ```
+
+//        - Simple
+//        - List
+
+//        - Nested
+//          - List
+//            - Third item
+//              With subtext
+
+//        1. Numbered
+//        1. List
+//        """,
+//        ]);
+
+
+// Send a message with a title
 await googleChatSvc.SendMessageAsync(
     webhookUrl: jonWebhookUrl,
-    body: """
-    This is my site: [Sagara.org](https://www.sagara.org)
-
-    **Bold**  
-    *Italic*  
-    ~~Strikethrough~~  
-    `single line code`  
-    
-    ```csharp
-    var jon = "sagara";
-    var name = jon.ToUpperInvariant();
-    ```
-
-    - Simple
-    - List
-
-    - Nested
-      - List
-        - Third item
-          With subtext
-
-    1. Numbered
-    1. List
-
-    > This is a blockquote.  
-    > Also on multiple lines?
-
-    Mention a user: <chat-user data-user="users/all">
-    """,
-    additionalTextWidgetsMarkdown: [
-        """
-        This is my site: [Sagara.org](https://www.sagara.org)
-        
-        **Bold**
-        *Italic*
-        ~~Strikethrough~~
-        `single line code`
-        
-        ```csharp
-        var jon = "sagara";
-        var name = jon.ToUpperInvariant();
-        ```
-        
-        - Simple
-        - List
-        
-        - Nested
-          - List
-            - Third item
-              With subtext
-        
-        1. Numbered
-        1. List
-        """,
-        ]);
+    body: "Hello, Jon!",
+    title: "This is a title!");
