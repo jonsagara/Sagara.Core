@@ -25,4 +25,7 @@
     <Project Path="src/Sagara.Core.Google.Tests/Sagara.Core.Google.Tests.csproj" />
     <Project Path="src/Sagara.Core.Tests/Sagara.Core.Tests.csproj" />
   </Folder>
+  <Folder Name="/tools/">
+    <Project Path="src/Sagara.Core.ConsoleRunner/Sagara.Core.ConsoleRunner.csproj" Id="8239e9fd-ce67-4bb3-86c7-8c7a9cc2344e" />
+  </Folder>
 </Solution>

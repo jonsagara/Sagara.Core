@@ -7,6 +7,9 @@ internal sealed class ChatMessagePayload
     [JsonPropertyName("text")]
     public string? Text { get; set; }
 
+    [JsonPropertyName("markup_syntax")]
+    public string? MarkupSyntax { get; set; }
+
     [JsonPropertyName("cardsV2")]
     public IReadOnlyList<ChatCardWrapper>? CardsV2 { get; set; }
 }
@@ -32,11 +35,17 @@ internal sealed class ChatCard
 internal sealed class ChatCardHeader
 {
     [JsonPropertyName("title")]
-    public required string Title { get; set; }
+    public required string? Title { get; set; }
+
+    [JsonPropertyName("subtitle")]
+    public required string? Subtitle { get; set; }
 }
 
 internal sealed class ChatCardSection
 {
+    [JsonPropertyName("header")]
+    public required string? Header { get; set; }
+
     [JsonPropertyName("widgets")]
     public required IReadOnlyList<ChatCardWidget> Widgets { get; set; }
 }
@@ -58,6 +67,8 @@ internal sealed class ChatTextParagraph
 {
     [JsonPropertyName("text")]
     public required string Text { get; set; }
+    [JsonPropertyName("textSyntax")]
+    public required string TextSyntax { get; set; }
 }
 
 internal sealed class ChatButtonList
