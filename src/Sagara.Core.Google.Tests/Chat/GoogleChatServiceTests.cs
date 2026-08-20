@@ -1,132 +1,193 @@
-//using System.Net;
-//using System.Text.Json;
-//using Sagara.Core.Google.Chat;
+using System.Net;
+using System.Text.Json;
+using Sagara.Core.Google.Chat;
 
-//namespace Sagara.Core.Google.Tests.Chat;
+namespace Sagara.Core.Google.Tests.Chat;
 
-//public class GoogleChatServiceTests
-//{
-//    private const string WebhookUrl = "https://chat.googleapis.com/v1/spaces/x/messages?key=y&token=z";
+public class GoogleChatServiceTests
+{
+    private const string WebhookUrl = "https://chat.googleapis.com/v1/spaces/x/messages?key=y&token=z";
 
-//    [Fact]
-//    public async Task SendMessageAsync_BodyOnly_SendsTextOnlyPayload()
-//    {
-//        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
-//        var service = CreateService(handler);
+    [Fact]
+    public async Task SendMessageAsync_BodyOnly_SendsTextOnlyPayload()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler);
 
-//        await service.SendMessageAsync(WebhookUrl, "hello", cancellationToken: TestContext.Current.CancellationToken);
+        await service.SendMessageAsync(WebhookUrl, "hello", cancellationToken: TestContext.Current.CancellationToken);
 
-//        var json = await handler.GetRequestJsonAsync();
+        var json = await handler.GetRequestJsonAsync();
 
-//        Assert.Equal("hello", json.GetProperty("text").GetString());
-//        Assert.False(json.TryGetProperty("cardsV2", out _));
-//    }
+        Assert.Equal("hello", json.GetProperty("text").GetString());
+        Assert.False(json.TryGetProperty("cardsV2", out _));
+    }
 
-//    [Fact]
-//    public async Task SendMessageAsync_TitleAlertButtonsAndWidgets_EmitsCard()
-//    {
-//        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
-//        var service = CreateService(handler);
+    [Fact]
+    public async Task SendMessageAsync_Cards_EmitsAlertTextParagraphAndButtonWidgets()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler);
 
-//        await service.SendMessageAsync(
-//            WebhookUrl,
-//            "hello",
-//            cardTitle: "Deploy failed",
-//            alertLevel: GoogleChatAlertLevel.Error,
-//            additionalTextWidgetsMarkdown: ["more **info**"],
-//            buttons: [new GoogleChatButton("View logs", "https://example.com/logs")],
-//            cancellationToken: TestContext.Current.CancellationToken);
+        var card = new GoogleChatCardV2(Title: "Deploy failed")
+        {
+            Subtitle = "prod",
+            AlertLevel = GoogleChatAlertLevel.Error,
+            TextParagraphMarkdowns = ["more **info**"],
+            Buttons = [new GoogleChatButton("View logs", "https://example.com/logs")],
+        };
 
-//        var json = await handler.GetRequestJsonAsync();
-//        var text = json.GetProperty("text").GetString();
+        await service.SendMessageAsync(
+            WebhookUrl,
+            "hello",
+            cards: [card],
+            cancellationToken: TestContext.Current.CancellationToken);
 
-//        // Title is prepended to the text field too, so it shows in the notification preview.
-//        Assert.Contains("Deploy failed", text, StringComparison.Ordinal);
-//        // Alert level renders in the card, and is not also duplicated in the text prefix.
-//        Assert.DoesNotContain("ERROR", text, StringComparison.Ordinal);
+        var json = await handler.GetRequestJsonAsync();
 
-//        var widgets = json.GetProperty("cardsV2").EnumerateArray().First()
-//            .GetProperty("card").GetProperty("sections").EnumerateArray().First()
-//            .GetProperty("widgets").EnumerateArray().ToList();
+        var cardElement = json.GetProperty("cardsV2").EnumerateArray().First().GetProperty("card");
+        Assert.Equal("Deploy failed", cardElement.GetProperty("header").GetProperty("title").GetString());
+        Assert.Equal("prod", cardElement.GetProperty("header").GetProperty("subtitle").GetString());
 
-//        Assert.Equal(3, widgets.Count); // alert accent widget + additional text widget + button list
-//        Assert.Contains("ERROR", widgets[0].GetProperty("textParagraph").GetProperty("text").GetString(), StringComparison.Ordinal);
-//        Assert.True(widgets[2].TryGetProperty("buttonList", out _));
-//    }
+        var widgets = cardElement.GetProperty("sections").EnumerateArray().First()
+            .GetProperty("widgets").EnumerateArray().ToList();
 
-//    [Fact]
-//    public async Task SendMessageAsync_MentionUsers_AppendsMentionChipsToText()
-//    {
-//        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
-//        var service = CreateService(handler);
+        Assert.Equal(3, widgets.Count); // alert accent widget + text paragraph widget + button list
+        Assert.Contains("ERROR", widgets[0].GetProperty("textParagraph").GetProperty("text").GetString(), StringComparison.Ordinal);
+        Assert.Contains("more **info**", widgets[1].GetProperty("textParagraph").GetProperty("text").GetString(), StringComparison.Ordinal);
+        Assert.True(widgets[2].TryGetProperty("buttonList", out _));
+    }
 
-//        await service.SendMessageAsync(
-//            WebhookUrl,
-//            "hello",
-//            mentionUsers: [new GoogleWorkspaceUser("12345"), new GoogleWorkspaceUser("67890")],
-//            cancellationToken: TestContext.Current.CancellationToken);
+    [Fact]
+    public async Task SendMessageAsync_MentionAllUsers_AppendsMentionAllChipToText()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler);
 
-//        var json = await handler.GetRequestJsonAsync();
-//        var text = json.GetProperty("text").GetString();
+        await service.SendMessageAsync(
+            WebhookUrl,
+            "hello",
+            mentionAllUsers: true,
+            cancellationToken: TestContext.Current.CancellationToken);
 
-//        Assert.Contains("<users/12345>", text, StringComparison.Ordinal);
-//        Assert.Contains("<users/67890>", text, StringComparison.Ordinal);
-//    }
+        var json = await handler.GetRequestJsonAsync();
+        var text = json.GetProperty("text").GetString();
 
-//    [Fact]
-//    public async Task SendMessageAsync_NonSuccessStatusCode_ThrowsHttpRequestException()
-//    {
-//        var handler = new CapturingHttpMessageHandler(HttpStatusCode.BadRequest);
-//        var service = CreateService(handler);
+        Assert.Contains("""<chat-user data-user="users/all">""", text, StringComparison.Ordinal);
+    }
 
-//        await Assert.ThrowsAsync<HttpRequestException>(
-//            () => service.SendMessageAsync(WebhookUrl, "hello", cancellationToken: TestContext.Current.CancellationToken));
-//    }
+    [Fact]
+    public async Task SendMessageAsync_MentionUsers_AppendsMentionChipsToText()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler);
 
-//    [Theory]
-//    [InlineData(null)]
-//    [InlineData("")]
-//    [InlineData("   ")]
-//    public async Task SendMessageAsync_NullOrWhiteSpaceBody_Throws(string? body)
-//    {
-//        var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK));
+        await service.SendMessageAsync(
+            WebhookUrl,
+            "hello",
+            mentionUsers: [new GoogleWorkspaceUser("jon@example.com"), new GoogleWorkspaceUser("jane@example.com")],
+            cancellationToken: TestContext.Current.CancellationToken);
 
-//        await Assert.ThrowsAnyAsync<ArgumentException>(
-//            () => service.SendMessageAsync(WebhookUrl, body!, cancellationToken: TestContext.Current.CancellationToken));
-//    }
+        var json = await handler.GetRequestJsonAsync();
+        var text = json.GetProperty("text").GetString();
 
-//    [Theory]
-//    [InlineData(null)]
-//    [InlineData("")]
-//    [InlineData("   ")]
-//    public async Task SendMessageAsync_NullOrWhiteSpaceWebhookUrl_Throws(string? webhookUrl)
-//    {
-//        var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK));
+        Assert.Contains("""<chat-user data-email="jon@example.com">""", text, StringComparison.Ordinal);
+        Assert.Contains("""<chat-user data-email="jane@example.com">""", text, StringComparison.Ordinal);
+    }
 
-//        await Assert.ThrowsAnyAsync<ArgumentException>(
-//            () => service.SendMessageAsync(webhookUrl!, "hello", cancellationToken: TestContext.Current.CancellationToken));
-//    }
+    [Fact]
+    public async Task SendMessageAsync_NonSuccessStatusCode_ThrowsHttpRequestException()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.BadRequest);
+        var service = CreateService(handler);
 
-//    private static GoogleChatService CreateService(HttpMessageHandler handler)
-//        => new(new HttpClient(handler));
+        await Assert.ThrowsAsync<HttpRequestException>(
+            () => service.SendMessageAsync(WebhookUrl, "hello", cancellationToken: TestContext.Current.CancellationToken));
+    }
 
-//    private sealed class CapturingHttpMessageHandler(HttpStatusCode statusCode) : HttpMessageHandler
-//    {
-//        private string? _requestBody;
+    [Fact]
+    public async Task SendMessageAsync_Cards_NonSuccessStatusCode_ThrowsHttpRequestException()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.BadRequest);
+        var service = CreateService(handler);
 
-//        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-//        {
-//            _requestBody = request.Content is null ? null : await request.Content.ReadAsStringAsync(cancellationToken);
+        await Assert.ThrowsAsync<HttpRequestException>(
+            () => service.SendMessageAsync(
+                WebhookUrl,
+                "hello",
+                cards: [new GoogleChatCardV2(Title: "Card")],
+                cancellationToken: TestContext.Current.CancellationToken));
+    }
 
-//            return new HttpResponseMessage(statusCode);
-//        }
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task SendMessageAsync_NullOrWhiteSpaceBody_Throws(string? body)
+    {
+        var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK));
 
-//        public Task<JsonElement> GetRequestJsonAsync()
-//        {
-//            Assert.NotNull(_requestBody);
+        await Assert.ThrowsAnyAsync<ArgumentException>(
+            () => service.SendMessageAsync(WebhookUrl, body!, cancellationToken: TestContext.Current.CancellationToken));
+    }
 
-//            using var document = JsonDocument.Parse(_requestBody);
-//            return Task.FromResult(document.RootElement.Clone());
-//        }
-//    }
-//}
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task SendMessageAsync_NullOrWhiteSpaceWebhookUrl_Throws(string? webhookUrl)
+    {
+        var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK));
+
+        await Assert.ThrowsAnyAsync<ArgumentException>(
+            () => service.SendMessageAsync(webhookUrl!, "hello", cancellationToken: TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task SendMessageAsync_Cards_NoBodyAndNoCards_ThrowsArgumentException()
+    {
+        var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK));
+
+        await Assert.ThrowsAsync<ArgumentException>(
+            () => service.SendMessageAsync(
+                WebhookUrl,
+                bodyMarkdown: null,
+                cards: [],
+                cancellationToken: TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task SendMessageAsync_Cards_EmptyCard_ThrowsArgumentException()
+    {
+        var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.OK));
+
+        await Assert.ThrowsAsync<ArgumentException>(
+            () => service.SendMessageAsync(
+                WebhookUrl,
+                bodyMarkdown: null,
+                cards: [new GoogleChatCardV2(Title: null)],
+                cancellationToken: TestContext.Current.CancellationToken));
+    }
+
+    private static GoogleChatService CreateService(HttpMessageHandler handler)
+        => new(new HttpClient(handler));
+
+    private sealed class CapturingHttpMessageHandler(HttpStatusCode statusCode) : HttpMessageHandler
+    {
+        private string? _requestBody;
+
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            _requestBody = request.Content is null ? null : await request.Content.ReadAsStringAsync(cancellationToken);
+
+            return new HttpResponseMessage(statusCode);
+        }
+
+        public Task<JsonElement> GetRequestJsonAsync()
+        {
+            Assert.NotNull(_requestBody);
+
+            using var document = JsonDocument.Parse(_requestBody);
+            return Task.FromResult(document.RootElement.Clone());
+        }
+    }
+}

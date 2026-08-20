@@ -127,6 +127,8 @@ public sealed class GoogleChatService
         using var response = await _httpClient
             .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
             .ConfigureAwait(false);
+
+        response.EnsureSuccessStatusCode();
     }
 
     // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
@@ -152,6 +154,8 @@ public sealed class GoogleChatService
         using var response = await _httpClient
             .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
             .ConfigureAwait(false);
+
+        response.EnsureSuccessStatusCode();
     }
 
     // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
@@ -178,6 +182,8 @@ public sealed class GoogleChatService
         using var response = await _httpClient
             .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
             .ConfigureAwait(false);
+
+        response.EnsureSuccessStatusCode();
     }
 
 
