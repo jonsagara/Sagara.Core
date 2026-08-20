@@ -29,45 +29,22 @@ public sealed class GoogleChatService
         _httpClient = httpClient;
     }
 
-    /// <summary>
-    /// Sends a message to the Google Chat space backed by <paramref name="webhookUrl"/>.
-    /// </summary>
-    /// <param name="webhookUrl">The Google Chat incoming webhook URL to POST the message to.</param>
-    /// <param name="body">The message body. Standard markdown.</param>
-    /// <param name="alertLevel">An optional alert severity to call out.</param>
-    /// <param name="cardTitle">A title for an optional card. Rendered as the
-    /// card header title if a card ends up being emitted (see <paramref name="additionalTextWidgetsMarkdown"/>
-    /// and <paramref name="buttons"/>).</param>
-    /// <param name="additionalTextWidgetsMarkdown">Additional card text widgets. Each entry is standard markdown,
-    /// converted to the restricted HTML subset supported by Google Chat's TextParagraph widget. Providing any
-    /// entries causes a card to be emitted.</param>
-    /// <param name="buttons">Card buttons. Providing any buttons causes a card to be emitted.</param>
-    /// <param name="mentionUsers">Google Workspace users to mention.</param>
-    /// <param name="cancellationToken">A token to cancel the request.</param>
-    /// <exception cref="HttpRequestException">The webhook responded with a non-success status code.</exception>
     // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
 #pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
         string webhookUrl,
-        string body,
-        string? cardTitle = null,
-        GoogleChatAlertLevel? alertLevel = null,
-        IReadOnlyList<string>? additionalTextWidgetsMarkdown = null,
-        IReadOnlyList<GoogleChatButton>? buttons = null,
-        IReadOnlyList<GoogleWorkspaceUser>? mentionUsers = null,
+        string bodyMarkdown,
         CancellationToken cancellationToken = default)
 #pragma warning restore CA1054 // URI-like parameters should not be strings
     {
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
-        Check.ThrowIfNullOrWhiteSpace(body);
+        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
 
         var payload = BuildPayload(
-            body: body,
-            alertLevel: alertLevel,
-            cardTitle: cardTitle,
-            additionalTextWidgetsMarkdown: additionalTextWidgetsMarkdown,
-            buttons: buttons,
-            mentionUsers: mentionUsers);
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: false,
+            mentionUsers: null,
+            cards: null);
 
         using var response = await _httpClient
             .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
@@ -76,63 +53,170 @@ public sealed class GoogleChatService
         response.EnsureSuccessStatusCode();
     }
 
+    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
+#pragma warning disable CA1054 // URI-like parameters should not be strings
+    public async Task SendMessageAsync(
+        string webhookUrl, 
+        string bodyMarkdown, 
+        bool mentionaAllUsers, 
+        CancellationToken cancellationToken = default)
+#pragma warning restore CA1054 // URI-like parameters should not be strings
+    {
+        Check.ThrowIfNullOrWhiteSpace(webhookUrl);
+        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
+
+        var payload = BuildPayload(
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: mentionaAllUsers,
+            mentionUsers: null,
+            cards: null);
+
+        using var response = await _httpClient
+            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
+            .ConfigureAwait(false);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
+#pragma warning disable CA1054 // URI-like parameters should not be strings
+    public async Task SendMessageAsync(
+        string webhookUrl,
+        string bodyMarkdown,
+        IReadOnlyCollection<GoogleWorkspaceUser> mentionUsers,
+        CancellationToken cancellationToken = default)
+#pragma warning restore CA1054 // URI-like parameters should not be strings
+    {
+        Check.ThrowIfNullOrWhiteSpace(webhookUrl);
+        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
+        Check.ThrowIfNull(mentionUsers);
+
+        var payload = BuildPayload(
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: false,
+            mentionUsers: mentionUsers,
+            cards: null);
+
+        using var response = await _httpClient
+            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
+            .ConfigureAwait(false);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
+#pragma warning disable CA1054 // URI-like parameters should not be strings
+    public async Task SendMessageAsync(
+        string webhookUrl,
+        string bodyMarkdown,
+        IReadOnlyCollection<GoogleChatCardV2> cards,
+        CancellationToken cancellationToken = default)
+#pragma warning restore CA1054 // URI-like parameters should not be strings
+    {
+        Check.ThrowIfNullOrWhiteSpace(webhookUrl);
+        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
+        Check.ThrowIfNull(cards);
+
+        var payload = BuildPayload(
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: false,
+            mentionUsers: null,
+            cards: cards);
+
+        using var response = await _httpClient
+            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
+#pragma warning disable CA1054 // URI-like parameters should not be strings
+    public async Task SendMessageAsync(
+        string webhookUrl,
+        string bodyMarkdown,
+        bool mentionAllUsers,
+        IReadOnlyCollection<GoogleChatCardV2> cards,
+        CancellationToken cancellationToken = default)
+#pragma warning restore CA1054 // URI-like parameters should not be strings
+    {
+        Check.ThrowIfNullOrWhiteSpace(webhookUrl);
+        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
+        Check.ThrowIfNull(cards);
+
+        var payload = BuildPayload(
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: mentionAllUsers,
+            mentionUsers: null,
+            cards: cards);
+
+        using var response = await _httpClient
+            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
+#pragma warning disable CA1054 // URI-like parameters should not be strings
+    public async Task SendMessageAsync(
+        string webhookUrl,
+        string bodyMarkdown,
+        IReadOnlyCollection<GoogleWorkspaceUser> mentionUsers,
+        IReadOnlyCollection<GoogleChatCardV2> cards,
+        CancellationToken cancellationToken = default)
+#pragma warning restore CA1054 // URI-like parameters should not be strings
+    {
+        Check.ThrowIfNullOrWhiteSpace(webhookUrl);
+        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
+        Check.ThrowIfNull(mentionUsers);
+        Check.ThrowIfNull(cards);
+
+        var payload = BuildPayload(
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: false,
+            mentionUsers: mentionUsers,
+            cards: cards);
+
+        using var response = await _httpClient
+            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
+            .ConfigureAwait(false);
+    }
+
 
     //
     // Private methods
     //
 
     private static ChatMessagePayload BuildPayload(
-        string body,
-        GoogleChatAlertLevel? alertLevel,
-        string? cardTitle,
-        IReadOnlyList<string>? additionalTextWidgetsMarkdown,
-        IReadOnlyList<GoogleChatButton>? buttons,
-        IReadOnlyList<GoogleWorkspaceUser>? mentionUsers)
+        string bodyMarkdown,
+        bool mentionAllUsers,
+        IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers,
+        IReadOnlyCollection<GoogleChatCardV2>? cards = null)
     {
         // A card is only worth emitting when there's card-specific content to show. AlertLevel alone does not
         // trigger a card — see BuildText, which renders the alert accent inline when no card is emitted.
-        var hasCard = cardTitle is not null
-            || additionalTextWidgetsMarkdown is { Count: > 0 }
-            || buttons is { Count: > 0 };
+        var hasCard = cards is { Count: > 0 };
 
         return new ChatMessagePayload
         {
             Text = BuildText(
-                body: body,
-                alertLevel: alertLevel,
-                mentionUsers: mentionUsers,
-                hasCard: hasCard),
+                bodyMarkdown: bodyMarkdown,
+                mentionAllUsers: mentionAllUsers,
+                mentionUsers: mentionUsers),
             MarkupSyntax = "MARKUP_SYNTAX_MARKDOWN",
             CardsV2 = hasCard
-                ? [BuildCard(cardTitle, alertLevel, additionalTextWidgetsMarkdown, buttons)]
+                ? BuildCards(cards)
                 : null,
         };
     }
 
-    private static string BuildText(
-        string body,
-        GoogleChatAlertLevel? alertLevel,
-        IReadOnlyList<GoogleWorkspaceUser>? mentionUsers,
-        bool hasCard)
+    private static string BuildText(string bodyMarkdown, bool mentionAllUsers, IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers)
     {
-        var text = new StringBuilder();
+        var text = new StringBuilder(bodyMarkdown);
 
-        // When a card is emitted, the alert level is shown as a widget in the card instead (see BuildCard) so we
-        // don't show it twice in the same message.
-        if (!hasCard && alertLevel is { } level)
+        if (mentionAllUsers)
         {
-            var alertLevelInfo = GoogleChatAlertLevelInfo.For(level);
-
-            text
-                .Append(alertLevelInfo.Emoji)
-                .Append(" **")
-                .Append(alertLevelInfo.Label)
-                .Append("**\n\n");
+            text.Append("\n\n");
+            text.Append("<chat-user data-user=\"users/all\">");
         }
-
-        text.Append(body);
-
-        if (mentionUsers is { Count: > 0 })
+        else if (mentionUsers is { Count: > 0 })
         {
             text.Append("\n\n");
             text.AppendJoin(' ', mentionUsers.Select(user => $"<chat-user data-email=\"{WebUtility.HtmlEncode(user.Email)}\">"));
@@ -249,13 +333,45 @@ public sealed class GoogleChatService
         }
     }
 
+    private static List<ChatCardWrapper> BuildCards(IReadOnlyCollection<GoogleChatCardV2>? cards)
+    {
+        if (cards is null)
+        {
+            return [];
+        }
+
+        List<ChatCardWrapper> cardWrappers = new(cards.Count);
+
+        foreach (var card in cards)
+        {
+            var cardWrapper = BuildCard(
+                sectionHeader: card.SectionHeader,
+                title: card.Title,
+                subtitle: card.Subtitle,
+                alertLevel: card.AlertLevel,
+                textParagraphMarkdowns: card.TextParagraphMarkdowns,
+                buttons: card.Buttons);
+
+            cardWrappers.Add(cardWrapper);
+        }
+
+        return cardWrappers;
+    }
+
     private static ChatCardWrapper BuildCard(
-        string? cardTitle,
+        string? sectionHeader,
+        string? title,
+        string? subtitle,
         GoogleChatAlertLevel? alertLevel,
-        IReadOnlyList<string>? additionalTextWidgetsMarkdown,
-        IReadOnlyList<GoogleChatButton>? buttons)
+        IReadOnlyCollection<string>? textParagraphMarkdowns,
+        IReadOnlyCollection<GoogleChatButton>? buttons)
     {
         List<ChatCardWidget> widgets = [];
+
+
+        //
+        // First widget: Alert Level, if any.
+        //
 
         if (alertLevel is { } level)
         {
@@ -263,7 +379,7 @@ public sealed class GoogleChatService
 
             widgets.Add(new ChatCardWidget
             {
-                // Fixed system content, not user markdown, so it's built directly rather than run through Markdig.
+                // This is our content, not the user's, so we don't need to worry about escaping it.
                 TextParagraph = new ChatTextParagraph
                 {
                     Text = $"<font color=\"{alertLevelInfo.HexColor}\">{alertLevelInfo.Emoji} {alertLevelInfo.Label}</font>",
@@ -272,26 +388,35 @@ public sealed class GoogleChatService
             });
         }
 
-        if (additionalTextWidgetsMarkdown is not null)
+
+        //
+        // Next widget(s): Text paragraphs, if any.
+        //
+
+        if (textParagraphMarkdowns is not null)
         {
-            foreach (var widgetMarkdown in additionalTextWidgetsMarkdown)
+            foreach (var textParagraphMarkdown in textParagraphMarkdowns)
             {
                 // Google Chat collapses card widgets with Markdown treats newlines as space/whitespace separators
                 //   instead of HTML paragraph breaks, collapsing consecutive line breaks into a single line. To
                 //   preserve formatting, we have to replace newlines with <br> tags. Skip this inside fenced code
                 //   blocks so multi-line code samples don't get mangled with literal <br> tags.
-                var widgetMarkdownWithBRs = ReplaceNewlinesOutsideCodeBlocks(widgetMarkdown);
+                var textParagraphMarkdownWithBRs = ReplaceNewlinesOutsideCodeBlocks(textParagraphMarkdown);
 
                 widgets.Add(new ChatCardWidget
                 {
                     TextParagraph = new ChatTextParagraph
                     {
-                        Text = widgetMarkdownWithBRs,//ChatCardHtmlRenderer.ToTextParagraphHtml(widgetMarkdown),
+                        Text = textParagraphMarkdownWithBRs,
                         TextSyntax = "MARKDOWN",
                     },
                 });
             }
         }
+
+
+        //
+        // Next widget(s): Buttons, if any.
 
         if (buttons is { Count: > 0 })
         {
@@ -318,10 +443,10 @@ public sealed class GoogleChatService
             CardId = Guid.NewGuid().ToString(),
             Card = new ChatCard
             {
-                Header = cardTitle is not null
-                    ? new ChatCardHeader { Title = cardTitle }
+                Header = title is not null || subtitle is not null
+                    ? new ChatCardHeader { Title = title, Subtitle = subtitle }
                     : null,
-                Sections = [new ChatCardSection { Widgets = widgets }],
+                Sections = [new ChatCardSection { Header = sectionHeader, Widgets = widgets }],
             },
         };
     }
