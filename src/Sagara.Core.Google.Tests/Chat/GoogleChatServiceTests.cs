@@ -31,7 +31,7 @@ public class GoogleChatServiceTests
         await service.SendMessageAsync(
             WebhookUrl,
             "hello",
-            title: "Deploy failed",
+            cardTitle: "Deploy failed",
             alertLevel: GoogleChatAlertLevel.Error,
             additionalTextWidgetsMarkdown: ["more **info**"],
             buttons: [new GoogleChatButton("View logs", "https://example.com/logs")],

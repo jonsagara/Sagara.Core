@@ -119,4 +119,4 @@ const string jonWebhookUrl = "";
 await googleChatSvc.SendMessageAsync(
     webhookUrl: jonWebhookUrl,
     body: "Hello, Jon!",
-    title: "This is a title!");
+    cardTitle: "This is a card title!");

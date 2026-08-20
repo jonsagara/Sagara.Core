@@ -34,10 +34,10 @@ public sealed class GoogleChatService
     /// </summary>
     /// <param name="webhookUrl">The Google Chat incoming webhook URL to POST the message to.</param>
     /// <param name="body">The message body. Standard markdown.</param>
-    /// <param name="title">An optional title. Rendered as a bold line above <paramref name="body"/>, and as the
+    /// <param name="alertLevel">An optional alert severity to call out.</param>
+    /// <param name="cardTitle">A title for an optional card. Rendered as the
     /// card header title if a card ends up being emitted (see <paramref name="additionalTextWidgetsMarkdown"/>
     /// and <paramref name="buttons"/>).</param>
-    /// <param name="alertLevel">An optional alert severity to call out.</param>
     /// <param name="additionalTextWidgetsMarkdown">Additional card text widgets. Each entry is standard markdown,
     /// converted to the restricted HTML subset supported by Google Chat's TextParagraph widget. Providing any
     /// entries causes a card to be emitted.</param>
@@ -50,7 +50,7 @@ public sealed class GoogleChatService
     public async Task SendMessageAsync(
         string webhookUrl,
         string body,
-        string? title = null,
+        string? cardTitle = null,
         GoogleChatAlertLevel? alertLevel = null,
         IReadOnlyList<string>? additionalTextWidgetsMarkdown = null,
         IReadOnlyList<GoogleChatButton>? buttons = null,
@@ -63,8 +63,8 @@ public sealed class GoogleChatService
 
         var payload = BuildPayload(
             body: body,
-            title: title,
             alertLevel: alertLevel,
+            cardTitle: cardTitle,
             additionalTextWidgetsMarkdown: additionalTextWidgetsMarkdown,
             buttons: buttons,
             mentionUsers: mentionUsers);
@@ -83,15 +83,15 @@ public sealed class GoogleChatService
 
     private static ChatMessagePayload BuildPayload(
         string body,
-        string? title,
         GoogleChatAlertLevel? alertLevel,
+        string? cardTitle,
         IReadOnlyList<string>? additionalTextWidgetsMarkdown,
         IReadOnlyList<GoogleChatButton>? buttons,
         IReadOnlyList<GoogleWorkspaceUser>? mentionUsers)
     {
         // A card is only worth emitting when there's card-specific content to show. AlertLevel alone does not
         // trigger a card — see BuildText, which renders the alert accent inline when no card is emitted.
-        var hasCard = title is not null
+        var hasCard = cardTitle is not null
             || additionalTextWidgetsMarkdown is { Count: > 0 }
             || buttons is { Count: > 0 };
 
@@ -99,20 +99,18 @@ public sealed class GoogleChatService
         {
             Text = BuildText(
                 body: body,
-                title: title,
                 alertLevel: alertLevel,
                 mentionUsers: mentionUsers,
                 hasCard: hasCard),
             MarkupSyntax = "MARKUP_SYNTAX_MARKDOWN",
             CardsV2 = hasCard
-                ? [BuildCard(title, alertLevel, additionalTextWidgetsMarkdown, buttons)]
+                ? [BuildCard(cardTitle, alertLevel, additionalTextWidgetsMarkdown, buttons)]
                 : null,
         };
     }
 
     private static string BuildText(
         string body,
-        string? title,
         GoogleChatAlertLevel? alertLevel,
         IReadOnlyList<GoogleWorkspaceUser>? mentionUsers,
         bool hasCard)
@@ -129,14 +127,6 @@ public sealed class GoogleChatService
                 .Append(alertLevelInfo.Emoji)
                 .Append(" **")
                 .Append(alertLevelInfo.Label)
-                .Append("**\n\n");
-        }
-
-        if (title is not null)
-        {
-            text
-                .Append("**")
-                .Append(title)
                 .Append("**\n\n");
         }
 
@@ -260,7 +250,7 @@ public sealed class GoogleChatService
     }
 
     private static ChatCardWrapper BuildCard(
-        string? title,
+        string? cardTitle,
         GoogleChatAlertLevel? alertLevel,
         IReadOnlyList<string>? additionalTextWidgetsMarkdown,
         IReadOnlyList<GoogleChatButton>? buttons)
@@ -328,8 +318,8 @@ public sealed class GoogleChatService
             CardId = Guid.NewGuid().ToString(),
             Card = new ChatCard
             {
-                Header = title is not null
-                    ? new ChatCardHeader { Title = title }
+                Header = cardTitle is not null
+                    ? new ChatCardHeader { Title = cardTitle }
                     : null,
                 Sections = [new ChatCardSection { Widgets = widgets }],
             },
