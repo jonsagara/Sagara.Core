@@ -31,6 +31,17 @@ public sealed class GoogleChatService
     }
 
 
+    /// <summary>
+    /// Sends a Markdown message to a Google Chat space via an incoming webhook.
+    /// </summary>
+    /// <param name="webhookUrl">The incoming webhook URL for the target Google Chat space.</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="webhookUrl"/> or <paramref name="bodyMarkdown"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="webhookUrl"/> or <paramref name="bodyMarkdown"/> is empty or whitespace.</exception>
+    /// <remarks>
+    /// Failures while sending (HTTP errors or unhandled exceptions) are logged and swallowed rather than thrown.
+    /// </remarks>
     public async Task SendMessageAsync(
         string webhookUrl,
         string bodyMarkdown,
@@ -56,6 +67,19 @@ public sealed class GoogleChatService
         }
     }
 
+    /// <summary>
+    /// Sends a Markdown message to a Google Chat space via an incoming webhook, optionally mentioning all
+    /// space members.
+    /// </summary>
+    /// <param name="webhookUrl">The incoming webhook URL for the target Google Chat space.</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown.</param>
+    /// <param name="mentionAllUsers">When <see langword="true"/>, appends an @all mention that notifies every member of the space.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="webhookUrl"/> or <paramref name="bodyMarkdown"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="webhookUrl"/> or <paramref name="bodyMarkdown"/> is empty or whitespace.</exception>
+    /// <remarks>
+    /// Failures while sending (HTTP errors or unhandled exceptions) are logged and swallowed rather than thrown.
+    /// </remarks>
     public async Task SendMessageAsync(
         string webhookUrl,
         string bodyMarkdown,
@@ -82,6 +106,18 @@ public sealed class GoogleChatService
         }
     }
 
+    /// <summary>
+    /// Sends a Markdown message to a Google Chat space via an incoming webhook, mentioning specific users.
+    /// </summary>
+    /// <param name="webhookUrl">The incoming webhook URL for the target Google Chat space.</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown.</param>
+    /// <param name="mentionUsers">The Google Workspace users to mention (notify) in the message.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="webhookUrl"/>, <paramref name="bodyMarkdown"/>, or <paramref name="mentionUsers"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="webhookUrl"/> or <paramref name="bodyMarkdown"/> is empty or whitespace.</exception>
+    /// <remarks>
+    /// Failures while sending (HTTP errors or unhandled exceptions) are logged and swallowed rather than thrown.
+    /// </remarks>
     public async Task SendMessageAsync(
         string webhookUrl,
         string bodyMarkdown,
@@ -109,6 +145,22 @@ public sealed class GoogleChatService
         }
     }
 
+    /// <summary>
+    /// Sends a message containing cards, and optionally a Markdown body, to a Google Chat space via an
+    /// incoming webhook.
+    /// </summary>
+    /// <param name="webhookUrl">The incoming webhook URL for the target Google Chat space.</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown. May be <see langword="null"/> or empty if <paramref name="cards"/> supplies the content.</param>
+    /// <param name="cards">The cards to attach to the message.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="webhookUrl"/> or <paramref name="cards"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="webhookUrl"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
+    /// <paramref name="cards"/> are empty; or a card in <paramref name="cards"/> has no content set.
+    /// </exception>
+    /// <remarks>
+    /// Failures while sending (HTTP errors or unhandled exceptions) are logged and swallowed rather than thrown.
+    /// </remarks>
     public async Task SendMessageAsync(
         string webhookUrl,
         string? bodyMarkdown,
@@ -136,6 +188,23 @@ public sealed class GoogleChatService
         }
     }
 
+    /// <summary>
+    /// Sends a message containing cards, and optionally a Markdown body, to a Google Chat space via an
+    /// incoming webhook, optionally mentioning all space members.
+    /// </summary>
+    /// <param name="webhookUrl">The incoming webhook URL for the target Google Chat space.</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown. May be <see langword="null"/> or empty if <paramref name="cards"/> supplies the content.</param>
+    /// <param name="mentionAllUsers">When <see langword="true"/>, appends an @all mention that notifies every member of the space.</param>
+    /// <param name="cards">The cards to attach to the message.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="webhookUrl"/> or <paramref name="cards"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="webhookUrl"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
+    /// <paramref name="cards"/> are empty; or a card in <paramref name="cards"/> has no content set.
+    /// </exception>
+    /// <remarks>
+    /// Failures while sending (HTTP errors or unhandled exceptions) are logged and swallowed rather than thrown.
+    /// </remarks>
     public async Task SendMessageAsync(
         string webhookUrl,
         string? bodyMarkdown,
@@ -164,6 +233,23 @@ public sealed class GoogleChatService
         }
     }
 
+    /// <summary>
+    /// Sends a message containing cards, and optionally a Markdown body, to a Google Chat space via an
+    /// incoming webhook, mentioning specific users.
+    /// </summary>
+    /// <param name="webhookUrl">The incoming webhook URL for the target Google Chat space.</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown. May be <see langword="null"/> or empty if <paramref name="cards"/> supplies the content.</param>
+    /// <param name="mentionUsers">The Google Workspace users to mention (notify) in the message.</param>
+    /// <param name="cards">The cards to attach to the message.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="webhookUrl"/>, <paramref name="mentionUsers"/>, or <paramref name="cards"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="webhookUrl"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
+    /// <paramref name="cards"/> are empty; or a card in <paramref name="cards"/> has no content set.
+    /// </exception>
+    /// <remarks>
+    /// Failures while sending (HTTP errors or unhandled exceptions) are logged and swallowed rather than thrown.
+    /// </remarks>
     public async Task SendMessageAsync(
         string webhookUrl,
         string? bodyMarkdown,
