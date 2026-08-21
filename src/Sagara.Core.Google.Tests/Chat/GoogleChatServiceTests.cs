@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Sagara.Core.Google.Chat;
 
@@ -96,27 +97,37 @@ public class GoogleChatServiceTests
     }
 
     [Fact]
-    public async Task SendMessageAsync_NonSuccessStatusCode_ThrowsHttpRequestException()
+    public async Task SendMessageAsync_NonSuccessStatusCode_LogsErrorAndDoesNotThrow()
     {
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.BadRequest);
-        var service = CreateService(handler);
+        var logger = new RecordingLogger<GoogleChatService>();
+        var service = CreateService(handler, logger);
 
-        await Assert.ThrowsAsync<HttpRequestException>(
-            () => service.SendMessageAsync(WebhookUrl, "hello", cancellationToken: TestContext.Current.CancellationToken));
+        await service.SendMessageAsync(WebhookUrl, "hello", cancellationToken: TestContext.Current.CancellationToken);
+
+        var logEntry = Assert.Single(logger.Entries);
+        Assert.Equal(LogLevel.Error, logEntry.LogLevel);
+        Assert.Contains("Request to Google Chat API failed", logEntry.Message, StringComparison.Ordinal);
+        Assert.Contains("BadRequest", logEntry.Message, StringComparison.Ordinal);
     }
 
     [Fact]
-    public async Task SendMessageAsync_Cards_NonSuccessStatusCode_ThrowsHttpRequestException()
+    public async Task SendMessageAsync_Cards_NonSuccessStatusCode_LogsErrorAndDoesNotThrow()
     {
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.BadRequest);
-        var service = CreateService(handler);
+        var logger = new RecordingLogger<GoogleChatService>();
+        var service = CreateService(handler, logger);
 
-        await Assert.ThrowsAsync<HttpRequestException>(
-            () => service.SendMessageAsync(
-                WebhookUrl,
-                "hello",
-                cards: [new GoogleChatCardV2(Title: "Card")],
-                cancellationToken: TestContext.Current.CancellationToken));
+        await service.SendMessageAsync(
+            WebhookUrl,
+            "hello",
+            cards: [new GoogleChatCardV2(Title: "Card")],
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        var logEntry = Assert.Single(logger.Entries);
+        Assert.Equal(LogLevel.Error, logEntry.LogLevel);
+        Assert.Contains("Request to Google Chat API failed", logEntry.Message, StringComparison.Ordinal);
+        Assert.Contains("BadRequest", logEntry.Message, StringComparison.Ordinal);
     }
 
     [Theory]
@@ -171,8 +182,20 @@ public class GoogleChatServiceTests
         
     }
 
-    private static GoogleChatService CreateService(HttpMessageHandler handler)
-        => new(new HttpClient(handler), NullLogger<GoogleChatService>.Instance);
+    private static GoogleChatService CreateService(HttpMessageHandler handler, ILogger<GoogleChatService>? logger = null)
+        => new(new HttpClient(handler), logger ?? NullLogger<GoogleChatService>.Instance);
+
+    private sealed class RecordingLogger<T> : ILogger<T>
+    {
+        public List<(LogLevel LogLevel, string Message)> Entries { get; } = [];
+
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+
+        public bool IsEnabled(LogLevel logLevel) => true;
+
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+            => Entries.Add((logLevel, formatter(state, exception)));
+    }
 
     private sealed class CapturingHttpMessageHandler(HttpStatusCode statusCode) : HttpMessageHandler
     {
