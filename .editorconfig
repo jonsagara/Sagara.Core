@@ -248,3 +248,7 @@ dotnet_diagnostic.CA1031.severity = none
 # Sagara.Core.Google: don't make callers wrap webhook URLs in a Uri object just to call these methods.
 dotnet_diagnostic.CA1054.severity = none
 dotnet_diagnostic.CA1056.severity = none
+
+# Sagara.Core.Caching: cache server unavailability must not bring down the application; failures are logged and swallowed instead.
+[src/Sagara.Core.Caching/**.cs]
+dotnet_diagnostic.CA1031.severity = none

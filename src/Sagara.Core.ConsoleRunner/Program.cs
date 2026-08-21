@@ -11,7 +11,7 @@ var host = Host.CreateDefaultBuilder()
 
 var googleChatSvc = host.Services.GetRequiredService<GoogleChatService>();
 
-const string jonWebhookUrl = "";
+//const string jonWebhookUrl = "";
 
 //// Send a simple message.
 //await googleChatSvc.SendMessageAsync(

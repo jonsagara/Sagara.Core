@@ -8,5 +8,4 @@ namespace Sagara.Core.Google.Chat;
 /// <param name="Url">The URL to open when the button is clicked.</param>
 public sealed record GoogleChatButton(
     string Text,
-    // Justification: Don't make the caller wrap the URL in a Uri object just to construct this object.
     string Url);
