@@ -16,11 +16,16 @@
     <Project Path="src/Sagara.Core.AspNetCore/Sagara.Core.AspNetCore.csproj" />
     <Project Path="src/Sagara.Core.Caching/Sagara.Core.Caching.csproj" />
     <Project Path="src/Sagara.Core.Data/Sagara.Core.Data.csproj" />
+    <Project Path="src/Sagara.Core.Google/Sagara.Core.Google.csproj" />
     <Project Path="src/Sagara.Core.Logging.Serilog/Sagara.Core.Logging.Serilog.csproj" />
     <Project Path="src/Sagara.Core/Sagara.Core.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="src/Sagara.Core.Caching.IntegrationTests/Sagara.Core.Caching.IntegrationTests.csproj" />
+    <Project Path="src/Sagara.Core.Google.Tests/Sagara.Core.Google.Tests.csproj" />
     <Project Path="src/Sagara.Core.Tests/Sagara.Core.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="src/Sagara.Core.ConsoleRunner/Sagara.Core.ConsoleRunner.csproj" Id="8239e9fd-ce67-4bb3-86c7-8c7a9cc2344e" />
   </Folder>
 </Solution>

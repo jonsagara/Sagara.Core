@@ -4,7 +4,7 @@
 		<TargetFrameworks>net10.0;net11.0</TargetFrameworks>
 		
 		<!-- NuGet -->
-		<Version>6.0.0-preview1</Version>
+		<Version>6.0.0-preview2</Version>
 		<AssemblyVersion>6.0.0</AssemblyVersion>
 		<FileVersion>6.0.0</FileVersion>
 		<Authors>Jon Sagara</Authors>

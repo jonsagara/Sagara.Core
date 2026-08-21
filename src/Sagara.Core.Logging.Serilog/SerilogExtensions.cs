@@ -34,7 +34,6 @@ public static class SerilogExtensions
     /// to MEL providers via WriteTo.Providers(). By default, only events with the "DirectSerilog" property are forwarded. If provided, this predicate's 
     /// return value will be ANDed together with the check for existence of the "DirectSerilog" property.</param>
     /// <returns>A result containing the empty collection of other MEL providers. The caller must populate it after building the host.</returns>
-
     public static AddSerilogToExistingILoggerFactoryResult AddSerilogToExistingILoggerFactory(this IHostApplicationBuilder builder,
         Func<LoggerConfiguration> createSerilogLoggerConfiguration, Func<LogEvent, bool>? additionalWriteToProvidersInclusionPredicate = null)
     {
