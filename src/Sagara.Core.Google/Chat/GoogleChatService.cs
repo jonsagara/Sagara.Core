@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Markdig;
 using Markdig.Syntax;
+using Microsoft.Extensions.Logging;
 using Sagara.Core.Google.Chat.Payloads;
 
 namespace Sagara.Core.Google.Chat;
@@ -21,12 +22,12 @@ public sealed class GoogleChatService
     };
 
     private readonly HttpClient _httpClient;
+    private readonly ILogger<GoogleChatService> _logger;
 
-    public GoogleChatService(HttpClient httpClient)
+    public GoogleChatService(HttpClient httpClient, ILogger<GoogleChatService> logger)
     {
-        Check.ThrowIfNull(httpClient);
-
         _httpClient = httpClient;
+        _logger = logger;
     }
 
 
@@ -41,42 +42,50 @@ public sealed class GoogleChatService
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
         Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
 
-        var payload = BuildPayload(
-            bodyMarkdown: bodyMarkdown,
-            mentionAllUsers: false,
-            mentionUsers: null,
-            cards: null);
+        try
+        {
+            var payload = BuildPayload(
+                bodyMarkdown: bodyMarkdown,
+                mentionAllUsers: false,
+                mentionUsers: null,
+                cards: null);
 
-        using var response = await _httpClient
-            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
-            .ConfigureAwait(false);
-
-        response.EnsureSuccessStatusCode();
+            await PostMessageAsync(webhookUrl, payload, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            // Log and swallow.
+            _logger.Error_UnhandledException(ex, bodyMarkdown);
+        }
     }
 
     // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
 #pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
-        string webhookUrl, 
-        string bodyMarkdown, 
-        bool mentionAllUsers, 
+        string webhookUrl,
+        string bodyMarkdown,
+        bool mentionAllUsers,
         CancellationToken cancellationToken = default)
 #pragma warning restore CA1054 // URI-like parameters should not be strings
     {
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
         Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
 
-        var payload = BuildPayload(
-            bodyMarkdown: bodyMarkdown,
-            mentionAllUsers: mentionAllUsers,
-            mentionUsers: null,
-            cards: null);
+        try
+        {
+            var payload = BuildPayload(
+                bodyMarkdown: bodyMarkdown,
+                mentionAllUsers: mentionAllUsers,
+                mentionUsers: null,
+                cards: null);
 
-        using var response = await _httpClient
-            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
-            .ConfigureAwait(false);
-
-        response.EnsureSuccessStatusCode();
+            await PostMessageAsync(webhookUrl, payload, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            // Log and swallow.
+            _logger.Error_UnhandledException(ex, bodyMarkdown);
+        }
     }
 
     // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
@@ -92,17 +101,21 @@ public sealed class GoogleChatService
         Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
         Check.ThrowIfNull(mentionUsers);
 
-        var payload = BuildPayload(
-            bodyMarkdown: bodyMarkdown,
-            mentionAllUsers: false,
-            mentionUsers: mentionUsers,
-            cards: null);
+        try
+        {
+            var payload = BuildPayload(
+                bodyMarkdown: bodyMarkdown,
+                mentionAllUsers: false,
+                mentionUsers: mentionUsers,
+                cards: null);
 
-        using var response = await _httpClient
-            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
-            .ConfigureAwait(false);
-
-        response.EnsureSuccessStatusCode();
+            await PostMessageAsync(webhookUrl, payload, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            // Log and swallow.
+            _logger.Error_UnhandledException(ex, bodyMarkdown);
+        }
     }
 
     // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
@@ -118,17 +131,21 @@ public sealed class GoogleChatService
         Check.ThrowIfNull(cards);
         ValidateContentToSend(bodyMarkdown, cards);
 
-        var payload = BuildPayload(
-            bodyMarkdown: bodyMarkdown,
-            mentionAllUsers: false,
-            mentionUsers: null,
-            cards: cards);
+        try
+        {
+            var payload = BuildPayload(
+                bodyMarkdown: bodyMarkdown,
+                mentionAllUsers: false,
+                mentionUsers: null,
+                cards: cards);
 
-        using var response = await _httpClient
-            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
-            .ConfigureAwait(false);
-
-        response.EnsureSuccessStatusCode();
+            await PostMessageAsync(webhookUrl, payload, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            // Log and swallow.
+            _logger.Error_UnhandledException(ex, bodyMarkdown);
+        }
     }
 
     // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
@@ -145,17 +162,21 @@ public sealed class GoogleChatService
         Check.ThrowIfNull(cards);
         ValidateContentToSend(bodyMarkdown, cards);
 
-        var payload = BuildPayload(
-            bodyMarkdown: bodyMarkdown,
-            mentionAllUsers: mentionAllUsers,
-            mentionUsers: null,
-            cards: cards);
+        try
+        {
+            var payload = BuildPayload(
+                bodyMarkdown: bodyMarkdown,
+                mentionAllUsers: mentionAllUsers,
+                mentionUsers: null,
+                cards: cards);
 
-        using var response = await _httpClient
-            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
-            .ConfigureAwait(false);
-
-        response.EnsureSuccessStatusCode();
+            await PostMessageAsync(webhookUrl, payload, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            // Log and swallow.
+            _logger.Error_UnhandledException(ex, bodyMarkdown);
+        }
     }
 
     // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
@@ -173,17 +194,21 @@ public sealed class GoogleChatService
         Check.ThrowIfNull(cards);
         ValidateContentToSend(bodyMarkdown, cards);
 
-        var payload = BuildPayload(
-            bodyMarkdown: bodyMarkdown,
-            mentionAllUsers: false,
-            mentionUsers: mentionUsers,
-            cards: cards);
+        try
+        {
+            var payload = BuildPayload(
+                bodyMarkdown: bodyMarkdown,
+                mentionAllUsers: false,
+                mentionUsers: mentionUsers,
+                cards: cards);
 
-        using var response = await _httpClient
-            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
-            .ConfigureAwait(false);
-
-        response.EnsureSuccessStatusCode();
+            await PostMessageAsync(webhookUrl, payload, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            // Log and swallow.
+            _logger.Error_UnhandledException(ex, bodyMarkdown);
+        }
     }
 
 
@@ -473,5 +498,23 @@ public sealed class GoogleChatService
                 Sections = [new ChatCardSection { Header = sectionHeader, Widgets = widgets }],
             },
         };
+    }
+
+    private async Task PostMessageAsync(string webhookUrl, ChatMessagePayload payload, CancellationToken cancellationToken)
+    {
+        using var response = await _httpClient
+            .PostAsJsonAsync(webhookUrl, payload, _jsonSerializerOptions, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+
+            _logger.Error_RequestFailed(
+                payloadJson: JsonSerializer.Serialize(payload, _jsonSerializerOptions),
+                statusCodeInt: (int)response.StatusCode,
+                statusCode: response.StatusCode,
+                responseBody: responseContent);
+        }
     }
 }

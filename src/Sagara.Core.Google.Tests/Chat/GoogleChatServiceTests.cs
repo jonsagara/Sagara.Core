@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Microsoft.Extensions.Logging.Abstractions;
 using Sagara.Core.Google.Chat;
 
 namespace Sagara.Core.Google.Tests.Chat;
@@ -166,10 +167,12 @@ public class GoogleChatServiceTests
                 bodyMarkdown: null,
                 cards: [new GoogleChatCardV2(Title: null)],
                 cancellationToken: TestContext.Current.CancellationToken));
+
+        
     }
 
     private static GoogleChatService CreateService(HttpMessageHandler handler)
-        => new(new HttpClient(handler));
+        => new(new HttpClient(handler), NullLogger<GoogleChatService>.Instance);
 
     private sealed class CapturingHttpMessageHandler(HttpStatusCode statusCode) : HttpMessageHandler
     {
