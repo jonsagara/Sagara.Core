@@ -9,8 +9,4 @@ namespace Sagara.Core.Google.Chat;
 public sealed record GoogleChatButton(
     string Text,
     // Justification: Don't make the caller wrap the URL in a Uri object just to construct this object.
-#pragma warning disable CA1054 // URI-like parameters should not be strings
-#pragma warning disable CA1056 // URI-like parameters should not be strings
     string Url);
-#pragma warning restore CA1056 // URI-like parameters should not be strings
-#pragma warning restore CA1054 // URI-like parameters should not be strings

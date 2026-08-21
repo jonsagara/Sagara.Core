@@ -240,3 +240,11 @@ dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
 dotnet_style_prefer_compound_assignment = true:suggestion
 dotnet_style_prefer_simplified_interpolation = true:suggestion
 dotnet_style_namespace_match_folder = true:suggestion
+
+# Sagara.Core.Google: webhook calls must not throw; failures are logged and swallowed instead.
+[src/Sagara.Core.Google/**.cs]
+dotnet_diagnostic.CA1031.severity = none
+
+# Sagara.Core.Google: don't make callers wrap webhook URLs in a Uri object just to call these methods.
+dotnet_diagnostic.CA1054.severity = none
+dotnet_diagnostic.CA1056.severity = none

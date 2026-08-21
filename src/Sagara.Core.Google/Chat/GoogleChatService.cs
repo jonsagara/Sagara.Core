@@ -31,13 +31,10 @@ public sealed class GoogleChatService
     }
 
 
-    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
-#pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
         string webhookUrl,
         string bodyMarkdown,
         CancellationToken cancellationToken = default)
-#pragma warning restore CA1054 // URI-like parameters should not be strings
     {
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
         Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
@@ -59,14 +56,11 @@ public sealed class GoogleChatService
         }
     }
 
-    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
-#pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
         string webhookUrl,
         string bodyMarkdown,
         bool mentionAllUsers,
         CancellationToken cancellationToken = default)
-#pragma warning restore CA1054 // URI-like parameters should not be strings
     {
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
         Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
@@ -88,14 +82,11 @@ public sealed class GoogleChatService
         }
     }
 
-    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
-#pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
         string webhookUrl,
         string bodyMarkdown,
         IReadOnlyCollection<GoogleWorkspaceUser> mentionUsers,
         CancellationToken cancellationToken = default)
-#pragma warning restore CA1054 // URI-like parameters should not be strings
     {
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
         Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
@@ -118,14 +109,11 @@ public sealed class GoogleChatService
         }
     }
 
-    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
-#pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
         string webhookUrl,
         string? bodyMarkdown,
         IReadOnlyCollection<GoogleChatCardV2> cards,
         CancellationToken cancellationToken = default)
-#pragma warning restore CA1054 // URI-like parameters should not be strings
     {
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
         Check.ThrowIfNull(cards);
@@ -148,15 +136,12 @@ public sealed class GoogleChatService
         }
     }
 
-    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
-#pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
         string webhookUrl,
         string? bodyMarkdown,
         bool mentionAllUsers,
         IReadOnlyCollection<GoogleChatCardV2> cards,
         CancellationToken cancellationToken = default)
-#pragma warning restore CA1054 // URI-like parameters should not be strings
     {
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
         Check.ThrowIfNull(cards);
@@ -179,15 +164,12 @@ public sealed class GoogleChatService
         }
     }
 
-    // Justification: Don't make the caller wrap the webhook URL in a Uri object just to call this method.
-#pragma warning disable CA1054 // URI-like parameters should not be strings
     public async Task SendMessageAsync(
         string webhookUrl,
         string? bodyMarkdown,
         IReadOnlyCollection<GoogleWorkspaceUser> mentionUsers,
         IReadOnlyCollection<GoogleChatCardV2> cards,
         CancellationToken cancellationToken = default)
-#pragma warning restore CA1054 // URI-like parameters should not be strings
     {
         Check.ThrowIfNullOrWhiteSpace(webhookUrl);
         Check.ThrowIfNull(mentionUsers);
