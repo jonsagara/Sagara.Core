@@ -24,6 +24,11 @@ echo [Sagara.Core.Data] Generating docs...
 dotnet defaultDocumentation -a "src\Sagara.Core.Data\bin\Debug\net8.0\Sagara.Core.Data.dll" -o "src\Sagara.Core.Data\docs" --ConfigurationFilePath ".\DefaultDocumentation.json"
 echo [Sagara.Core.Data] Done.
 
+REM Sagara.Core.Google
+echo [Sagara.Core.Google] Generating docs...
+dotnet defaultDocumentation -a "src\Sagara.Core.Google\bin\Debug\net8.0\Sagara.Core.Google.dll" -o "src\Sagara.Core.Google\docs" --ConfigurationFilePath ".\DefaultDocumentation.json"
+echo [Sagara.Core.Google] Done.
+
 REM Sagara.Core.Logging.Serilog
 echo [Sagara.Core.Logging.Serilog] Generating docs...
 dotnet defaultDocumentation -a "src\Sagara.Core.Logging.Serilog\bin\Debug\net8.0\Sagara.Core.Logging.Serilog.dll" -o "src\Sagara.Core.Logging.Serilog\docs" --ConfigurationFilePath ".\DefaultDocumentation.json"

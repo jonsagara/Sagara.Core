@@ -5,11 +5,11 @@
 These assemblies contain common code that I have found useful over the years, particularly when bootstrapping small 
 proof-of-concept or bug demonstration applications. It reduces the amount of boilerplate code needed to be productive.
 
-# Requirements
+# Supported .NET Versions
 
-`v2.x` will target `.NET 8.0`.
-
-`v1.x` targets `.NET 7.0`.
+- `.NET 8.0`
+- `.NET 9.0`
+- `.NET 10.0`
 
 # NuGet Packages
 
@@ -39,6 +39,13 @@ proof-of-concept or bug demonstration applications. It reduces the amount of boi
 [![NuGet](https://img.shields.io/nuget/v/Sagara.Core.Data?label=NuGet)](https://www.nuget.org/packages/Sagara.Core.Data/)
 
 [Sagara.Core.Data docs](src/Sagara.Core.Data/docs/index.md)
+
+
+## Sagara.Core.Google
+
+[![NuGet](https://img.shields.io/nuget/v/Sagara.Core.Google?label=NuGet)](https://www.nuget.org/packages/Sagara.Core.Google/)
+
+[Sagara.Core.Google docs](src/Sagara.Core.Google/docs/index.md)
 
 
 ## Sagara.Core.Logging.Serilog

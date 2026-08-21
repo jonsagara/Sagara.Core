@@ -33,8 +33,6 @@ public class RedisAdminCache : RedisCache
     }
 
 
-#pragma warning disable CA1031 // Do not catch general exception types
-
     /// <summary>
     /// Delete all the keys of all databases on the server.
     /// </summary>
@@ -57,6 +55,4 @@ public class RedisAdminCache : RedisCache
             _logger.Error_UnhandledException(ex, command: "FLUSHALL", key: "(all keys)");
         }
     }
-
-#pragma warning restore CA1031 // Do not catch general exception types
 }

@@ -83,9 +83,6 @@ public class RedisCache : IDisposable, IAsyncDisposable
     }
 
 
-    // Justification: Anything can happen on the network. Catch them all.
-#pragma warning disable CA1031 // Do not catch general exception types
-
     /// <summary>
     /// Get the value of key. If the key does not exist the special value nil is returned.
     /// </summary>
@@ -472,8 +469,6 @@ return val
 
         return null;
     }
-
-#pragma warning restore CA1031 // Do not catch general exception types
 
 
     /// <summary>
