@@ -51,4 +51,31 @@ public static class NodaTimeHelper
         // Now we have something NodaTime can work with. Convert it to UTC.
         return zonedDateTime.ToDateTimeUtc();
     }
+
+    /// <summary>
+    /// Get the time zone name (abbreviation) for the given UTC date/time in the specified
+    /// IANA time zone.
+    /// </summary>
+    /// <param name="utc">The UTC date/time.</param>
+    /// <param name="ianaTimeZoneId">The IANA time zone Id.</param>
+    /// <returns>The time zone name (ex: PDT or PST).</returns>
+    public static string GetTimeZoneName(this DateTime utc, string ianaTimeZoneId)
+    {
+        Check.ThrowIfNullOrWhiteSpace(ianaTimeZoneId);
+
+        // Ensure the UTC date/time is marked as UTC.
+        utc = DateTime.SpecifyKind(utc, DateTimeKind.Utc);
+
+        // Convert the source UTC date/time into a NodaTime instant.
+        var instant = Instant.FromDateTimeUtc(utc);
+
+        // Get the target time zone information from Tzdb.
+        var targetZoneInfo = DateTimeZoneProviders.Tzdb[ianaTimeZoneId];
+
+        // Convert the instant to the zone's local time.
+        var zonedDateTime = instant.InZone(targetZoneInfo);
+
+        // Example return values: PST or PDT
+        return zonedDateTime.GetZoneInterval().Name;
+    }
 }
