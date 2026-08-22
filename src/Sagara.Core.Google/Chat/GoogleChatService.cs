@@ -487,22 +487,17 @@ public sealed class GoogleChatService
 
 
         //
-        // First widget: Alert Level, if any.
+        // If the caller specified an alert level and a title, prepend the emoji to the card title.
         //
 
         if (alertLevel is { } level)
         {
-            var alertLevelInfo = GoogleChatAlertLevelInfo.For(level);
-
-            widgets.Add(new ChatCardWidget
+            if (title is not null)
             {
-                // This is our content, not the user's, so we don't need to worry about escaping it.
-                TextParagraph = new ChatTextParagraph
-                {
-                    Text = $"<font color=\"{alertLevelInfo.HexColor}\">{alertLevelInfo.Emoji} {alertLevelInfo.Label}</font>",
-                    TextSyntax = "HTML",
-                },
-            });
+                var alertLevelInfo = GoogleChatAlertLevelInfo.For(level);
+
+                title = $"{alertLevelInfo.Emoji} {title}";
+            }
         }
 
 

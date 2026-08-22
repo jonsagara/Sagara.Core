@@ -10,7 +10,7 @@ internal readonly record struct GoogleChatAlertLevelInfo(string Emoji, string La
         {
             GoogleChatAlertLevel.Info => new GoogleChatAlertLevelInfo("ℹ️", "INFO", "#1a73e8"),
             GoogleChatAlertLevel.Warning => new GoogleChatAlertLevelInfo("⚠️", "WARNING", "#f9ab00"),
-            GoogleChatAlertLevel.Error => new GoogleChatAlertLevelInfo("❌", "ERROR", "#d93025"),
+            GoogleChatAlertLevel.Error => new GoogleChatAlertLevelInfo("🔴", "ERROR", "#d93025"),
             GoogleChatAlertLevel.Success => new GoogleChatAlertLevelInfo("✅", "SUCCESS", "#188038"),
             _ => throw new ArgumentOutOfRangeException(nameof(level), level, message: null),
         };
