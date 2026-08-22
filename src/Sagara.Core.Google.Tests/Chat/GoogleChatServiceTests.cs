@@ -25,7 +25,7 @@ public class GoogleChatServiceTests
     }
 
     [Fact]
-    public async Task SendMessageAsync_Cards_EmitsAlertTextParagraphAndButtonWidgets()
+    public async Task SendMessageAsync_Cards_EmitsAlertPrefixedTitleTextParagraphAndButtonWidgets()
     {
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
         var service = CreateService(handler);
@@ -47,16 +47,15 @@ public class GoogleChatServiceTests
         var json = await handler.GetRequestJsonAsync();
 
         var cardElement = json.GetProperty("cardsV2").EnumerateArray().First().GetProperty("card");
-        Assert.Equal("Deploy failed", cardElement.GetProperty("header").GetProperty("title").GetString());
+        Assert.Equal("🔴 Deploy failed", cardElement.GetProperty("header").GetProperty("title").GetString());
         Assert.Equal("prod", cardElement.GetProperty("header").GetProperty("subtitle").GetString());
 
         var widgets = cardElement.GetProperty("sections").EnumerateArray().First()
             .GetProperty("widgets").EnumerateArray().ToList();
 
-        Assert.Equal(3, widgets.Count); // alert accent widget + text paragraph widget + button list
-        Assert.Contains("ERROR", widgets[0].GetProperty("textParagraph").GetProperty("text").GetString(), StringComparison.Ordinal);
-        Assert.Contains("more **info**", widgets[1].GetProperty("textParagraph").GetProperty("text").GetString(), StringComparison.Ordinal);
-        Assert.True(widgets[2].TryGetProperty("buttonList", out _));
+        Assert.Equal(2, widgets.Count); // text paragraph widget + button list
+        Assert.Contains("more **info**", widgets[0].GetProperty("textParagraph").GetProperty("text").GetString(), StringComparison.Ordinal);
+        Assert.True(widgets[1].TryGetProperty("buttonList", out _));
     }
 
     [Fact]
