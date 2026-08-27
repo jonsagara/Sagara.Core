@@ -34,7 +34,8 @@ var googleChatSvc = host.Services.GetRequiredService<GoogleChatService>();
 //await googleChatSvc.SendMessageAsync(
 //    webhookUrl: jonWebhookUrl,
 //    bodyMarkdown: "Hello, Jon!",
-//    mentionUsers: [new GoogleWorkspaceUser(Id: "123456789", Email: "jon@example.com")]);
+//    mentionUsers: [new GoogleWorkspaceUser(Id: "12345", Email: "jon@example.com")]);
+////mentionAllUsers: true);
 
 //// Send a multi-line text-only message.
 //await googleChatSvc.SendMessageAsync(
@@ -131,8 +132,6 @@ var googleChatSvc = host.Services.GetRequiredService<GoogleChatService>();
 
 //    > This is a blockquote.  
 //    > Also on multiple lines?
-
-//    Mention a user: <chat-user data-user="users/all">
 //    """,
 //    cards: [
 //        new GoogleChatCardV2(Title: null)
