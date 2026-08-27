@@ -23,11 +23,13 @@ public sealed class GoogleChatService
 
     private readonly HttpClient _httpClient;
     private readonly ILogger<GoogleChatService> _logger;
+    private readonly GoogleChatServiceOptions _options;
 
-    public GoogleChatService(HttpClient httpClient, ILogger<GoogleChatService> logger)
+    public GoogleChatService(HttpClient httpClient, ILogger<GoogleChatService> logger, GoogleChatServiceOptions options)
     {
         _httpClient = httpClient;
         _logger = logger;
+        _options = options;
     }
 
 
@@ -309,7 +311,7 @@ public sealed class GoogleChatService
         }
     }
 
-    private static ChatMessagePayload BuildPayload(
+    private ChatMessagePayload BuildPayload(
         string? bodyMarkdown,
         bool mentionAllUsers,
         IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers,
@@ -329,7 +331,7 @@ public sealed class GoogleChatService
         };
     }
 
-    private static string BuildText(string? bodyMarkdown, bool mentionAllUsers, IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers)
+    private string BuildText(string? bodyMarkdown, bool mentionAllUsers, IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers)
     {
         var text = new StringBuilder(bodyMarkdown);
 
@@ -341,10 +343,20 @@ public sealed class GoogleChatService
         else if (mentionUsers is { Count: > 0 })
         {
             text.Append("\n\n");
-            text.AppendJoin(' ', mentionUsers.Select(user => $"<chat-user data-email=\"{WebUtility.HtmlEncode(user.Email)}\">"));
+            text.AppendJoin(' ', mentionUsers.Select(BuildUserMention));
         }
 
         return text.ToString();
+    }
+
+    private string BuildUserMention(GoogleWorkspaceUser user)
+    {
+        return _options.MentionStyle switch
+        {
+            GoogleChatMentionStyle.Id => $"<chat-user data-user=\"users/{WebUtility.HtmlEncode(user.Id)}\">",
+            GoogleChatMentionStyle.Email => $"<chat-user data-email=\"{WebUtility.HtmlEncode(user.Email)}\">",
+            _ => throw new InvalidOperationException($"Unsupported {nameof(GoogleChatMentionStyle)}: {_options.MentionStyle}."),
+        };
     }
 
     /// <summary>

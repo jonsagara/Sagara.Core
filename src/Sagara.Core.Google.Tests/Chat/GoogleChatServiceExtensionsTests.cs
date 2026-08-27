@@ -24,4 +24,28 @@ public class GoogleChatServiceExtensionsTests
 
         Assert.NotNull(service);
     }
+
+    [Fact]
+    public void AddGoogleChatService_NoConfigureOptions_DefaultsToMentionById()
+    {
+        var services = new ServiceCollection();
+        services.AddGoogleChatService();
+
+        using var provider = services.BuildServiceProvider();
+        var options = provider.GetRequiredService<GoogleChatServiceOptions>();
+
+        Assert.Equal(GoogleChatMentionStyle.Id, options.MentionStyle);
+    }
+
+    [Fact]
+    public void AddGoogleChatService_ConfigureOptions_AppliesConfiguredMentionStyle()
+    {
+        var services = new ServiceCollection();
+        services.AddGoogleChatService(options => options.MentionStyle = GoogleChatMentionStyle.Email);
+
+        using var provider = services.BuildServiceProvider();
+        var options = provider.GetRequiredService<GoogleChatServiceOptions>();
+
+        Assert.Equal(GoogleChatMentionStyle.Email, options.MentionStyle);
+    }
 }

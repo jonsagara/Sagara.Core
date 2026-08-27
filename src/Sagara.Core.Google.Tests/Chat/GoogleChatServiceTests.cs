@@ -77,7 +77,7 @@ public class GoogleChatServiceTests
     }
 
     [Fact]
-    public async Task SendMessageAsync_MentionUsers_AppendsMentionChipsToText()
+    public async Task SendMessageAsync_MentionUsers_DefaultIdStyle_AppendsMentionChipsToText()
     {
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
         var service = CreateService(handler);
@@ -85,7 +85,26 @@ public class GoogleChatServiceTests
         await service.SendMessageAsync(
             WebhookUrl,
             "hello",
-            mentionUsers: [new GoogleWorkspaceUser("jon@example.com"), new GoogleWorkspaceUser("jane@example.com")],
+            mentionUsers: [new GoogleWorkspaceUser(Id: "111", Email: "jon@example.com"), new GoogleWorkspaceUser(Id: "222", Email: "jane@example.com")],
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        var json = await handler.GetRequestJsonAsync();
+        var text = json.GetProperty("text").GetString();
+
+        Assert.Contains("""<chat-user data-user="users/111">""", text, StringComparison.Ordinal);
+        Assert.Contains("""<chat-user data-user="users/222">""", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task SendMessageAsync_MentionUsers_EmailStyle_AppendsMentionChipsToText()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler, options: new GoogleChatServiceOptions { MentionStyle = GoogleChatMentionStyle.Email });
+
+        await service.SendMessageAsync(
+            WebhookUrl,
+            "hello",
+            mentionUsers: [new GoogleWorkspaceUser(Id: "111", Email: "jon@example.com"), new GoogleWorkspaceUser(Id: "222", Email: "jane@example.com")],
             cancellationToken: TestContext.Current.CancellationToken);
 
         var json = await handler.GetRequestJsonAsync();
@@ -181,8 +200,8 @@ public class GoogleChatServiceTests
         
     }
 
-    private static GoogleChatService CreateService(HttpMessageHandler handler, ILogger<GoogleChatService>? logger = null)
-        => new(new HttpClient(handler), logger ?? NullLogger<GoogleChatService>.Instance);
+    private static GoogleChatService CreateService(HttpMessageHandler handler, ILogger<GoogleChatService>? logger = null, GoogleChatServiceOptions? options = null)
+        => new(new HttpClient(handler), logger ?? NullLogger<GoogleChatService>.Instance, options ?? new GoogleChatServiceOptions());
 
     private sealed class RecordingLogger<T> : ILogger<T>
     {
