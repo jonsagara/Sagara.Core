@@ -25,6 +25,34 @@ public class GoogleChatServiceTests
     }
 
     [Fact]
+    public async Task SendMessageAsync_ConvertBodyToClassicMarkup_Default_ConvertsBodyAndOmitsMarkupSyntax()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler);
+
+        await service.SendMessageAsync(WebhookUrl, "The **prod** deploy failed. See [logs](https://example.com).", cancellationToken: TestContext.Current.CancellationToken);
+
+        var json = await handler.GetRequestJsonAsync();
+
+        Assert.Equal("The *prod* deploy failed. See <https://example.com|logs>.", json.GetProperty("text").GetString());
+        Assert.False(json.TryGetProperty("markup_syntax", out _));
+    }
+
+    [Fact]
+    public async Task SendMessageAsync_ConvertBodyToClassicMarkupDisabled_SendsBodyVerbatimWithMarkdownMarkupSyntax()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler, options: new GoogleChatServiceOptions { ConvertBodyToClassicMarkup = false });
+
+        await service.SendMessageAsync(WebhookUrl, "The **prod** deploy failed.", cancellationToken: TestContext.Current.CancellationToken);
+
+        var json = await handler.GetRequestJsonAsync();
+
+        Assert.Equal("The **prod** deploy failed.", json.GetProperty("text").GetString());
+        Assert.Equal("MARKUP_SYNTAX_MARKDOWN", json.GetProperty("markup_syntax").GetString());
+    }
+
+    [Fact]
     public async Task SendMessageAsync_Cards_EmitsAlertPrefixedTitleTextParagraphAndButtonWidgets()
     {
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
@@ -59,10 +87,59 @@ public class GoogleChatServiceTests
     }
 
     [Fact]
-    public async Task SendMessageAsync_MentionAllUsers_AppendsMentionAllChipToText()
+    public async Task SendMessageAsync_Cards_ConvertBodyToClassicMarkup_LeavesCardTextParagraphMarkdownUntouched()
     {
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
-        var service = CreateService(handler);
+        var service = CreateService(handler); // ConvertBodyToClassicMarkup defaults to true
+
+        var card = new GoogleChatCardV2(Title: "Report")
+        {
+            TextParagraphMarkdowns = ["more **info** and a [link](https://example.com)"],
+        };
+
+        await service.SendMessageAsync(
+            WebhookUrl,
+            "body with **bold**",
+            cards: [card],
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        var json = await handler.GetRequestJsonAsync();
+
+        // Body is converted...
+        Assert.Equal("body with *bold*", json.GetProperty("text").GetString());
+
+        // ...but the card text paragraph keeps its Markdown and MARKDOWN text syntax.
+        var widget = json.GetProperty("cardsV2").EnumerateArray().First()
+            .GetProperty("card").GetProperty("sections").EnumerateArray().First()
+            .GetProperty("widgets").EnumerateArray().First().GetProperty("textParagraph");
+
+        Assert.Equal("more **info** and a [link](https://example.com)", widget.GetProperty("text").GetString());
+        Assert.Equal("MARKDOWN", widget.GetProperty("textSyntax").GetString());
+    }
+
+    [Fact]
+    public async Task SendMessageAsync_MentionAllUsers_ConvertBodyToClassicMarkup_AppendsClassicMentionAll()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler); // ConvertBodyToClassicMarkup defaults to true
+
+        await service.SendMessageAsync(
+            WebhookUrl,
+            "hello",
+            mentionAllUsers: true,
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        var json = await handler.GetRequestJsonAsync();
+        var text = json.GetProperty("text").GetString();
+
+        Assert.Contains("<users/all>", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task SendMessageAsync_MentionAllUsers_ConvertBodyToClassicMarkupDisabled_AppendsMentionAllChip()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler, options: new GoogleChatServiceOptions { ConvertBodyToClassicMarkup = false });
 
         await service.SendMessageAsync(
             WebhookUrl,
@@ -77,10 +154,29 @@ public class GoogleChatServiceTests
     }
 
     [Fact]
-    public async Task SendMessageAsync_MentionUsers_DefaultIdStyle_AppendsMentionChipsToText()
+    public async Task SendMessageAsync_MentionUsers_ConvertBodyToClassicMarkup_AppendsClassicIdMentions()
     {
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
-        var service = CreateService(handler);
+        var service = CreateService(handler); // ConvertBodyToClassicMarkup defaults to true
+
+        await service.SendMessageAsync(
+            WebhookUrl,
+            "hello",
+            mentionUsers: [new GoogleWorkspaceUser(Id: "111", Email: "jon@example.com"), new GoogleWorkspaceUser(Id: "222", Email: "jane@example.com")],
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        var json = await handler.GetRequestJsonAsync();
+        var text = json.GetProperty("text").GetString();
+
+        Assert.Contains("<users/111>", text, StringComparison.Ordinal);
+        Assert.Contains("<users/222>", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task SendMessageAsync_MentionUsers_ConvertBodyToClassicMarkupDisabled_DefaultIdStyle_AppendsMentionChips()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler, options: new GoogleChatServiceOptions { ConvertBodyToClassicMarkup = false });
 
         await service.SendMessageAsync(
             WebhookUrl,
@@ -96,10 +192,14 @@ public class GoogleChatServiceTests
     }
 
     [Fact]
-    public async Task SendMessageAsync_MentionUsers_EmailStyle_AppendsMentionChipsToText()
+    public async Task SendMessageAsync_MentionUsers_ConvertBodyToClassicMarkupDisabled_EmailStyle_AppendsMentionChips()
     {
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
-        var service = CreateService(handler, options: new GoogleChatServiceOptions { MentionStyle = GoogleChatMentionStyle.Email });
+        var service = CreateService(handler, options: new GoogleChatServiceOptions
+        {
+            MentionStyle = GoogleChatMentionStyle.Email,
+            ConvertBodyToClassicMarkup = false,
+        });
 
         await service.SendMessageAsync(
             WebhookUrl,
@@ -112,6 +212,31 @@ public class GoogleChatServiceTests
 
         Assert.Contains("""<chat-user data-email="jon@example.com">""", text, StringComparison.Ordinal);
         Assert.Contains("""<chat-user data-email="jane@example.com">""", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task SendMessageAsync_MentionUsers_EmailStyleWithConvertBodyToClassicMarkup_FallsBackToClassicIdMentions()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler, options: new GoogleChatServiceOptions
+        {
+            MentionStyle = GoogleChatMentionStyle.Email,
+            ConvertBodyToClassicMarkup = true,
+        });
+
+        await service.SendMessageAsync(
+            WebhookUrl,
+            "hello",
+            mentionUsers: [new GoogleWorkspaceUser(Id: "111", Email: "jon@example.com"), new GoogleWorkspaceUser(Id: "222", Email: "jane@example.com")],
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        var json = await handler.GetRequestJsonAsync();
+        var text = json.GetProperty("text").GetString();
+
+        // Classic markup has no email-mention form, so it falls back to mentioning by ID.
+        Assert.Contains("<users/111>", text, StringComparison.Ordinal);
+        Assert.Contains("<users/222>", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("jon@example.com", text, StringComparison.Ordinal);
     }
 
     [Fact]

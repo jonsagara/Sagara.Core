@@ -323,7 +323,11 @@ public sealed class GoogleChatService
                 bodyMarkdown: bodyMarkdown,
                 mentionAllUsers: mentionAllUsers,
                 mentionUsers: mentionUsers),
-            MarkupSyntax = "MARKUP_SYNTAX_MARKDOWN",
+            // When the body is converted to classic markup the field is omitted: classic markup is the
+            //   webhook default, and MARKUP_SYNTAX_MARKDOWN is not honored for the top-level body anyway.
+            MarkupSyntax = _options.ConvertBodyToClassicMarkup
+                ? null
+                : "MARKUP_SYNTAX_MARKDOWN",
             // A card is only worth emitting when there's card-specific content to show.
             CardsV2 = cards is { Count: > 0 }
                 ? BuildCards(cards)
@@ -333,12 +337,18 @@ public sealed class GoogleChatService
 
     private string BuildText(string? bodyMarkdown, bool mentionAllUsers, IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers)
     {
-        var text = new StringBuilder(bodyMarkdown);
+        var body = _options.ConvertBodyToClassicMarkup && !string.IsNullOrEmpty(bodyMarkdown)
+            ? GoogleChatMarkupConverter.MarkdownToClassicMarkup(bodyMarkdown)
+            : bodyMarkdown;
+
+        var text = new StringBuilder(body);
 
         if (mentionAllUsers)
         {
             text.Append("\n\n");
-            text.Append("<chat-user data-user=\"users/all\">");
+            text.Append(_options.ConvertBodyToClassicMarkup
+                ? "<users/all>"
+                : "<chat-user data-user=\"users/all\">");
         }
         else if (mentionUsers is { Count: > 0 })
         {
@@ -351,6 +361,12 @@ public sealed class GoogleChatService
 
     private string BuildUserMention(GoogleWorkspaceUser user)
     {
+        if (_options.ConvertBodyToClassicMarkup)
+        {
+            // Classic markup has no email-mention form, so mention by ID regardless of MentionStyle.
+            return $"<users/{user.Id}>";
+        }
+
         return _options.MentionStyle switch
         {
             GoogleChatMentionStyle.Id => $"<chat-user data-user=\"users/{WebUtility.HtmlEncode(user.Id)}\">",

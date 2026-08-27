@@ -38,6 +38,30 @@ public class GoogleChatServiceExtensionsTests
     }
 
     [Fact]
+    public void AddGoogleChatService_NoConfigureOptions_DefaultsToConvertBodyToClassicMarkup()
+    {
+        var services = new ServiceCollection();
+        services.AddGoogleChatService();
+
+        using var provider = services.BuildServiceProvider();
+        var options = provider.GetRequiredService<GoogleChatServiceOptions>();
+
+        Assert.True(options.ConvertBodyToClassicMarkup);
+    }
+
+    [Fact]
+    public void AddGoogleChatService_ConfigureOptions_AppliesConfiguredConvertBodyToClassicMarkup()
+    {
+        var services = new ServiceCollection();
+        services.AddGoogleChatService(options => options.ConvertBodyToClassicMarkup = false);
+
+        using var provider = services.BuildServiceProvider();
+        var options = provider.GetRequiredService<GoogleChatServiceOptions>();
+
+        Assert.False(options.ConvertBodyToClassicMarkup);
+    }
+
+    [Fact]
     public void AddGoogleChatService_ConfigureOptions_AppliesConfiguredMentionStyle()
     {
         var services = new ServiceCollection();
