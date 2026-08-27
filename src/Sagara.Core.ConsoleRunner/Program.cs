@@ -34,7 +34,7 @@ var googleChatSvc = host.Services.GetRequiredService<GoogleChatService>();
 //await googleChatSvc.SendMessageAsync(
 //    webhookUrl: jonWebhookUrl,
 //    bodyMarkdown: "Hello, Jon!",
-//    mentionUsers: [new GoogleWorkspaceUser(Email: "jon@example.com")]);
+//    mentionUsers: [new GoogleWorkspaceUser(Id: "123456789", Email: "jon@example.com")]);
 
 //// Send a multi-line text-only message.
 //await googleChatSvc.SendMessageAsync(
