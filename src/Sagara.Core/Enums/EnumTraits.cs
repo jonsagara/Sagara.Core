@@ -109,6 +109,19 @@ public static class EnumTraits<TEnum>
     }
 
     /// <summary>
+    /// Throws an <see cref="ArgumentException"/> if the enum value is not in the list of valid values.
+    /// </summary>
+    /// <param name="value">The enum value to validate.</param>
+    /// <exception cref="ArgumentException">Thrown if the enum value is not in the list of valid values.</exception>
+    public static void EnsureValidValue(TEnum value)
+    {
+        if (!IsValidValue(value))
+        {
+            throw new ArgumentException($"Invalid {_enumType.FullName} enum value '{value}'.", nameof(value));
+        }
+    }
+
+    /// <summary>
     /// Return the display name for the enum value, which is either from the [Display] attribute 
     /// or the property name.
     /// </summary>
