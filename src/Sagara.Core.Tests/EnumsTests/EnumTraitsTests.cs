@@ -116,6 +116,43 @@ public class EnumTraitsTests
         Assert.False(EnumTraits<ValuesEnum>.IsValidValue(ValuesEnum.Unknown));
     }
 
+    [Theory]
+    [InlineData(ValuesEnum.Value1)]
+    [InlineData(ValuesEnum.Value2)]
+    [InlineData(ValuesEnum.Value3)]
+    public void EnsureValidValue_ValidValue_DoesNotThrow(ValuesEnum value)
+    {
+        EnumTraits<ValuesEnum>.EnsureValidValue(value);
+    }
+
+    [Fact]
+    public void EnsureValidValue_InvalidValue_Throws()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            EnumTraits<ValuesEnum>.EnsureValidValue(ValuesEnum.Unknown)
+            );
+    }
+
+    [Fact]
+    public void EnsureValidValue_UndefinedCastValue_Throws()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            EnumTraits<ValuesEnum>.EnsureValidValue((ValuesEnum)99)
+            );
+    }
+
+    [Fact]
+    public void EnsureValidValue_InvalidValue_ExceptionMessage_ContainsEnumTypeAndValue()
+    {
+        var ex = Assert.Throws<ArgumentException>(() =>
+            EnumTraits<ValuesEnum>.EnsureValidValue(ValuesEnum.Unknown)
+            );
+
+        Assert.Contains(typeof(ValuesEnum).FullName!, ex.Message, StringComparison.Ordinal);
+        Assert.Contains(nameof(ValuesEnum.Unknown), ex.Message, StringComparison.Ordinal);
+        Assert.Equal("value", ex.ParamName);
+    }
+
     [Fact]
     public void EnsureNoDuplicateValues_NoDuplicates_DoesNotThrow()
     {
