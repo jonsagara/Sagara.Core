@@ -101,10 +101,10 @@ jobs:
             9.0.x
 
       - name: Run unit tests
-        run: dotnet test src/Sagara.Core.Tests/Sagara.Core.Tests.csproj --configuration Release
+        run: dotnet test --project ${{ github.workspace }}/src/Sagara.Core.Tests/Sagara.Core.Tests.csproj --configuration Release
 
       - name: Run unit tests (Sagara.Core.Google)
-        run: dotnet test src/Sagara.Core.Google.Tests/Sagara.Core.Google.Tests.csproj --configuration Release
+        run: dotnet test --project ${{ github.workspace }}/src/Sagara.Core.Google.Tests/Sagara.Core.Google.Tests.csproj --configuration Release
 
   run_integration_tests:
     runs-on: ubuntu-latest
@@ -134,7 +134,7 @@ jobs:
           global-json-file: global.json
 
       - name: Run integration tests
-        run: dotnet test src/Sagara.Core.Caching.IntegrationTests/Sagara.Core.Caching.IntegrationTests.csproj --configuration Release
+        run: dotnet test --project ${{ github.workspace }}/src/Sagara.Core.Caching.IntegrationTests/Sagara.Core.Caching.IntegrationTests.csproj --configuration Release
 
   deploy_packages:
     # Publish only when creating a GitHub Release
