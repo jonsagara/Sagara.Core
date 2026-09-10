@@ -12,7 +12,7 @@
 		<PackageVersion Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
 		<PackageVersion Include="NodaTime" Version="3.3.3" />
 		<PackageVersion Include="Serilog" Version="4.4.0" />
-		<PackageVersion Include="StackExchange.Redis" Version="3.1.31" />
+		<PackageVersion Include="StackExchange.Redis" Version="3.2.0" />
 		<PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.0" />
 	</ItemGroup>
 	<!-- net10.0 -->
