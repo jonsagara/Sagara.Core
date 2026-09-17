@@ -4,7 +4,7 @@
 		<TargetFrameworks>net10.0;net11.0</TargetFrameworks>
 		
 		<!-- NuGet -->
-		<Version>6.0.0-preview10</Version>
+		<Version>6.0.0-preview11</Version>
 		<AssemblyVersion>6.0.0</AssemblyVersion>
 		<FileVersion>6.0.0</FileVersion>
 		<Authors>Jon Sagara</Authors>
@@ -16,8 +16,7 @@
 		<!-- C# stuff -->
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<!-- For .NET 11 -->
-		<LangVersion>preview</LangVersion>
+		<!-- LangVersion intentionally omitted: SDK infers the recommended C# version per TFM -->
 
 		<!-- Code Analysis -->
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
