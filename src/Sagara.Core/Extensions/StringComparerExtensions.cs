@@ -14,9 +14,29 @@ public static class StringComparerExtensions
 #pragma warning disable CA1034
     extension(StringComparer)
     {
+        /// <summary>
+        /// Gets a case-sensitive, culture-aware <see cref="StringComparer"/> that uses
+        /// <see cref="CompareOptions.NumericOrdering"/>, so that runs of digits are compared by
+        /// numeric value rather than character-by-character (e.g., "file2" sorts before "file10").
+        /// </summary>
+        /// <remarks>
+        /// Uses <see cref="CultureInfo.CurrentCulture"/> as of the moment the property is read. A new
+        /// comparer is returned on each access, and that comparer retains the culture it was created
+        /// with even if the current culture later changes.
+        /// </remarks>
         public static StringComparer Numeric
             => StringComparer.Create(CultureInfo.CurrentCulture, CompareOptions.NumericOrdering);
 
+        /// <summary>
+        /// Gets a case-insensitive, culture-aware <see cref="StringComparer"/> that uses
+        /// <see cref="CompareOptions.NumericOrdering"/>, so that runs of digits are compared by
+        /// numeric value rather than character-by-character (e.g., "File2" sorts before "file10").
+        /// </summary>
+        /// <remarks>
+        /// Uses <see cref="CultureInfo.CurrentCulture"/> as of the moment the property is read. A new
+        /// comparer is returned on each access, and that comparer retains the culture it was created
+        /// with even if the current culture later changes.
+        /// </remarks>
         public static StringComparer NumericIgnoreCase
             => StringComparer.Create(CultureInfo.CurrentCulture, CompareOptions.NumericOrdering | CompareOptions.IgnoreCase);
     }
