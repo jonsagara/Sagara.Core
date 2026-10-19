@@ -2,17 +2,23 @@
 	<PropertyGroup>
 
 		<TargetFrameworks>net10.0;net11.0</TargetFrameworks>
-		
+
+		<!--
+			Versioning: Sagara.Build.Versioning (GlobalPackageReference in Directory.Packages.props) computes
+			Version, AssemblyVersion (Major.Minor.0.0), and FileVersion from these. Leave PreviewNumber empty for
+			a stable release. Do not set Version, AssemblyVersion, or FileVersion directly.
+		-->
+		<VersionPrefix>6.0.0</VersionPrefix>
+		<PrereleaseLabel>preview</PrereleaseLabel>
+		<PreviewNumber>20</PreviewNumber>
+
 		<!-- NuGet -->
-		<Version>6.0.0-preview.19</Version>
-		<AssemblyVersion>6.0.0</AssemblyVersion>
-		<FileVersion>6.0.0</FileVersion>
 		<Authors>Jon Sagara</Authors>
 		<Copyright>Copyright 2022-2026</Copyright>
 		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://github.com/jonsagara/Sagara.Core</PackageProjectUrl>
-		
+
 		<!-- C# stuff -->
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -31,6 +37,11 @@
 			See: https://devblogs.microsoft.com/visualstudio/vs-toolbox-accelerate-your-builds-of-sdk-style-net-projects/
 		-->
 		<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
-		
+
+	</PropertyGroup>
+
+	<!-- When running in GitHub Actions, enable deterministic builds for the NuGet packages. -->
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 	</PropertyGroup>
 </Project>

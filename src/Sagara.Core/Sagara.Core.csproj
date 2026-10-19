@@ -59,11 +59,6 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<!-- When running in GitHub Actions, enable deterministic builds for the NuGet package. -->
-	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<InternalsVisibleTo Include="Sagara.Core.Tests" />
 	</ItemGroup>
