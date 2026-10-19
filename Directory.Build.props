@@ -8,7 +8,7 @@
 			Version, AssemblyVersion (Major.Minor.0.0), and FileVersion from these. Leave PreviewNumber empty for
 			a stable release. Do not set Version, AssemblyVersion, or FileVersion directly.
 		-->
-		<VersionPrefix>5.10.3</VersionPrefix>
+		<VersionPrefix>5.10.4</VersionPrefix>
 		<!-- <PrereleaseLabel>preview</PrereleaseLabel> -->
 		<!-- <PreviewNumber>1</PreviewNumber> -->
 
