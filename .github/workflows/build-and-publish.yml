@@ -27,6 +27,9 @@ jobs:
   pack_nuget:
     name: dotnet pack NuGet packages
     runs-on: ubuntu-latest
+    permissions:
+      actions: read   # list this workflow's runs to compute OfficialBuildId
+      contents: read
 
     # Checkout the source code
     steps:
@@ -43,6 +46,32 @@ jobs:
       uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
       with:
         global-json-file: global.json
+
+    # OfficialBuildId = yyyyMMdd.N, where yyyyMMdd is this run's UTC creation date and N is this run's 1-based
+    #   position among this workflow's runs created that day. Sagara.Build.Versioning uses it for FileVersion.
+    #   It's written to GITHUB_ENV, and MSBuild reads environment variables as properties, so the dotnet pack
+    #   steps below pick it up without passing -p:OfficialBuildId.
+    - name: Compute OfficialBuildId
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+      run: |
+        $inv = [System.Globalization.CultureInfo]::InvariantCulture
+
+        $createdAt = gh api "repos/$env:REPO/actions/runs/$env:RUN_ID" --jq '.created_at'
+        if ($LASTEXITCODE -ne 0) { throw "Could not read run $env:RUN_ID." }
+        $created = [System.DateTimeOffset]::Parse($createdAt, $inv).UtcDateTime
+        $day = $created.ToString('yyyy-MM-dd', $inv)
+
+        $ids = gh api --paginate "repos/$env:REPO/actions/workflows/build-and-publish.yml/runs?created=${day}T00:00:00Z..${day}T23:59:59Z&per_page=100" --jq ".workflow_runs[] | select(.id <= $env:RUN_ID) | .id"
+        if ($LASTEXITCODE -ne 0) { throw 'Could not list workflow runs.' }
+        $n = @($ids | Where-Object { $_ }).Count
+        if ($n -lt 1 -or $n -gt 99) { throw "Build of the day must be 1-99, but was $n." }
+
+        $officialBuildId = '{0}.{1}' -f $created.ToString('yyyyMMdd', $inv), $n
+        "OfficialBuildId=$officialBuildId" >> $env:GITHUB_ENV
+        Write-Host "OfficialBuildId: $officialBuildId"
 
     # Create the NuGet packages in the folder from the environment variable NuGetDirectory
     - name: dotnet pack Sagara.Core

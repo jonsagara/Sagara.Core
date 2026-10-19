@@ -2,6 +2,10 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
+  <!-- Referenced by every project. Computes Version, AssemblyVersion, and FileVersion; see Directory.Build.props. -->
+  <ItemGroup>
+    <GlobalPackageReference Include="Sagara.Build.Versioning" Version="1.0.0" />
+  </ItemGroup>
   <!-- Packages with the same version across all target frameworks -->
   <ItemGroup>
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
