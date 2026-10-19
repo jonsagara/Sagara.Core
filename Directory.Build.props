@@ -3,10 +3,16 @@
 
 		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
 		
+		<!--
+			Versioning: Sagara.Build.Versioning (GlobalPackageReference in Directory.Packages.props) computes
+			Version, AssemblyVersion (Major.Minor.0.0), and FileVersion from these. Leave PreviewNumber empty for
+			a stable release. Do not set Version, AssemblyVersion, or FileVersion directly.
+		-->
+		<VersionPrefix>5.10.3</VersionPrefix>
+		<!-- <PrereleaseLabel>preview</PrereleaseLabel> -->
+		<!-- <PreviewNumber>1</PreviewNumber> -->
+
 		<!-- NuGet -->
-		<Version>5.10.2</Version>
-		<AssemblyVersion>5.10.0</AssemblyVersion>
-		<FileVersion>5.10.0</FileVersion>
 		<Authors>Jon Sagara</Authors>
 		<Copyright>Copyright 2022-2026</Copyright>
 		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
@@ -31,6 +37,11 @@
 			See: https://devblogs.microsoft.com/visualstudio/vs-toolbox-accelerate-your-builds-of-sdk-style-net-projects/
 		-->
 		<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
-		
+
+	</PropertyGroup>
+
+	<!-- When running in GitHub Actions, enable deterministic builds for the NuGet packages. -->
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 	</PropertyGroup>
 </Project>

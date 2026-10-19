@@ -36,6 +36,14 @@ Configured globally in [Directory.Build.props](Directory.Build.props):
 - **Warnings as errors**: keep the build clean; don't suppress without a comment explaining why.
 - **SourceLink + deterministic builds** are configured — do not change `EmbedUntrackedSources` or symbol settings.
 
+## Versioning
+
+Versions come from [Sagara.Build.Versioning](https://github.com/jonsagara/Sagara.Build.Versioning), referenced for every project via `GlobalPackageReference` in [Directory.Packages.props](Directory.Packages.props). Set the version only in [Directory.Build.props](Directory.Build.props):
+
+- `VersionPrefix` (e.g. `5.10.3`); `PreviewNumber` (empty = stable) and `PrereleaseLabel` (`alpha|beta|preview|rc`, default `preview`) for prereleases → `5.10.3-preview.1`.
+- `AssemblyVersion` is computed as `Major.Minor.0.0`; `FileVersion` is `Major.Minor.(Patch*100).0` locally and date-stamped in CI (from `OfficialBuildId`, computed in the publish workflow).
+- Do **not** set `Version`, `AssemblyVersion`, or `FileVersion` directly (warning `SBV1001`).
+
 ## Key Patterns
 
 ### Guard Clauses — `Check`
