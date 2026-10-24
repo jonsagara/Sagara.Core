@@ -13,7 +13,7 @@
 		-->
 		<VersionPrefix>6.0.0</VersionPrefix>
 		<PrereleaseLabel>preview</PrereleaseLabel>
-		<PreviewNumber>22</PreviewNumber>
+		<PreviewNumber>23</PreviewNumber>
 
 		<!-- NuGet -->
 		<Authors>Jon Sagara</Authors>
