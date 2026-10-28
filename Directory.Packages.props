@@ -9,12 +9,12 @@
 	<!-- Packages with the same version across all target frameworks -->
 	<ItemGroup>
 		<PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
-		<PackageVersion Include="Markdig" Version="1.5.0" />
+		<PackageVersion Include="Markdig" Version="1.5.1" />
 		<PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="11.0.0-rc.3.26522.148" />
 		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="11.0.0-rc.3.26522.148" />
 		<PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0-rc.3.26522.148" />
-		<PackageVersion Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
-		<PackageVersion Include="NodaTime" Version="3.3.6" />
+		<PackageVersion Include="Microsoft.IO.RecyclableMemoryStream" Version="4.0.1" />
+		<PackageVersion Include="NodaTime" Version="3.3.7" />
 		<PackageVersion Include="Serilog" Version="4.4.0" />
 		<PackageVersion Include="StackExchange.Redis" Version="3.4.20" />
 		<PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.2" />
