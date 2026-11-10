@@ -1,8 +1,8 @@
 <Project>
 	<PropertyGroup>
 
-		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
-		
+		<TargetFrameworks>net10.0;net11.0</TargetFrameworks>
+
 		<!--
 			Versioning: Sagara.Build.Versioning (GlobalPackageReference in Directory.Packages.props) computes
 			Version, AssemblyVersion (Major.Minor.0.0), and FileVersion from these.
@@ -11,7 +11,7 @@
 			- Set PreviewNumber to a positive integer for a pre-release version. Comment it out for a stable release.
 			Do not set Version, AssemblyVersion, or FileVersion directly.
 		-->
-		<VersionPrefix>5.10.12</VersionPrefix>
+		<VersionPrefix>6.0.0</VersionPrefix>
 		<!--<PrereleaseLabel>preview</PrereleaseLabel>
 		<PreviewNumber>1</PreviewNumber>-->
 
@@ -21,7 +21,7 @@
 		<RepositoryUrl>https://github.com/jonsagara/Sagara.Core</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://github.com/jonsagara/Sagara.Core</PackageProjectUrl>
-		
+
 		<!-- C# stuff -->
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>

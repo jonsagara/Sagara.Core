@@ -207,7 +207,13 @@ public static class StringExtensions
             if (ixNextChunkStart < text.Length && text[ixNextChunkStart - 1] != ' ' && text[ixNextChunkStart] != ' ')
             {
                 // Starting at the end of the current chunk, search backward for the closest preceding space character.
+                //
+                // CA1307 wants a StringComparison here, but string.LastIndexOf has no (char, int, StringComparison)
+                //   overload until .NET 11 (this project still targets net10.0, too), and char-based LastIndexOf is
+                //   always an ordinal search, so there's no ambiguity to clarify anyway.
+#pragma warning disable CA1307 // Specify StringComparison for clarity
                 var ixClosestPrecedingSpace = text.LastIndexOf(value: ' ', startIndex: ixNextChunkStart - 1);
+#pragma warning restore CA1307
 
                 if (ixClosestPrecedingSpace == -1 || ixClosestPrecedingSpace <= ixCurrentChunkStart)
                 {

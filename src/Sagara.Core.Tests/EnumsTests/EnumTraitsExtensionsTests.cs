@@ -1,5 +1,3 @@
-#if NET10_0_OR_GREATER
-
 using System.ComponentModel.DataAnnotations;
 using Sagara.Core.Enums;
 
@@ -253,5 +251,3 @@ public class EnumTraitsExtensionsTests
         Assert.Null(value.GetDisplayNameOrDefault());
     }
 }
-
-#endif
