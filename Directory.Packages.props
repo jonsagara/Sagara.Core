@@ -1,44 +1,44 @@
 <Project>
-	<PropertyGroup>
-		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-	</PropertyGroup>
-	<!-- Referenced by every project. Computes Version, AssemblyVersion, and FileVersion; see Directory.Build.props. -->
-	<ItemGroup>
-		<GlobalPackageReference Include="Sagara.Build.Versioning" Version="1.0.0" />
-	</ItemGroup>
-	<!-- Packages with the same version across all target frameworks -->
-	<ItemGroup>
-		<PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
-		<PackageVersion Include="Markdig" Version="1.6.0" />
-		<PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="11.0.0-rc.3.26522.148" />
-		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="11.0.0-rc.3.26522.148" />
-		<PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0-rc.3.26522.148" />
-		<PackageVersion Include="Microsoft.IO.RecyclableMemoryStream" Version="4.0.1" />
-		<PackageVersion Include="NodaTime" Version="3.3.7" />
-		<PackageVersion Include="Serilog" Version="4.4.0" />
-		<PackageVersion Include="StackExchange.Redis" Version="3.4.31" />
-		<PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.2" />
-	</ItemGroup>
-	<!-- net10.0 -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-		<PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.14" />
-		<PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.14" />
-		<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
-		<PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.14" />
-		<PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.14" />
-		<PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.14" />
-		<PackageVersion Include="Serilog.Extensions.Hosting" Version="10.0.0" />
-		<PackageVersion Include="System.Text.Json" Version="10.0.14" />
-	</ItemGroup>
-	<!-- net11.0 -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
-		<PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="11.0.0-rc.3.26522.148" />
-		<PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="11.0.0-rc.3.26522.148" />
-		<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-rc.3.26522.148" />
-		<PackageVersion Include="Microsoft.Extensions.Hosting" Version="11.0.0-rc.3.26522.148" />
-		<PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="11.0.0-rc.3.26522.148" />
-		<PackageVersion Include="Microsoft.Extensions.Http" Version="11.0.0-rc.3.26522.148" />
-		<PackageVersion Include="Serilog.Extensions.Hosting" Version="10.0.0" />
-		<PackageVersion Include="System.Text.Json" Version="11.0.0-rc.3.26522.148" />
-	</ItemGroup>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <!-- Referenced by every project. Computes Version, AssemblyVersion, and FileVersion; see Directory.Build.props. -->
+  <ItemGroup>
+    <GlobalPackageReference Include="Sagara.Build.Versioning" Version="1.0.0" />
+  </ItemGroup>
+  <!-- Packages with the same version across all target frameworks -->
+  <ItemGroup>
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
+    <PackageVersion Include="Markdig" Version="1.6.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.IO.RecyclableMemoryStream" Version="4.0.1" />
+    <PackageVersion Include="NodaTime" Version="3.3.7" />
+    <PackageVersion Include="Serilog" Version="4.4.0" />
+    <PackageVersion Include="StackExchange.Redis" Version="3.4.31" />
+    <PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.3" />
+  </ItemGroup>
+  <!-- net10.0 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.15" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.15" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.15" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.15" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.15" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.15" />
+    <PackageVersion Include="Serilog.Extensions.Hosting" Version="10.0.0" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.15" />
+  </ItemGroup>
+  <!-- net11.0 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="11.0.0" />
+    <PackageVersion Include="Serilog.Extensions.Hosting" Version="10.0.0" />
+    <PackageVersion Include="System.Text.Json" Version="11.0.0" />
+  </ItemGroup>
 </Project>
