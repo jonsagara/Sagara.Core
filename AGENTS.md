@@ -1,6 +1,6 @@
 # Sagara.Core — Agent Instructions
 
-A collection of NuGet utility libraries targeting **net8.0**, **net9.0**, and **net10.0** simultaneously.
+A collection of NuGet utility libraries that multi-target every .NET version currently supported by Microsoft. The current list is `TargetFrameworks` in [Directory.Build.props](Directory.Build.props).
 See [README.md](README.md) for a high-level description.
 
 ## Build & Test
@@ -24,13 +24,13 @@ All projects multi-target; avoid singling out a TFM unless fixing a framework-sp
 | [Sagara.Core.Data](src/Sagara.Core.Data/) | EF Core data-access patterns |
 | [Sagara.Core.Logging.Serilog](src/Sagara.Core.Logging.Serilog/) | Serilog bootstrapping & enrichment |
 | [Sagara.Core.Tests](src/Sagara.Core.Tests/) | xunit v3 unit tests for Sagara.Core |
-| [Sagara.Core.Benchmarks](src/Sagara.Core.Benchmarks/) | BenchmarkDotNet harnesses (net10.0 only) |
+| [Sagara.Core.Benchmarks](src/Sagara.Core.Benchmarks/) | BenchmarkDotNet harnesses (latest TFM only) |
 
 ## Language & SDK Conventions
 
 Configured globally in [Directory.Build.props](Directory.Build.props):
 
-- **SDK**: 10.0.203 (`global.json`); **C# 14**; **Implicit usings** enabled.
+- **SDK**: pinned in [global.json](global.json); **C# version** is the SDK default for each TFM (`LangVersion` is not set); **Implicit usings** enabled.
 - **Nullable reference types**: enabled — always annotate parameters, returns, and fields.
 - **Analysis**: `AllEnabledByDefault`. **CA1307, CA1309, CA1310** are treated as errors — always pass an explicit `StringComparison` or `CultureInfo` argument.
 - **Warnings as errors**: keep the build clean; don't suppress without a comment explaining why.
