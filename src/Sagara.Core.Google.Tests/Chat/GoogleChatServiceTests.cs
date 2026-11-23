@@ -1,7 +1,7 @@
 using System.Net;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Sagara.Core.Google.Chat;
 
 namespace Sagara.Core.Google.Tests.Chat;
@@ -325,38 +325,21 @@ public class GoogleChatServiceTests
         
     }
 
+    [Fact]
+    public async Task SendMessageAsync_RelayConfigured_DoesNotSendRelayAuthorizationHeaderToGoogle()
+    {
+        var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK);
+        var service = CreateService(handler, options: new GoogleChatServiceOptions
+        {
+            Relay = new GoogleChatRelayOptions { BaseAddress = new Uri("https://relay.example.com"), ApiToken = "secret-token" },
+        });
+
+        await service.SendMessageAsync(WebhookUrl, "hello", cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(new Uri(WebhookUrl), handler.RequestUri);
+        Assert.Null(handler.Authorization);
+    }
+
     private static GoogleChatService CreateService(HttpMessageHandler handler, ILogger<GoogleChatService>? logger = null, GoogleChatServiceOptions? options = null)
-        => new(new HttpClient(handler), logger ?? NullLogger<GoogleChatService>.Instance, options ?? new GoogleChatServiceOptions());
-
-    private sealed class RecordingLogger<T> : ILogger<T>
-    {
-        public List<(LogLevel LogLevel, string Message)> Entries { get; } = [];
-
-        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
-
-        public bool IsEnabled(LogLevel logLevel) => true;
-
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-            => Entries.Add((logLevel, formatter(state, exception)));
-    }
-
-    private sealed class CapturingHttpMessageHandler(HttpStatusCode statusCode) : HttpMessageHandler
-    {
-        private string? _requestBody;
-
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            _requestBody = request.Content is null ? null : await request.Content.ReadAsStringAsync(cancellationToken);
-
-            return new HttpResponseMessage(statusCode);
-        }
-
-        public Task<JsonElement> GetRequestJsonAsync()
-        {
-            Assert.NotNull(_requestBody);
-
-            using var document = JsonDocument.Parse(_requestBody);
-            return Task.FromResult(document.RootElement.Clone());
-        }
-    }
+        => new(new HttpClient(handler), logger ?? NullLogger<GoogleChatService>.Instance, Options.Create(options ?? new GoogleChatServiceOptions()));
 }
