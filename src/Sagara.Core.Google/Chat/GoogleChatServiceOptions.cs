@@ -27,4 +27,12 @@ public sealed class GoogleChatServiceOptions
     /// </para>
     /// </summary>
     public bool ConvertBodyToClassicMarkup { get; set; } = true;
+
+    /// <summary>
+    /// Settings for the Google Chat throttling relay, used by <see cref="GoogleChatService"/>'s
+    /// <c>EnqueueMessageAsync</c> overloads. Defaults to <see langword="null"/>, meaning no relay is configured;
+    /// calling <c>EnqueueMessageAsync</c> then throws <see cref="InvalidOperationException"/>. The
+    /// <c>SendMessageAsync</c> overloads never use the relay.
+    /// </summary>
+    public GoogleChatRelayOptions? Relay { get; set; }
 }

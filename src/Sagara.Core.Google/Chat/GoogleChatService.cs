@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -6,12 +7,15 @@ using System.Text.Json.Serialization;
 using Markdig;
 using Markdig.Syntax;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Sagara.Core.Google.Chat.Payloads;
 
 namespace Sagara.Core.Google.Chat;
 
 /// <summary>
-/// Sends messages to a Google Chat space via an incoming webhook.
+/// Sends messages to a Google Chat space, either directly via an incoming webhook (<c>SendMessageAsync</c>), or
+/// through the Google Chat throttling relay, which queues them to stay within Google's per-space rate limit
+/// (<c>EnqueueMessageAsync</c>).
 /// </summary>
 public sealed class GoogleChatService
 {
@@ -25,11 +29,13 @@ public sealed class GoogleChatService
     private readonly ILogger<GoogleChatService> _logger;
     private readonly GoogleChatServiceOptions _options;
 
-    public GoogleChatService(HttpClient httpClient, ILogger<GoogleChatService> logger, GoogleChatServiceOptions options)
+    public GoogleChatService(HttpClient httpClient, ILogger<GoogleChatService> logger, IOptions<GoogleChatServiceOptions> options)
     {
+        Check.ThrowIfNull(options);
+
         _httpClient = httpClient;
         _logger = logger;
-        _options = options;
+        _options = options.Value;
     }
 
 
@@ -282,9 +288,394 @@ public sealed class GoogleChatService
     }
 
 
+    /// <summary>
+    /// Enqueues a Markdown message with the Google Chat throttling relay, which forwards it to the named space
+    /// while staying within Google's per-space rate limit.
+    /// </summary>
+    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown.</param>
+    /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/> or <paramref name="bodyMarkdown"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="spaceName"/> or <paramref name="bodyMarkdown"/> is empty or whitespace; or a key in <paramref name="enqueueOptions"/> is invalid.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="GoogleChatServiceOptions.Relay"/> is not configured.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was canceled.</exception>
+    /// <remarks>
+    /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
+    /// </remarks>
+    public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
+        string spaceName,
+        string bodyMarkdown,
+        GoogleChatEnqueueOptions? enqueueOptions = null,
+        CancellationToken cancellationToken = default)
+    {
+        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
+
+        return await EnqueueCoreAsync(
+            spaceName: spaceName,
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: false,
+            mentionUsers: null,
+            cards: null,
+            enqueueOptions: enqueueOptions,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Enqueues a Markdown message with the Google Chat throttling relay, optionally mentioning all space members.
+    /// </summary>
+    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown.</param>
+    /// <param name="mentionAllUsers">When <see langword="true"/>, appends an @all mention that notifies every member of the space.</param>
+    /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/> or <paramref name="bodyMarkdown"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="spaceName"/> or <paramref name="bodyMarkdown"/> is empty or whitespace; or a key in <paramref name="enqueueOptions"/> is invalid.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="GoogleChatServiceOptions.Relay"/> is not configured.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was canceled.</exception>
+    /// <remarks>
+    /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
+    /// </remarks>
+    public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
+        string spaceName,
+        string bodyMarkdown,
+        bool mentionAllUsers,
+        GoogleChatEnqueueOptions? enqueueOptions = null,
+        CancellationToken cancellationToken = default)
+    {
+        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
+
+        return await EnqueueCoreAsync(
+            spaceName: spaceName,
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: mentionAllUsers,
+            mentionUsers: null,
+            cards: null,
+            enqueueOptions: enqueueOptions,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Enqueues a Markdown message with the Google Chat throttling relay, mentioning specific users.
+    /// </summary>
+    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown.</param>
+    /// <param name="mentionUsers">The Google Workspace users to mention (notify) in the message.</param>
+    /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/>, <paramref name="bodyMarkdown"/>, or <paramref name="mentionUsers"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="spaceName"/> or <paramref name="bodyMarkdown"/> is empty or whitespace; or a key in <paramref name="enqueueOptions"/> is invalid.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="GoogleChatServiceOptions.Relay"/> is not configured.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was canceled.</exception>
+    /// <remarks>
+    /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
+    /// </remarks>
+    public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
+        string spaceName,
+        string bodyMarkdown,
+        IReadOnlyCollection<GoogleWorkspaceUser> mentionUsers,
+        GoogleChatEnqueueOptions? enqueueOptions = null,
+        CancellationToken cancellationToken = default)
+    {
+        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
+        Check.ThrowIfNull(mentionUsers);
+
+        return await EnqueueCoreAsync(
+            spaceName: spaceName,
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: false,
+            mentionUsers: mentionUsers,
+            cards: null,
+            enqueueOptions: enqueueOptions,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Enqueues a message containing cards, and optionally a Markdown body, with the Google Chat throttling relay.
+    /// </summary>
+    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown. May be <see langword="null"/> or empty if <paramref name="cards"/> supplies the content.</param>
+    /// <param name="cards">The cards to attach to the message.</param>
+    /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/> or <paramref name="cards"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="spaceName"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
+    /// <paramref name="cards"/> are empty; or a card in <paramref name="cards"/> has no content set; or a key in
+    /// <paramref name="enqueueOptions"/> is invalid.
+    /// </exception>
+    /// <exception cref="InvalidOperationException"><see cref="GoogleChatServiceOptions.Relay"/> is not configured.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was canceled.</exception>
+    /// <remarks>
+    /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
+    /// </remarks>
+    public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
+        string spaceName,
+        string? bodyMarkdown,
+        IReadOnlyCollection<GoogleChatCardV2> cards,
+        GoogleChatEnqueueOptions? enqueueOptions = null,
+        CancellationToken cancellationToken = default)
+    {
+        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNull(cards);
+        ValidateContentToSend(bodyMarkdown, cards);
+
+        return await EnqueueCoreAsync(
+            spaceName: spaceName,
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: false,
+            mentionUsers: null,
+            cards: cards,
+            enqueueOptions: enqueueOptions,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Enqueues a message containing cards, and optionally a Markdown body, with the Google Chat throttling relay,
+    /// optionally mentioning all space members.
+    /// </summary>
+    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown. May be <see langword="null"/> or empty if <paramref name="cards"/> supplies the content.</param>
+    /// <param name="mentionAllUsers">When <see langword="true"/>, appends an @all mention that notifies every member of the space.</param>
+    /// <param name="cards">The cards to attach to the message.</param>
+    /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/> or <paramref name="cards"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="spaceName"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
+    /// <paramref name="cards"/> are empty; or a card in <paramref name="cards"/> has no content set; or a key in
+    /// <paramref name="enqueueOptions"/> is invalid.
+    /// </exception>
+    /// <exception cref="InvalidOperationException"><see cref="GoogleChatServiceOptions.Relay"/> is not configured.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was canceled.</exception>
+    /// <remarks>
+    /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
+    /// </remarks>
+    public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
+        string spaceName,
+        string? bodyMarkdown,
+        bool mentionAllUsers,
+        IReadOnlyCollection<GoogleChatCardV2> cards,
+        GoogleChatEnqueueOptions? enqueueOptions = null,
+        CancellationToken cancellationToken = default)
+    {
+        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNull(cards);
+        ValidateContentToSend(bodyMarkdown, cards);
+
+        return await EnqueueCoreAsync(
+            spaceName: spaceName,
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: mentionAllUsers,
+            mentionUsers: null,
+            cards: cards,
+            enqueueOptions: enqueueOptions,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Enqueues a message containing cards, and optionally a Markdown body, with the Google Chat throttling relay,
+    /// mentioning specific users.
+    /// </summary>
+    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="bodyMarkdown">The message body, in Markdown. May be <see langword="null"/> or empty if <paramref name="cards"/> supplies the content.</param>
+    /// <param name="mentionUsers">The Google Workspace users to mention (notify) in the message.</param>
+    /// <param name="cards">The cards to attach to the message.</param>
+    /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/>, <paramref name="mentionUsers"/>, or <paramref name="cards"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="spaceName"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
+    /// <paramref name="cards"/> are empty; or a card in <paramref name="cards"/> has no content set; or a key in
+    /// <paramref name="enqueueOptions"/> is invalid.
+    /// </exception>
+    /// <exception cref="InvalidOperationException"><see cref="GoogleChatServiceOptions.Relay"/> is not configured.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was canceled.</exception>
+    /// <remarks>
+    /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
+    /// </remarks>
+    public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
+        string spaceName,
+        string? bodyMarkdown,
+        IReadOnlyCollection<GoogleWorkspaceUser> mentionUsers,
+        IReadOnlyCollection<GoogleChatCardV2> cards,
+        GoogleChatEnqueueOptions? enqueueOptions = null,
+        CancellationToken cancellationToken = default)
+    {
+        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNull(mentionUsers);
+        Check.ThrowIfNull(cards);
+        ValidateContentToSend(bodyMarkdown, cards);
+
+        return await EnqueueCoreAsync(
+            spaceName: spaceName,
+            bodyMarkdown: bodyMarkdown,
+            mentionAllUsers: false,
+            mentionUsers: mentionUsers,
+            cards: cards,
+            enqueueOptions: enqueueOptions,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+
+
     //
     // Private methods
     //
+
+    private static void ValidateEnqueueOptions(GoogleChatEnqueueOptions? enqueueOptions)
+    {
+        if (enqueueOptions is null)
+        {
+            return;
+        }
+
+        ValidateKey(enqueueOptions.ThreadKey, nameof(GoogleChatEnqueueOptions.ThreadKey));
+        ValidateKey(enqueueOptions.IdempotencyKey, nameof(GoogleChatEnqueueOptions.IdempotencyKey));
+
+        static void ValidateKey(string? key, string keyName)
+        {
+            // Mirror the relay's own validation, so a bad key fails fast here instead of as a 400 from the relay.
+            if (key is not null && (string.IsNullOrWhiteSpace(key) || key.Length > GoogleChatEnqueueOptions.MaxKeyLength))
+            {
+                throw new ArgumentException($"{nameof(GoogleChatEnqueueOptions)}.{keyName} must be non-blank and at most {GoogleChatEnqueueOptions.MaxKeyLength} characters.", nameof(enqueueOptions));
+            }
+        }
+    }
+
+    private (Uri SendUri, string ApiToken) GetRelayEndpoint()
+    {
+        // The validator guarantees both values are present whenever Relay is set; Relay itself is optional.
+        if (_options.Relay is not { BaseAddress: { } baseAddress, ApiToken: { } apiToken })
+        {
+            throw new InvalidOperationException($"The Google Chat throttling relay is not configured. Set {nameof(GoogleChatServiceOptions)}.{nameof(GoogleChatServiceOptions.Relay)} to use EnqueueMessageAsync.");
+        }
+
+        // Ensure a trailing slash so a base address with a path prefix keeps it when "send" is appended.
+        //   (Indexing sidesteps conflicting analyzer advice: CA1307 on net11.0 vs. CA1865 for EndsWith overloads.)
+        var baseWithSlash = baseAddress.AbsoluteUri[^1] == '/'
+            ? baseAddress
+            : new Uri($"{baseAddress.AbsoluteUri}/");
+
+        return (new Uri(baseWithSlash, "send"), apiToken);
+    }
+
+    private async Task<GoogleChatEnqueueResult> EnqueueCoreAsync(
+        string spaceName,
+        string? bodyMarkdown,
+        bool mentionAllUsers,
+        IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers,
+        IReadOnlyCollection<GoogleChatCardV2>? cards,
+        GoogleChatEnqueueOptions? enqueueOptions,
+        CancellationToken cancellationToken)
+    {
+        // Configuration and argument errors are thrown, not swallowed: they're bugs, not transient failures.
+        var (sendUri, apiToken) = GetRelayEndpoint();
+        ValidateEnqueueOptions(enqueueOptions);
+
+        try
+        {
+            var payload = new RelaySendRequestPayload
+            {
+                Space = spaceName,
+                Message = BuildPayload(
+                    bodyMarkdown: bodyMarkdown,
+                    mentionAllUsers: mentionAllUsers,
+                    mentionUsers: mentionUsers,
+                    cards: cards),
+                ThreadKey = enqueueOptions?.ThreadKey,
+                IdempotencyKey = enqueueOptions?.IdempotencyKey,
+            };
+
+            // The bearer token goes on this request only. Never put it in HttpClient.DefaultRequestHeaders: this
+            //   same client posts directly to Google in SendMessageAsync, and the token would leak there.
+            using var request = new HttpRequestMessage(HttpMethod.Post, sendUri)
+            {
+                Content = JsonContent.Create(payload, options: _jsonSerializerOptions),
+            };
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+
+            using var response = await _httpClient
+                .SendAsync(request, cancellationToken)
+                .ConfigureAwait(false);
+
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            var responsePayload = TryDeserializeRelayResponse(responseContent);
+
+            if (response.IsSuccessStatusCode && responsePayload is { Id: { } id, QueuePosition: { } queuePosition })
+            {
+                return new GoogleChatEnqueueResult
+                {
+                    Succeeded = true,
+                    StatusCode = response.StatusCode,
+                    Id = id,
+                    QueuePosition = queuePosition,
+                    Duplicate = responsePayload.Duplicate ?? false,
+                };
+            }
+
+            _logger.Error_RelayRequestFailed(
+                spaceName: spaceName,
+                payloadJson: JsonSerializer.Serialize(payload, _jsonSerializerOptions),
+                statusCodeInt: (int)response.StatusCode,
+                statusCode: response.StatusCode,
+                responseBody: responseContent);
+
+            return new GoogleChatEnqueueResult
+            {
+                Succeeded = false,
+                StatusCode = response.StatusCode,
+                Error = responsePayload?.Error
+                    ?? (response.IsSuccessStatusCode
+                        ? "The relay's response did not contain the expected queue fields."
+                        : response.ReasonPhrase ?? $"HTTP {(int)response.StatusCode}"),
+            };
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // The caller canceled; that's not a failure to report. (An HttpClient timeout also surfaces as an
+            //   OperationCanceledException, but without the caller's token canceled, so it's handled below.)
+            throw;
+        }
+        catch (Exception ex)
+        {
+            // Log and return an unsuccessful result.
+            _logger.Error_RelayUnhandledException(ex, spaceName, bodyMarkdown);
+
+            return new GoogleChatEnqueueResult
+            {
+                Succeeded = false,
+                StatusCode = null,
+                Error = ex.Message,
+            };
+        }
+    }
+
+    private static RelaySendResponsePayload? TryDeserializeRelayResponse(string responseContent)
+    {
+        if (string.IsNullOrWhiteSpace(responseContent))
+        {
+            return null;
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<RelaySendResponsePayload>(responseContent, _jsonSerializerOptions);
+        }
+        catch (JsonException)
+        {
+            // Not JSON (e.g., an HTML error page from a proxy). The raw body is still logged by the caller.
+            return null;
+        }
+    }
 
     private static void ValidateContentToSend(string? bodyMarkdown, IReadOnlyCollection<GoogleChatCardV2> cards)
     {
