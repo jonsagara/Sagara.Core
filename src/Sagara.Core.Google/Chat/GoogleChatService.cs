@@ -289,32 +289,32 @@ public sealed class GoogleChatService
 
 
     /// <summary>
-    /// Enqueues a Markdown message with the Google Chat throttling relay, which forwards it to the named space
+    /// Enqueues a Markdown message with the Google Chat throttling relay, which forwards it to the target space
     /// while staying within Google's per-space rate limit.
     /// </summary>
-    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="relaySpaceAlias">The relay's alias for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
     /// <param name="bodyMarkdown">The message body, in Markdown.</param>
     /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
     /// <param name="cancellationToken">A token to cancel the request.</param>
     /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/> or <paramref name="bodyMarkdown"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="spaceName"/> or <paramref name="bodyMarkdown"/> is empty or whitespace; or a key in <paramref name="enqueueOptions"/> is invalid.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="relaySpaceAlias"/> or <paramref name="bodyMarkdown"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="relaySpaceAlias"/> or <paramref name="bodyMarkdown"/> is empty or whitespace; or a key in <paramref name="enqueueOptions"/> is invalid.</exception>
     /// <exception cref="InvalidOperationException"><see cref="GoogleChatServiceOptions.Relay"/> is not configured.</exception>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was canceled.</exception>
     /// <remarks>
     /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
     /// </remarks>
     public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
-        string spaceName,
+        string relaySpaceAlias,
         string bodyMarkdown,
         GoogleChatEnqueueOptions? enqueueOptions = null,
         CancellationToken cancellationToken = default)
     {
-        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNullOrWhiteSpace(relaySpaceAlias);
         Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
 
         return await EnqueueCoreAsync(
-            spaceName: spaceName,
+            relaySpaceAlias: relaySpaceAlias,
             bodyMarkdown: bodyMarkdown,
             mentionAllUsers: false,
             mentionUsers: null,
@@ -326,31 +326,31 @@ public sealed class GoogleChatService
     /// <summary>
     /// Enqueues a Markdown message with the Google Chat throttling relay, optionally mentioning all space members.
     /// </summary>
-    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="relaySpaceAlias">The relay's alias for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
     /// <param name="bodyMarkdown">The message body, in Markdown.</param>
     /// <param name="mentionAllUsers">When <see langword="true"/>, appends an @all mention that notifies every member of the space.</param>
     /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
     /// <param name="cancellationToken">A token to cancel the request.</param>
     /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/> or <paramref name="bodyMarkdown"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="spaceName"/> or <paramref name="bodyMarkdown"/> is empty or whitespace; or a key in <paramref name="enqueueOptions"/> is invalid.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="relaySpaceAlias"/> or <paramref name="bodyMarkdown"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="relaySpaceAlias"/> or <paramref name="bodyMarkdown"/> is empty or whitespace; or a key in <paramref name="enqueueOptions"/> is invalid.</exception>
     /// <exception cref="InvalidOperationException"><see cref="GoogleChatServiceOptions.Relay"/> is not configured.</exception>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was canceled.</exception>
     /// <remarks>
     /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
     /// </remarks>
     public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
-        string spaceName,
+        string relaySpaceAlias,
         string bodyMarkdown,
         bool mentionAllUsers,
         GoogleChatEnqueueOptions? enqueueOptions = null,
         CancellationToken cancellationToken = default)
     {
-        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNullOrWhiteSpace(relaySpaceAlias);
         Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
 
         return await EnqueueCoreAsync(
-            spaceName: spaceName,
+            relaySpaceAlias: relaySpaceAlias,
             bodyMarkdown: bodyMarkdown,
             mentionAllUsers: mentionAllUsers,
             mentionUsers: null,
@@ -362,32 +362,32 @@ public sealed class GoogleChatService
     /// <summary>
     /// Enqueues a Markdown message with the Google Chat throttling relay, mentioning specific users.
     /// </summary>
-    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="relaySpaceAlias">The relay's alias for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
     /// <param name="bodyMarkdown">The message body, in Markdown.</param>
     /// <param name="mentionUsers">The Google Workspace users to mention (notify) in the message.</param>
     /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
     /// <param name="cancellationToken">A token to cancel the request.</param>
     /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/>, <paramref name="bodyMarkdown"/>, or <paramref name="mentionUsers"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="spaceName"/> or <paramref name="bodyMarkdown"/> is empty or whitespace; or a key in <paramref name="enqueueOptions"/> is invalid.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="relaySpaceAlias"/>, <paramref name="bodyMarkdown"/>, or <paramref name="mentionUsers"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="relaySpaceAlias"/> or <paramref name="bodyMarkdown"/> is empty or whitespace; or a key in <paramref name="enqueueOptions"/> is invalid.</exception>
     /// <exception cref="InvalidOperationException"><see cref="GoogleChatServiceOptions.Relay"/> is not configured.</exception>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was canceled.</exception>
     /// <remarks>
     /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
     /// </remarks>
     public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
-        string spaceName,
+        string relaySpaceAlias,
         string bodyMarkdown,
         IReadOnlyCollection<GoogleWorkspaceUser> mentionUsers,
         GoogleChatEnqueueOptions? enqueueOptions = null,
         CancellationToken cancellationToken = default)
     {
-        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNullOrWhiteSpace(relaySpaceAlias);
         Check.ThrowIfNullOrWhiteSpace(bodyMarkdown);
         Check.ThrowIfNull(mentionUsers);
 
         return await EnqueueCoreAsync(
-            spaceName: spaceName,
+            relaySpaceAlias: relaySpaceAlias,
             bodyMarkdown: bodyMarkdown,
             mentionAllUsers: false,
             mentionUsers: mentionUsers,
@@ -399,15 +399,15 @@ public sealed class GoogleChatService
     /// <summary>
     /// Enqueues a message containing cards, and optionally a Markdown body, with the Google Chat throttling relay.
     /// </summary>
-    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="relaySpaceAlias">The relay's alias for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
     /// <param name="bodyMarkdown">The message body, in Markdown. May be <see langword="null"/> or empty if <paramref name="cards"/> supplies the content.</param>
     /// <param name="cards">The cards to attach to the message.</param>
     /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
     /// <param name="cancellationToken">A token to cancel the request.</param>
     /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/> or <paramref name="cards"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="relaySpaceAlias"/> or <paramref name="cards"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="spaceName"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
+    /// <paramref name="relaySpaceAlias"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
     /// <paramref name="cards"/> are empty; or a card in <paramref name="cards"/> has no content set; or a key in
     /// <paramref name="enqueueOptions"/> is invalid.
     /// </exception>
@@ -417,18 +417,18 @@ public sealed class GoogleChatService
     /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
     /// </remarks>
     public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
-        string spaceName,
+        string relaySpaceAlias,
         string? bodyMarkdown,
         IReadOnlyCollection<GoogleChatCardV2> cards,
         GoogleChatEnqueueOptions? enqueueOptions = null,
         CancellationToken cancellationToken = default)
     {
-        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNullOrWhiteSpace(relaySpaceAlias);
         Check.ThrowIfNull(cards);
         ValidateContentToSend(bodyMarkdown, cards);
 
         return await EnqueueCoreAsync(
-            spaceName: spaceName,
+            relaySpaceAlias: relaySpaceAlias,
             bodyMarkdown: bodyMarkdown,
             mentionAllUsers: false,
             mentionUsers: null,
@@ -441,16 +441,16 @@ public sealed class GoogleChatService
     /// Enqueues a message containing cards, and optionally a Markdown body, with the Google Chat throttling relay,
     /// optionally mentioning all space members.
     /// </summary>
-    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="relaySpaceAlias">The relay's alias for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
     /// <param name="bodyMarkdown">The message body, in Markdown. May be <see langword="null"/> or empty if <paramref name="cards"/> supplies the content.</param>
     /// <param name="mentionAllUsers">When <see langword="true"/>, appends an @all mention that notifies every member of the space.</param>
     /// <param name="cards">The cards to attach to the message.</param>
     /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
     /// <param name="cancellationToken">A token to cancel the request.</param>
     /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/> or <paramref name="cards"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="relaySpaceAlias"/> or <paramref name="cards"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="spaceName"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
+    /// <paramref name="relaySpaceAlias"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
     /// <paramref name="cards"/> are empty; or a card in <paramref name="cards"/> has no content set; or a key in
     /// <paramref name="enqueueOptions"/> is invalid.
     /// </exception>
@@ -460,19 +460,19 @@ public sealed class GoogleChatService
     /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
     /// </remarks>
     public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
-        string spaceName,
+        string relaySpaceAlias,
         string? bodyMarkdown,
         bool mentionAllUsers,
         IReadOnlyCollection<GoogleChatCardV2> cards,
         GoogleChatEnqueueOptions? enqueueOptions = null,
         CancellationToken cancellationToken = default)
     {
-        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNullOrWhiteSpace(relaySpaceAlias);
         Check.ThrowIfNull(cards);
         ValidateContentToSend(bodyMarkdown, cards);
 
         return await EnqueueCoreAsync(
-            spaceName: spaceName,
+            relaySpaceAlias: relaySpaceAlias,
             bodyMarkdown: bodyMarkdown,
             mentionAllUsers: mentionAllUsers,
             mentionUsers: null,
@@ -485,16 +485,16 @@ public sealed class GoogleChatService
     /// Enqueues a message containing cards, and optionally a Markdown body, with the Google Chat throttling relay,
     /// mentioning specific users.
     /// </summary>
-    /// <param name="spaceName">The relay's name for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
+    /// <param name="relaySpaceAlias">The relay's alias for the target Google Chat space (a key in the relay's webhook map, not a webhook URL).</param>
     /// <param name="bodyMarkdown">The message body, in Markdown. May be <see langword="null"/> or empty if <paramref name="cards"/> supplies the content.</param>
     /// <param name="mentionUsers">The Google Workspace users to mention (notify) in the message.</param>
     /// <param name="cards">The cards to attach to the message.</param>
     /// <param name="enqueueOptions">Optional thread and idempotency keys.</param>
     /// <param name="cancellationToken">A token to cancel the request.</param>
     /// <returns>The outcome. <see cref="GoogleChatEnqueueResult.Succeeded"/> means the relay accepted the message, not that Google delivered it.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="spaceName"/>, <paramref name="mentionUsers"/>, or <paramref name="cards"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="relaySpaceAlias"/>, <paramref name="mentionUsers"/>, or <paramref name="cards"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="spaceName"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
+    /// <paramref name="relaySpaceAlias"/> is empty or whitespace; or both <paramref name="bodyMarkdown"/> and
     /// <paramref name="cards"/> are empty; or a card in <paramref name="cards"/> has no content set; or a key in
     /// <paramref name="enqueueOptions"/> is invalid.
     /// </exception>
@@ -504,20 +504,20 @@ public sealed class GoogleChatService
     /// Other failures (HTTP errors or unhandled exceptions) are logged and returned as an unsuccessful result rather than thrown.
     /// </remarks>
     public async Task<GoogleChatEnqueueResult> EnqueueMessageAsync(
-        string spaceName,
+        string relaySpaceAlias,
         string? bodyMarkdown,
         IReadOnlyCollection<GoogleWorkspaceUser> mentionUsers,
         IReadOnlyCollection<GoogleChatCardV2> cards,
         GoogleChatEnqueueOptions? enqueueOptions = null,
         CancellationToken cancellationToken = default)
     {
-        Check.ThrowIfNullOrWhiteSpace(spaceName);
+        Check.ThrowIfNullOrWhiteSpace(relaySpaceAlias);
         Check.ThrowIfNull(mentionUsers);
         Check.ThrowIfNull(cards);
         ValidateContentToSend(bodyMarkdown, cards);
 
         return await EnqueueCoreAsync(
-            spaceName: spaceName,
+            relaySpaceAlias: relaySpaceAlias,
             bodyMarkdown: bodyMarkdown,
             mentionAllUsers: false,
             mentionUsers: mentionUsers,
@@ -569,7 +569,7 @@ public sealed class GoogleChatService
     }
 
     private async Task<GoogleChatEnqueueResult> EnqueueCoreAsync(
-        string spaceName,
+        string relaySpaceAlias,
         string? bodyMarkdown,
         bool mentionAllUsers,
         IReadOnlyCollection<GoogleWorkspaceUser>? mentionUsers,
@@ -585,7 +585,7 @@ public sealed class GoogleChatService
         {
             var payload = new RelaySendRequestPayload
             {
-                Space = spaceName,
+                Space = relaySpaceAlias,
                 Message = BuildPayload(
                     bodyMarkdown: bodyMarkdown,
                     mentionAllUsers: mentionAllUsers,
@@ -623,7 +623,7 @@ public sealed class GoogleChatService
             }
 
             _logger.Error_RelayRequestFailed(
-                spaceName: spaceName,
+                relaySpaceAlias: relaySpaceAlias,
                 payloadJson: JsonSerializer.Serialize(payload, _jsonSerializerOptions),
                 statusCodeInt: (int)response.StatusCode,
                 statusCode: response.StatusCode,
@@ -648,7 +648,7 @@ public sealed class GoogleChatService
         catch (Exception ex)
         {
             // Log and return an unsuccessful result.
-            _logger.Error_RelayUnhandledException(ex, spaceName, bodyMarkdown);
+            _logger.Error_RelayUnhandledException(ex, relaySpaceAlias, bodyMarkdown);
 
             return new GoogleChatEnqueueResult
             {

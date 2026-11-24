@@ -58,14 +58,14 @@ Google Workspace allows one message per second per Chat space. A burst of messag
 
 - **`SendMessageAsync(webhookUrl, ...)`** posts directly to a Google Chat incoming webhook. Failures are logged and
   swallowed.
-- **`EnqueueMessageAsync(spaceName, ...)`** posts to the Google Chat throttling relay. The relay queues messages per
+- **`EnqueueMessageAsync(relaySpaceAlias, ...)`** posts to the Google Chat throttling relay. The relay queues messages per
   space and forwards them to Google in order, no faster than the limit allows. It requires
   `GoogleChatServiceOptions.Relay`; without it, `EnqueueMessageAsync` throws `InvalidOperationException`.
 
 Each `EnqueueMessageAsync` overload matches a `SendMessageAsync` overload (body, @all mention, user mentions, cards),
 with two differences:
 
-- It takes the relay's **space name** (a key in the relay's webhook map, such as `"alerts"`) instead of a webhook
+- It takes the relay's **space alias** (a key in the relay's webhook map, such as `"alerts"`) instead of a webhook
   URL. Webhook URLs stay inside the relay.
 - It accepts an optional `GoogleChatEnqueueOptions`:
   - `ThreadKey` replies in that thread, or starts it.

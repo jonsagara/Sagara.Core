@@ -8,7 +8,7 @@ namespace Sagara.Core.Google.Chat;
 public static class GoogleChatServiceExtensions
 {
     /// <summary>
-    /// Registers a <see cref="GoogleChatService"/>, configured in code. The webhook URL (or relay space name) is
+    /// Registers a <see cref="GoogleChatService"/>, configured in code. The webhook URL (or relay space alias) is
     /// supplied per call, not at registration time, so a single registered instance can send to any number of
     /// Google Chat spaces.
     /// </summary>
