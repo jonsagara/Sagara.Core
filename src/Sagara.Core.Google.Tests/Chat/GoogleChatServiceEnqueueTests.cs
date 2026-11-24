@@ -8,7 +8,7 @@ namespace Sagara.Core.Google.Tests.Chat;
 
 public class GoogleChatServiceEnqueueTests
 {
-    private const string SpaceName = "alerts";
+    private const string RelaySpaceAlias = "alerts";
     private const string ApiToken = "test-relay-token";
     private const string AcceptedResponse = """{"space":"alerts","id":42,"queuePosition":3,"duplicate":false}""";
 
@@ -18,7 +18,7 @@ public class GoogleChatServiceEnqueueTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.Accepted, AcceptedResponse);
         var service = CreateService(handler);
 
-        await service.EnqueueMessageAsync(SpaceName, "hello", cancellationToken: TestContext.Current.CancellationToken);
+        await service.EnqueueMessageAsync(RelaySpaceAlias, "hello", cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpMethod.Post, handler.Method);
         Assert.Equal(new Uri("https://relay.example.com/send"), handler.RequestUri);
@@ -35,7 +35,7 @@ public class GoogleChatServiceEnqueueTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.Accepted, AcceptedResponse);
         var service = CreateService(handler, options: CreateOptions(baseAddress: baseAddress));
 
-        await service.EnqueueMessageAsync(SpaceName, "hello", cancellationToken: TestContext.Current.CancellationToken);
+        await service.EnqueueMessageAsync(RelaySpaceAlias, "hello", cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(new Uri(expectedUri), handler.RequestUri);
     }
@@ -46,11 +46,11 @@ public class GoogleChatServiceEnqueueTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.Accepted, AcceptedResponse);
         var service = CreateService(handler);
 
-        await service.EnqueueMessageAsync(SpaceName, "The **prod** deploy failed.", cancellationToken: TestContext.Current.CancellationToken);
+        await service.EnqueueMessageAsync(RelaySpaceAlias, "The **prod** deploy failed.", cancellationToken: TestContext.Current.CancellationToken);
 
         var json = await handler.GetRequestJsonAsync();
 
-        Assert.Equal(SpaceName, json.GetProperty("space").GetString());
+        Assert.Equal(RelaySpaceAlias, json.GetProperty("space").GetString());
         // Message building is shared with SendMessageAsync, so the classic-markup conversion still applies.
         Assert.Equal("The *prod* deploy failed.", json.GetProperty("message").GetProperty("text").GetString());
         Assert.False(json.GetProperty("message").TryGetProperty("cardsV2", out _));
@@ -65,7 +65,7 @@ public class GoogleChatServiceEnqueueTests
         var service = CreateService(handler);
 
         await service.EnqueueMessageAsync(
-            SpaceName,
+            RelaySpaceAlias,
             "hello",
             new GoogleChatEnqueueOptions { ThreadKey = "disk-alerts", IdempotencyKey = "alert-8421" },
             TestContext.Current.CancellationToken);
@@ -82,7 +82,7 @@ public class GoogleChatServiceEnqueueTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.Accepted, AcceptedResponse);
         var service = CreateService(handler);
 
-        await service.EnqueueMessageAsync(SpaceName, "hello", mentionAllUsers: true, cancellationToken: TestContext.Current.CancellationToken);
+        await service.EnqueueMessageAsync(RelaySpaceAlias, "hello", mentionAllUsers: true, cancellationToken: TestContext.Current.CancellationToken);
 
         var json = await handler.GetRequestJsonAsync();
 
@@ -96,7 +96,7 @@ public class GoogleChatServiceEnqueueTests
         var service = CreateService(handler);
 
         await service.EnqueueMessageAsync(
-            SpaceName,
+            RelaySpaceAlias,
             "hello",
             mentionUsers: [new GoogleWorkspaceUser("123", "a@example.com")],
             cancellationToken: TestContext.Current.CancellationToken);
@@ -113,7 +113,7 @@ public class GoogleChatServiceEnqueueTests
         var service = CreateService(handler);
 
         await service.EnqueueMessageAsync(
-            SpaceName,
+            RelaySpaceAlias,
             bodyMarkdown: null,
             cards: [new GoogleChatCardV2(Title: "Deploy failed")],
             cancellationToken: TestContext.Current.CancellationToken);
@@ -130,7 +130,7 @@ public class GoogleChatServiceEnqueueTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.Accepted, AcceptedResponse);
         var service = CreateService(handler);
 
-        var result = await service.EnqueueMessageAsync(SpaceName, "hello", cancellationToken: TestContext.Current.CancellationToken);
+        var result = await service.EnqueueMessageAsync(RelaySpaceAlias, "hello", cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(result.Succeeded);
         Assert.Equal(HttpStatusCode.Accepted, result.StatusCode);
@@ -149,7 +149,7 @@ public class GoogleChatServiceEnqueueTests
         var service = CreateService(handler);
 
         var result = await service.EnqueueMessageAsync(
-            SpaceName,
+            RelaySpaceAlias,
             "hello",
             new GoogleChatEnqueueOptions { IdempotencyKey = "k" },
             TestContext.Current.CancellationToken);
@@ -170,7 +170,7 @@ public class GoogleChatServiceEnqueueTests
         var logger = new RecordingLogger<GoogleChatService>();
         var service = CreateService(handler, logger);
 
-        var result = await service.EnqueueMessageAsync(SpaceName, "hello", cancellationToken: TestContext.Current.CancellationToken);
+        var result = await service.EnqueueMessageAsync(RelaySpaceAlias, "hello", cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.False(result.Succeeded);
         Assert.Equal(statusCode, result.StatusCode);
@@ -190,7 +190,7 @@ public class GoogleChatServiceEnqueueTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.BadGateway, "<html>Bad gateway</html>");
         var service = CreateService(handler);
 
-        var result = await service.EnqueueMessageAsync(SpaceName, "hello", cancellationToken: TestContext.Current.CancellationToken);
+        var result = await service.EnqueueMessageAsync(RelaySpaceAlias, "hello", cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.False(result.Succeeded);
         Assert.Equal(HttpStatusCode.BadGateway, result.StatusCode);
@@ -203,7 +203,7 @@ public class GoogleChatServiceEnqueueTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK, "{}");
         var service = CreateService(handler);
 
-        var result = await service.EnqueueMessageAsync(SpaceName, "hello", cancellationToken: TestContext.Current.CancellationToken);
+        var result = await service.EnqueueMessageAsync(RelaySpaceAlias, "hello", cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.False(result.Succeeded);
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
@@ -217,7 +217,7 @@ public class GoogleChatServiceEnqueueTests
         var logger = new RecordingLogger<GoogleChatService>();
         var service = CreateService(handler, logger);
 
-        var result = await service.EnqueueMessageAsync(SpaceName, "hello", cancellationToken: TestContext.Current.CancellationToken);
+        var result = await service.EnqueueMessageAsync(RelaySpaceAlias, "hello", cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.False(result.Succeeded);
         Assert.Null(result.StatusCode);
@@ -234,7 +234,7 @@ public class GoogleChatServiceEnqueueTests
         var handler = new CapturingHttpMessageHandler(HttpStatusCode.OK, exceptionToThrow: new TaskCanceledException("timed out"));
         var service = CreateService(handler);
 
-        var result = await service.EnqueueMessageAsync(SpaceName, "hello", cancellationToken: TestContext.Current.CancellationToken);
+        var result = await service.EnqueueMessageAsync(RelaySpaceAlias, "hello", cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.False(result.Succeeded);
         Assert.Null(result.StatusCode);
@@ -250,7 +250,7 @@ public class GoogleChatServiceEnqueueTests
         await cts.CancelAsync();
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(
-            () => service.EnqueueMessageAsync(SpaceName, "hello", cancellationToken: cts.Token));
+            () => service.EnqueueMessageAsync(RelaySpaceAlias, "hello", cancellationToken: cts.Token));
     }
 
     [Fact]
@@ -260,7 +260,7 @@ public class GoogleChatServiceEnqueueTests
         var service = CreateService(handler, options: new GoogleChatServiceOptions());
 
         await Assert.ThrowsAsync<InvalidOperationException>(
-            () => service.EnqueueMessageAsync(SpaceName, "hello", cancellationToken: TestContext.Current.CancellationToken));
+            () => service.EnqueueMessageAsync(RelaySpaceAlias, "hello", cancellationToken: TestContext.Current.CancellationToken));
 
         Assert.Null(handler.RequestUri);
     }
@@ -269,12 +269,12 @@ public class GoogleChatServiceEnqueueTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public async Task EnqueueMessageAsync_NullOrWhiteSpaceSpaceName_Throws(string? spaceName)
+    public async Task EnqueueMessageAsync_NullOrWhiteSpaceRelaySpaceAlias_Throws(string? relaySpaceAlias)
     {
         var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.Accepted, AcceptedResponse));
 
         await Assert.ThrowsAnyAsync<ArgumentException>(
-            () => service.EnqueueMessageAsync(spaceName!, "hello", cancellationToken: TestContext.Current.CancellationToken));
+            () => service.EnqueueMessageAsync(relaySpaceAlias!, "hello", cancellationToken: TestContext.Current.CancellationToken));
     }
 
     [Theory]
@@ -286,7 +286,7 @@ public class GoogleChatServiceEnqueueTests
         var service = CreateService(new CapturingHttpMessageHandler(HttpStatusCode.Accepted, AcceptedResponse));
 
         await Assert.ThrowsAnyAsync<ArgumentException>(
-            () => service.EnqueueMessageAsync(SpaceName, body!, cancellationToken: TestContext.Current.CancellationToken));
+            () => service.EnqueueMessageAsync(RelaySpaceAlias, body!, cancellationToken: TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -296,7 +296,7 @@ public class GoogleChatServiceEnqueueTests
 
         await Assert.ThrowsAsync<ArgumentException>(
             () => service.EnqueueMessageAsync(
-                SpaceName,
+                RelaySpaceAlias,
                 bodyMarkdown: null,
                 cards: [],
                 cancellationToken: TestContext.Current.CancellationToken));
@@ -319,7 +319,7 @@ public class GoogleChatServiceEnqueueTests
         var service = CreateService(handler);
 
         await Assert.ThrowsAsync<ArgumentException>(
-            () => service.EnqueueMessageAsync(SpaceName, "hello", enqueueOptions, TestContext.Current.CancellationToken));
+            () => service.EnqueueMessageAsync(RelaySpaceAlias, "hello", enqueueOptions, TestContext.Current.CancellationToken));
 
         Assert.Null(handler.RequestUri);
     }
@@ -331,7 +331,7 @@ public class GoogleChatServiceEnqueueTests
         var service = CreateService(handler);
 
         var result = await service.EnqueueMessageAsync(
-            SpaceName,
+            RelaySpaceAlias,
             "hello",
             new GoogleChatEnqueueOptions
             {
